@@ -5,6 +5,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import {
+	Box,
 	Card,
 	CardActions,
 	CardContent,
@@ -15,9 +16,10 @@ import {
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import NumberBox from './NumberBox';
+import NumberStepper from './NumberStepper';
 import Set from './Set';
 
-const sets = [
+const tempSets = [
 	{
 		id: 1,
 		reps: 10,
@@ -35,7 +37,6 @@ const ExpandMore = styled((props) => {
 	return <IconButton {...other} />;
 })(({ theme, expand }) => ({
 	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-	// marginLeft: 'auto',
 	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
 	}),
@@ -44,6 +45,17 @@ const ExpandMore = styled((props) => {
 const Exercise = ({ exercise, onDelete }) => {
 	const [expanded, setExpanded] = useState(false);
 	const [editing, setEditing] = useState(false);
+	const [sets, setSets] = useState(exercise.sets);
+	const [reps, setReps] = useState(exercise.reps);
+	const [weight, setWeight] = useState(exercise.weight);
+
+	const increment = (number, setNumber, step) => {
+		setNumber((prevState) => prevState + step);
+	};
+
+	const decrement = (number, setNumber, step) => {
+		setNumber((prevState) => prevState - step);
+	};
 
 	return (
 		<Card
@@ -78,29 +90,66 @@ const Exercise = ({ exercise, onDelete }) => {
 					alignItems: 'center',
 					display: 'flex',
 				}}>
-				<NumberBox
-					title='SETS'
-					number={exercise.sets}
-					editing={editing}
-				/>
+				{/* TODO: integrate textfield with number stepper to edit same state */}
+				<Box
+					display='flex'
+					flexDirection='column'
+					justifyContent='center'
+					alignItems='center'>
+					<NumberBox
+						title='SETS'
+						number={sets}
+						editing={editing}
+					/>
+					{editing && (
+						<NumberStepper
+							increment={() => increment(sets, setSets, 1)}
+							decrement={() => decrement(sets, setSets, 1)}
+						/>
+					)}
+				</Box>
 				<CloseIcon
 					fontSize='large'
-					sx={{ mb: 4 }}
+					sx={{ mb: editing ? 8 : 4 }}
 				/>
-				<NumberBox
-					title='REPS'
-					number={exercise.reps}
-					editing={editing}
-				/>
+				<Box
+					display='flex'
+					flexDirection='column'
+					justifyContent='center'
+					alignItems='center'>
+					<NumberBox
+						title='REPS'
+						number={reps}
+						editing={editing}
+					/>
+					{editing && (
+						<NumberStepper
+							increment={() => increment(reps, setReps, 1)}
+							decrement={() => decrement(reps, setReps, 1)}
+						/>
+					)}
+				</Box>
 				<AlternateEmail
 					fontSize='large'
-					sx={{ mb: 4 }}
+					sx={{ mb: editing ? 8 : 4 }}
 				/>
-				<NumberBox
-					title='LBS'
-					number={exercise.weight}
-					editing={editing}
-				/>
+				<Box
+					display='flex'
+					flexDirection='column'
+					justifyContent='center'
+					alignItems='center'>
+					<NumberBox
+						title='LBS'
+						number={weight}
+						editing={editing}
+					/>
+					{editing && (
+						<NumberStepper
+							increment={() => increment(weight, setWeight, 5)}
+							decrement={() => decrement(weight, setWeight, 5)}
+						/>
+					)}
+				</Box>
 			</CardContent>
 			<CardActions
 				sx={{
@@ -123,7 +172,7 @@ const Exercise = ({ exercise, onDelete }) => {
 				timeout='auto'
 				unmountOnExit>
 				<CardContent>
-					{sets.map((set, index) => (
+					{tempSets.map((set, index) => (
 						<Set
 							key={index}
 							index={index}

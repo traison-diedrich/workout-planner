@@ -1,44 +1,43 @@
 import { Box, Divider, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/system';
-import { useState } from 'react';
-
-const ValueText = styled(Typography)({
-	fontSize: '1.2rem', // Adjust the font size as desired
-	textAlign: 'center', // Adjust the text alignment as desired
-});
 
 const NumberBox = ({ title, number, editing }) => {
-	const [newNumber, setNewNumber] = useState(number);
-
 	return (
 		<Box
 			sx={{
-				display: 'grid',
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
 				border: '2px solid',
 				borderColor: 'primary.main',
-				borderRadius: '2px',
+				borderRadius: '3px',
 				p: 1,
 				mx: 2,
 			}}>
 			{editing ? (
 				<TextField
-					label=''
+					value={number}
 					variant='standard'
-					value={newNumber}
-					onChange={(e) => setNewNumber(e.target.value)}
-					sizes='medium'
-					InputProps={{
-						inputProps: { type: 'number', min: 1, max: 99 },
+					onChange={(e) => {
+						number = e.target.value;
+					}}
+					sx={{
+						'p': -8,
+						'& input': {
+							fontSize: '3.0rem',
+							textAlign: 'center',
+						},
 					}}
 				/>
 			) : (
 				<Typography
 					variant='h3'
 					align='center'>
-					{newNumber}
+					{number}
 				</Typography>
 			)}
-			<Divider />
+			{/* TODO: figure out why divider is not rendering */}
+			{!editing && <Divider />}
 			<Typography
 				variant='caption'
 				align='center'
