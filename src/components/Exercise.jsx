@@ -57,11 +57,12 @@ const Exercise = ({ exercise, onDelete }) => {
 		setNumber((prevState) => prevState - step);
 	};
 
+	const onEdit = (number, setNumber) => {
+		setNumber(number);
+	};
+
 	return (
-		<Card
-			sx={{
-				my: 2,
-			}}>
+		<Card sx={{ my: 2 }}>
 			<CardHeader
 				title={exercise.name}
 				action={
@@ -100,6 +101,10 @@ const Exercise = ({ exercise, onDelete }) => {
 						title='SETS'
 						number={sets}
 						editing={editing}
+						onEdit={onEdit}
+						setNumber={setSets}
+						min={0}
+						max={99}
 					/>
 					{editing && (
 						<NumberStepper
@@ -108,10 +113,7 @@ const Exercise = ({ exercise, onDelete }) => {
 						/>
 					)}
 				</Box>
-				<CloseIcon
-					fontSize='large'
-					sx={{ mb: editing ? 8 : 4 }}
-				/>
+				<CloseIcon fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
 				<Box
 					display='flex'
 					flexDirection='column'
@@ -121,6 +123,10 @@ const Exercise = ({ exercise, onDelete }) => {
 						title='REPS'
 						number={reps}
 						editing={editing}
+						onEdit={onEdit}
+						setNumber={setReps}
+						min={0}
+						max={99}
 					/>
 					{editing && (
 						<NumberStepper
@@ -129,10 +135,7 @@ const Exercise = ({ exercise, onDelete }) => {
 						/>
 					)}
 				</Box>
-				<AlternateEmail
-					fontSize='large'
-					sx={{ mb: editing ? 8 : 4 }}
-				/>
+				<AlternateEmail fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
 				<Box
 					display='flex'
 					flexDirection='column'
@@ -142,6 +145,10 @@ const Exercise = ({ exercise, onDelete }) => {
 						title='LBS'
 						number={weight}
 						editing={editing}
+						onEdit={onEdit}
+						setNumber={setWeight}
+						min={0}
+						max={999}
 					/>
 					{editing && (
 						<NumberStepper
@@ -157,9 +164,7 @@ const Exercise = ({ exercise, onDelete }) => {
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}>
-				<ExpandMore
-					expand={expanded}
-					onClick={() => setExpanded(!expanded)}>
+				<ExpandMore expand={expanded} onClick={() => setExpanded(!expanded)}>
 					<ExpandCircleDownOutlinedIcon
 						color='secondary'
 						variant='outlined'
@@ -167,17 +172,10 @@ const Exercise = ({ exercise, onDelete }) => {
 					/>
 				</ExpandMore>
 			</CardActions>
-			<Collapse
-				in={expanded}
-				timeout='auto'
-				unmountOnExit>
+			<Collapse in={expanded} timeout='auto' unmountOnExit>
 				<CardContent>
 					{tempSets.map((set, index) => (
-						<Set
-							key={index}
-							index={index}
-							set={set}
-						/>
+						<Set key={index} index={index} set={set} />
 					))}
 				</CardContent>
 			</Collapse>

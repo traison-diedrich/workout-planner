@@ -9,14 +9,10 @@ const Stepper = ({ increment, decrement }) => {
 			variant='contained'
 			size='small'
 			sx={{ mt: 1 }}>
-			<Button
-				onClick={decrement}
-				style={{ padding: '0px 0px' }}>
+			<Button onClick={decrement} style={{ padding: '0px 0px' }}>
 				<RemoveIcon sx={{ color: 'text.primary' }} />
 			</Button>
-			<Button
-				onClick={increment}
-				sx={{ width: 10, height: 30 }}>
+			<Button onClick={increment} sx={{ width: 10, height: 30 }}>
 				<AddIcon sx={{ color: 'text.primary' }} />
 			</Button>
 		</ButtonGroup>

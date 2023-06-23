@@ -89,10 +89,7 @@ function App() {
 					justifyContent: 'center',
 					flexDirection: 'column',
 				}}>
-				<Typography
-					variant='h2'
-					color='textPrimary'
-					sx={{ mt: 3 }}>
+				<Typography variant='h2' color='textPrimary' sx={{ mt: 3 }}>
 					Workout Planner
 				</Typography>
 				<Container

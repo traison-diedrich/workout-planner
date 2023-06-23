@@ -4,9 +4,7 @@ import NumberBox from './NumberBox';
 
 const Set = ({ set, index }) => {
 	return (
-		<Card
-			variant='outlined'
-			sx={{ mb: 1 }}>
+		<Card variant='outlined' sx={{ mb: 1 }}>
 			<CardContent
 				sx={{
 					display: 'flex',
@@ -14,21 +12,12 @@ const Set = ({ set, index }) => {
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}>
-				<Typography
-					variant='h5'
-					sx={{ mb: 8, mr: 3 }}>{`Set ${index + 1}`}</Typography>
-				<NumberBox
-					title='REPS'
-					number={set.reps}
-				/>
-				<AlternateEmail
-					fontSize='large'
-					sx={{ mb: 4 }}
-				/>
-				<NumberBox
-					title='LBS'
-					number={set.weight}
-				/>
+				<Typography variant='h5' sx={{ mb: 8, mr: 3 }}>
+					{`Set ${index + 1}`}
+				</Typography>
+				<NumberBox title='REPS' number={set.reps} />
+				<AlternateEmail fontSize='large' sx={{ mb: 4 }} />
+				<NumberBox title='LBS' number={set.weight} />
 			</CardContent>
 		</Card>
 	);
