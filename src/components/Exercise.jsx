@@ -53,20 +53,34 @@ const Exercise = ({ exercise, onDelete }) => {
 		setNumber(number);
 	};
 
+	const validInputs = () => {
+		if (sets === 0 || reps === 0 || weight === 0) {
+			return false;
+		} else {
+			return true;
+		}
+	};
+
 	return (
 		<Card sx={{ my: 2 }}>
 			<CardHeader
 				title={exercise.name}
 				action={
 					<>
-						{/* // TODO: stop user from putting in 0 and clicking submit */}
-						<IconButton onClick={() => setEditing(!editing)}>
-							{editing ? (
+						{editing ? (
+							<IconButton
+								onClick={() => {
+									if (validInputs()) {
+										setEditing(!editing);
+									}
+								}}>
 								<CheckCircleOutlinedIcon color='success' />
-							) : (
+							</IconButton>
+						) : (
+							<IconButton onClick={() => setEditing(!editing)}>
 								<EditOutlinedIcon color='secondary' />
-							)}
-						</IconButton>
+							</IconButton>
+						)}
 						<IconButton
 							onClick={() => {
 								onDelete(exercise.id);
@@ -88,6 +102,7 @@ const Exercise = ({ exercise, onDelete }) => {
 					<EditableNumberBox
 						title='SETS'
 						number={sets}
+						borderColor={sets === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setSets}
@@ -103,6 +118,7 @@ const Exercise = ({ exercise, onDelete }) => {
 					<EditableNumberBox
 						title='REPS'
 						number={reps}
+						borderColor={reps === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setReps}
@@ -118,6 +134,7 @@ const Exercise = ({ exercise, onDelete }) => {
 					<EditableNumberBox
 						title='LBS'
 						number={weight}
+						borderColor={weight === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setWeight}

@@ -4,11 +4,12 @@ import NumberStepper from './NumberStepper';
 
 /**
  * For most use cases, min should be set to 0. min = 1 will
- * prevent user from backspacing their input to less than 1 digit
+ * prevent user from backspacing their input completely
  */
 const EditableNumberBox = ({
 	title,
 	number,
+	borderColor,
 	setNumber,
 	onEdit,
 	min,
@@ -26,8 +27,6 @@ const EditableNumberBox = ({
 	const handleEdit = (e) => {
 		const { value } = e.target;
 		const parsedValue = Number(value);
-
-		console.log(value, parsedValue, number);
 
 		validateNumber(parsedValue);
 	};
@@ -56,7 +55,7 @@ const EditableNumberBox = ({
 					justifyContent: 'center',
 					alignContent: 'center',
 					alignItems: 'center',
-					borderColor: 'primary.main',
+					borderColor: borderColor,
 					borderRadius: '3px',
 					px: 1,
 					mx: 1,
@@ -64,7 +63,6 @@ const EditableNumberBox = ({
 				<TextField
 					value={number}
 					variant='standard'
-					size='small'
 					onChange={handleEdit}
 					error={error}
 					// min+1 here to accommodate backspacing
