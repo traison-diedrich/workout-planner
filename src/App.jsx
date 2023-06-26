@@ -82,8 +82,8 @@ function App() {
 			<Container
 				sx={{
 					backgroundColor: 'background.default',
-					width: 1,
-					height: 1,
+					minWidth: '100%',
+					minHeight: '100%',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',

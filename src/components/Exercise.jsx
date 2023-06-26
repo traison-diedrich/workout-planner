@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import EditableNumberBox from './EditableNumberBox';
 import NumberBox from './NumberBox';
-import NumberStepper from './NumberStepper';
 import Set from './Set';
 
 const tempSets = [
@@ -49,16 +49,16 @@ const Exercise = ({ exercise, onDelete }) => {
 	const [reps, setReps] = useState(exercise.reps);
 	const [weight, setWeight] = useState(exercise.weight);
 
-	const increment = (number, setNumber, step) => {
-		setNumber((prevState) => prevState + step);
-	};
-
-	const decrement = (number, setNumber, step) => {
-		setNumber((prevState) => prevState - step);
-	};
-
 	const onEdit = (number, setNumber) => {
 		setNumber(number);
+	};
+
+	const validInputs = () => {
+		if (sets === 0 || reps === 0 || weight === 0) {
+			return false;
+		} else {
+			return true;
+		}
 	};
 
 	return (
@@ -67,13 +67,20 @@ const Exercise = ({ exercise, onDelete }) => {
 				title={exercise.name}
 				action={
 					<>
-						<IconButton onClick={() => setEditing(!editing)}>
-							{editing ? (
+						{editing ? (
+							<IconButton
+								onClick={() => {
+									if (validInputs()) {
+										setEditing(!editing);
+									}
+								}}>
 								<CheckCircleOutlinedIcon color='success' />
-							) : (
+							</IconButton>
+						) : (
+							<IconButton onClick={() => setEditing(!editing)}>
 								<EditOutlinedIcon color='secondary' />
-							)}
-						</IconButton>
+							</IconButton>
+						)}
 						<IconButton
 							onClick={() => {
 								onDelete(exercise.id);
@@ -91,72 +98,53 @@ const Exercise = ({ exercise, onDelete }) => {
 					alignItems: 'center',
 					display: 'flex',
 				}}>
-				{/* TODO: integrate textfield with number stepper to edit same state */}
-				<Box
-					display='flex'
-					flexDirection='column'
-					justifyContent='center'
-					alignItems='center'>
-					<NumberBox
+				{editing ? (
+					<EditableNumberBox
 						title='SETS'
 						number={sets}
+						borderColor={sets === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setSets}
 						min={0}
-						max={99}
+						max={100}
+						step={1}
 					/>
-					{editing && (
-						<NumberStepper
-							increment={() => increment(sets, setSets, 1)}
-							decrement={() => decrement(sets, setSets, 1)}
-						/>
-					)}
-				</Box>
+				) : (
+					<NumberBox title='SETS' number={sets} />
+				)}
 				<CloseIcon fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
-				<Box
-					display='flex'
-					flexDirection='column'
-					justifyContent='center'
-					alignItems='center'>
-					<NumberBox
+				{editing ? (
+					<EditableNumberBox
 						title='REPS'
 						number={reps}
+						borderColor={reps === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setReps}
 						min={0}
-						max={99}
+						max={999}
+						step={1}
 					/>
-					{editing && (
-						<NumberStepper
-							increment={() => increment(reps, setReps, 1)}
-							decrement={() => decrement(reps, setReps, 1)}
-						/>
-					)}
-				</Box>
+				) : (
+					<NumberBox title='REPS' number={reps} />
+				)}
 				<AlternateEmail fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
-				<Box
-					display='flex'
-					flexDirection='column'
-					justifyContent='center'
-					alignItems='center'>
-					<NumberBox
+				{editing ? (
+					<EditableNumberBox
 						title='LBS'
 						number={weight}
+						borderColor={weight === 0 ? 'error.main' : 'primary.main'}
 						editing={editing}
 						onEdit={onEdit}
 						setNumber={setWeight}
 						min={0}
-						max={999}
+						max={9999}
+						step={5}
 					/>
-					{editing && (
-						<NumberStepper
-							increment={() => increment(weight, setWeight, 5)}
-							decrement={() => decrement(weight, setWeight, 5)}
-						/>
-					)}
-				</Box>
+				) : (
+					<NumberBox title='LBS' number={weight} />
+				)}
 			</CardContent>
 			<CardActions
 				sx={{
