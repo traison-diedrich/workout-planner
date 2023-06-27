@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Card, Container, Divider, Fab } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Exercise from './components/Exercise';
 
 function App() {
@@ -37,44 +37,81 @@ function App() {
 		},
 	});
 
-	const [exercises, setExercises] = useState([
-		{
-			id: 1,
-			name: 'Incline Dumbbell Press',
-			sets: 3,
-			reps: 10,
-			weight: 50,
-		},
-		{
-			id: 2,
-			name: 'Pec Deck Fly',
-			sets: 2,
-			reps: 12,
-			weight: 80,
-		},
-		{
-			id: 3,
-			name: 'Dips',
-			sets: 3,
-			reps: 10,
-			weight: 50,
-		},
-	]);
+	const [exercises, setExercises] = useState([]);
 
-	const addExercise = () => {
+	useEffect(() => {
+		const getExercises = async () => {
+			const exercisesFromServer = await fetchExercises();
+			setExercises(exercisesFromServer);
+		};
+
+		getExercises();
+	}, []);
+
+	const fetchExercises = async () => {
+		const res = await fetch('http://localhost:5000/exercises');
+		const data = await res.json();
+
+		return data;
+	};
+
+	const fetchExercise = async (id) => {
+		const res = await fetch('http://localhost:5000/exercises/${id}');
+		const data = await res.json();
+
+		return data;
+	};
+
+	const createExercise = async () => {
 		const newExercise = {
-			id: exercises.length + 1,
 			name: 'New Exercise',
 			sets: 3,
 			reps: 10,
 			weight: 75,
 		};
 
-		setExercises([...exercises, newExercise]);
+		const res = await fetch('http://localhost:5000/exercises', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(newExercise),
+		});
+
+		const data = await res.json();
+
+		setExercises([...exercises, data]);
 	};
 
-	const deleteExercise = (id) => {
-		setExercises(exercises.filter((exercise) => exercise.id !== id));
+	const updateExercise = async (updatedExercise) => {
+		const res = await fetch(
+			`http://localhost:5000/exercises/${updatedExercise.id}`,
+			{
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(updatedExercise),
+			}
+		);
+
+		res.status === 200
+			? setExercises(
+					exercises.map((exercise) =>
+						exercise.id === updatedExercise.id ? updatedExercise : exercise
+					)
+			  )
+			: alert('Error updating the task');
+	};
+
+	const deleteExercise = async (id) => {
+		const res = await fetch(`http://localhost:5000/exercises/${id}`, {
+			method: 'DELETE',
+		});
+
+		res.status === 200
+			? setExercises(exercises.filter((exercise) => exercise.id !== id))
+			: alert('Error Deleting This Task');
 	};
 
 	return (
@@ -115,6 +152,7 @@ function App() {
 						<Exercise
 							key={index}
 							exercise={exercise}
+							onUpdate={updateExercise}
 							onDelete={deleteExercise}
 						/>
 					))}
@@ -129,7 +167,7 @@ function App() {
 							color='primary'
 							aria-label='add'
 							sx={{ m: 4 }}
-							onClick={() => addExercise()}>
+							onClick={() => createExercise()}>
 							<AddIcon />
 						</Fab>
 					</Card>

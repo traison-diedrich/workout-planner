@@ -1,16 +1,32 @@
 {
-  "tasks": [
+  "exercises": [
     {
-      "text": "Go Home",
-      "day": "Friday 9:00 AM",
-      "reminder": true,
-      "id": 4
+      "id": 1,
+      "name": "Incline DB Press",
+      "sets": 35,
+      "reps": 12,
+      "weight": 92
     },
     {
-      "text": "test",
-      "day": "test again",
-      "reminder": false,
+      "id": 4,
+      "name": "OHP",
+      "sets": 7,
+      "reps": 10,
+      "weight": 100
+    },
+    {
+      "name": "New Exercise",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
       "id": 5
+    },
+    {
+      "name": "New Exercise",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
+      "id": 6
     }
   ]
 }

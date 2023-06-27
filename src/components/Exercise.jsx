@@ -5,13 +5,14 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import {
-	Box,
+	Autocomplete,
 	Card,
 	CardActions,
 	CardContent,
 	CardHeader,
 	Collapse,
 	IconButton,
+	TextField,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -32,6 +33,39 @@ const tempSets = [
 	},
 ];
 
+const exerciseOptions = [
+	{ label: 'Bench Press' },
+	{ label: 'Squat' },
+	{ label: 'Deadlift' },
+	{ label: 'Barbell Row' },
+	{ label: 'Overhead Press' },
+	{ label: 'Pull-ups' },
+	{ label: 'Dips' },
+	{ label: 'Lunges' },
+	{ label: 'Chest Fly' },
+	{ label: 'Shoulder Press' },
+	{ label: 'Tricep Pushdown' },
+	{ label: 'Bicep Curls' },
+	{ label: 'Leg Press' },
+	{ label: 'Romanian Deadlift' },
+	{ label: 'Lat Pulldown' },
+	{ label: 'Arnold Press' },
+	{ label: 'Incline Bench Press' },
+	{ label: 'Hamstring Curl' },
+	{ label: 'Calf Raise' },
+	{ label: 'Front Squat' },
+	{ label: 'Push-ups' },
+	{ label: 'Seated Cable Row' },
+	{ label: 'Skull Crushers' },
+	{ label: 'Barbell Curl' },
+	{ label: 'Leg Extension' },
+	{ label: 'Hammer Curl' },
+	{ label: 'Step-ups' },
+	{ label: 'Cable Fly' },
+	{ label: 'Lateral Raise' },
+	{ label: 'Plank' },
+];
+
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
 	return <IconButton {...other} />;
@@ -42,9 +76,10 @@ const ExpandMore = styled((props) => {
 	}),
 }));
 
-const Exercise = ({ exercise, onDelete }) => {
+const Exercise = ({ exercise, onUpdate, onDelete }) => {
 	const [expanded, setExpanded] = useState(false);
 	const [editing, setEditing] = useState(false);
+	const [name, setName] = useState(exercise.name);
 	const [sets, setSets] = useState(exercise.sets);
 	const [reps, setReps] = useState(exercise.reps);
 	const [weight, setWeight] = useState(exercise.weight);
@@ -53,26 +88,49 @@ const Exercise = ({ exercise, onDelete }) => {
 		setNumber(number);
 	};
 
-	const validInputs = () => {
-		if (sets === 0 || reps === 0 || weight === 0) {
-			return false;
-		} else {
-			return true;
+	const onSubmit = async (e) => {
+		const updatedExercise = {
+			id: exercise.id,
+			name: name,
+			sets: sets,
+			reps: reps,
+			weight: weight,
+		};
+
+		if (
+			updatedExercise.name === exercise.name &&
+			updatedExercise.sets === exercise.sets &&
+			updatedExercise.reps === exercise.reps &&
+			updatedExercise.weight === exercise.weight
+		) {
+			return;
 		}
+
+		await onUpdate(updatedExercise);
 	};
 
 	return (
 		<Card sx={{ my: 2 }}>
 			<CardHeader
-				title={exercise.name}
+				title={
+					editing ? (
+						<Autocomplete
+							options={exerciseOptions}
+							renderInput={(params) => (
+								<TextField {...params} label='Exercise' />
+							)}
+						/>
+					) : (
+						exercise.name
+					)
+				}
 				action={
 					<>
 						{editing ? (
 							<IconButton
-								onClick={() => {
-									if (validInputs()) {
-										setEditing(!editing);
-									}
+								onClick={async (e) => {
+									await onSubmit();
+									setEditing(!editing);
 								}}>
 								<CheckCircleOutlinedIcon color='success' />
 							</IconButton>
@@ -84,7 +142,6 @@ const Exercise = ({ exercise, onDelete }) => {
 						<IconButton
 							onClick={() => {
 								onDelete(exercise.id);
-								setEditing(false);
 							}}>
 							<DeleteOutlinedIcon color='secondary' />
 						</IconButton>
@@ -99,51 +156,48 @@ const Exercise = ({ exercise, onDelete }) => {
 					display: 'flex',
 				}}>
 				{editing ? (
-					<EditableNumberBox
-						title='SETS'
-						number={sets}
-						borderColor={sets === 0 ? 'error.main' : 'primary.main'}
-						editing={editing}
-						onEdit={onEdit}
-						setNumber={setSets}
-						min={0}
-						max={100}
-						step={1}
-					/>
+					<>
+						<EditableNumberBox
+							title='SETS'
+							number={sets}
+							borderColor={sets === 0 ? 'error.main' : 'primary.main'}
+							onEdit={onEdit}
+							setNumber={setSets}
+							min={0}
+							max={100}
+							step={1}
+						/>
+						<CloseIcon fontSize='large' sx={{ mb: 8 }} />
+						<EditableNumberBox
+							title='REPS'
+							number={reps}
+							borderColor={reps === 0 ? 'error.main' : 'primary.main'}
+							onEdit={onEdit}
+							setNumber={setReps}
+							min={0}
+							max={100}
+							step={1}
+						/>
+						<AlternateEmail fontSize='large' sx={{ mb: 8 }} />
+						<EditableNumberBox
+							title='LBS'
+							number={weight}
+							borderColor={weight === 0 ? 'error.main' : 'primary.main'}
+							onEdit={onEdit}
+							setNumber={setWeight}
+							min={0}
+							max={100}
+							step={1}
+						/>
+					</>
 				) : (
-					<NumberBox title='SETS' number={sets} />
-				)}
-				<CloseIcon fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
-				{editing ? (
-					<EditableNumberBox
-						title='REPS'
-						number={reps}
-						borderColor={reps === 0 ? 'error.main' : 'primary.main'}
-						editing={editing}
-						onEdit={onEdit}
-						setNumber={setReps}
-						min={0}
-						max={999}
-						step={1}
-					/>
-				) : (
-					<NumberBox title='REPS' number={reps} />
-				)}
-				<AlternateEmail fontSize='large' sx={{ mb: editing ? 8 : 4 }} />
-				{editing ? (
-					<EditableNumberBox
-						title='LBS'
-						number={weight}
-						borderColor={weight === 0 ? 'error.main' : 'primary.main'}
-						editing={editing}
-						onEdit={onEdit}
-						setNumber={setWeight}
-						min={0}
-						max={9999}
-						step={5}
-					/>
-				) : (
-					<NumberBox title='LBS' number={weight} />
+					<>
+						<NumberBox title='SETS' number={exercise.sets} />
+						<CloseIcon fontSize='large' sx={{ mb: 4 }} />
+						<NumberBox title='REPS' number={exercise.reps} />
+						<AlternateEmail fontSize='large' sx={{ mb: 4 }} />
+						<NumberBox title='WEIGHT' number={exercise.weight} />
+					</>
 				)}
 			</CardContent>
 			<CardActions
