@@ -13,6 +13,7 @@ import {
 	Collapse,
 	IconButton,
 	TextField,
+	Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -20,18 +21,18 @@ import EditableNumberBox from './EditableNumberBox';
 import NumberBox from './NumberBox';
 import Set from './Set';
 
-const tempSets = [
-	{
-		id: 1,
-		reps: 10,
-		weight: 100,
-	},
-	{
-		id: 2,
-		reps: 8,
-		weight: 150,
-	},
-];
+// const tempSets = [
+// 	{
+// 		id: 1,
+// 		reps: 10,
+// 		weight: 100,
+// 	},
+// 	{
+// 		id: 2,
+// 		reps: 8,
+// 		weight: 150,
+// 	},
+// ];
 
 const exerciseOptions = [
 	{ label: 'Bench Press' },
@@ -66,15 +67,15 @@ const exerciseOptions = [
 	{ label: 'Plank' },
 ];
 
-const ExpandMore = styled((props) => {
-	const { expand, ...other } = props;
-	return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-	transition: theme.transitions.create('transform', {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
+// const ExpandMore = styled((props) => {
+// 	const { expand, ...other } = props;
+// 	return <IconButton {...other} />;
+// })(({ theme, expand }) => ({
+// 	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+// 	transition: theme.transitions.create('transform', {
+// 		duration: theme.transitions.duration.shortest,
+// 	}),
+// }));
 
 const Exercise = ({ exercise, onUpdate, onDelete }) => {
 	const [expanded, setExpanded] = useState(false);
@@ -116,12 +117,35 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 					editing ? (
 						<Autocomplete
 							options={exerciseOptions}
+							defaultValue={name}
 							renderInput={(params) => (
-								<TextField {...params} label='Exercise' />
+								<TextField
+									{...params}
+									variant='standard'
+									sx={{
+										'& input': {
+											fontSize: '1.5rem',
+											padding: '0px',
+											margin: '0px',
+										},
+										'& .MuiInputBase-root': {
+											width: `200px`,
+											height: '48px',
+										},
+									}}
+								/>
 							)}
+							sx={{ mr: 4, ml: 1 }}
+							onChange={(event, value) => {
+								if (value) {
+									setName(value.label);
+								}
+							}}
 						/>
 					) : (
-						exercise.name
+						<Typography variant='h5' sx={{ ml: 1 }}>
+							{exercise.name}
+						</Typography>
 					)
 				}
 				action={
@@ -186,8 +210,8 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 							onEdit={onEdit}
 							setNumber={setWeight}
 							min={0}
-							max={100}
-							step={1}
+							max={999}
+							step={5}
 						/>
 					</>
 				) : (
@@ -200,7 +224,7 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 					</>
 				)}
 			</CardContent>
-			<CardActions
+			{/* <CardActions
 				sx={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -220,7 +244,7 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 						<Set key={index} index={index} set={set} />
 					))}
 				</CardContent>
-			</Collapse>
+			</Collapse> */}
 		</Card>
 	);
 };

@@ -150,7 +150,7 @@ function App() {
 					<Divider sx={{ bgcolor: 'primary.main', mx: 14, mt: 1 }} />
 					{exercises.map((exercise, index) => (
 						<Exercise
-							key={index}
+							key={exercise.id}
 							exercise={exercise}
 							onUpdate={updateExercise}
 							onDelete={deleteExercise}

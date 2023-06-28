@@ -2,31 +2,52 @@
   "exercises": [
     {
       "id": 1,
-      "name": "Incline DB Press",
-      "sets": 35,
-      "reps": 12,
-      "weight": 92
+      "name": "Deadlift",
+      "sets": 3,
+      "reps": 10,
+      "weight": 175
     },
     {
       "id": 4,
-      "name": "OHP",
-      "sets": 7,
+      "name": "Squat",
+      "sets": 12,
       "reps": 10,
       "weight": 100
     },
     {
-      "name": "New Exercise",
+      "name": "Deadlift",
       "sets": 3,
       "reps": 10,
       "weight": 75,
       "id": 5
     },
     {
+      "id": 6,
+      "name": "Lunges",
+      "sets": 6,
+      "reps": 10,
+      "weight": 75
+    },
+    {
+      "id": 7,
+      "name": "Deadlift",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75
+    },
+    {
       "name": "New Exercise",
       "sets": 3,
       "reps": 10,
       "weight": 75,
-      "id": 6
+      "id": 8
+    },
+    {
+      "name": "New Exercise",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
+      "id": 9
     }
   ]
 }
