@@ -141,27 +141,26 @@ function App() {
 				sx={{
 					backgroundColor: 'background.default',
 					minWidth: '100%',
-					minHeight: '100%',
+					minHeight: '100vh',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
 					flexDirection: 'column',
 				}}>
-				<Typography variant='h2' color='textPrimary' sx={{ mt: 3 }}>
-					Workout Planner
-				</Typography>
 				<Container
 					sx={{
-						width: 7 / 8,
+						width: 3 / 4,
 						my: 3,
-						pt: 2,
+						py: 2,
 						border: 2,
 						borderRadius: 2,
 						borderColor: 'primary.main',
 						backgroundColor: 'background.default',
 						display: 'grid',
 						gap: 2,
-						gridTemplateColumns: 'repeat(auto-fit, minmax(294px, 1fr))',
+						gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+						justifyItems: 'center',
+						alignItems: 'center',
 					}}>
 					{/* <Typography
 						variant='h3'
@@ -182,11 +181,11 @@ function App() {
 					))}
 					<Card
 						sx={{
-							my: 2,
 							justifyContent: 'center',
 							alignItems: 'center',
 							display: 'flex',
-							maxWidth: 367,
+							height: 200,
+							width: 270,
 						}}>
 						<Fab
 							color='primary'

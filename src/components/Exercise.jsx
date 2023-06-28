@@ -1,22 +1,10 @@
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
-import {
-	Autocomplete,
-	Card,
-	CardActions,
-	CardContent,
-	CardHeader,
-	Collapse,
-	IconButton,
-	TextField,
-	Typography,
-} from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { Card, CardActions, CardContent, Collapse } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import EditableNumberBox from './EditableNumberBox';
+import ExerciseHeader from './ExerciseHeader';
 import NumberBox from './NumberBox';
 
 // const ExpandMore = styled((props) => {
@@ -70,82 +58,16 @@ const Exercise = ({ exercise, onUpdate, onDelete, options }) => {
 		return true;
 	};
 
-	const getTextWidth = (text, fontSize) => {
-		const canvas = document.createElement('canvas');
-		const context = canvas.getContext('2d');
-
-		const theme = useTheme();
-		const font = theme.typography.fontFamily;
-
-		context.font = `${fontSize} ${font}`;
-		const { width } = context.measureText(text);
-
-		return Math.ceil(width);
-	};
-
 	return (
-		<Card sx={{ minWidth: 294, minHeight: 200 }}>
-			<CardHeader
-				title={
-					editing ? (
-						<Autocomplete
-							options={options}
-							value={options.find((option) => option.label === name)}
-							renderInput={(params) => (
-								<TextField
-									{...params}
-									variant='standard'
-									sx={{
-										'& input': {
-											fontSize: '1.5rem',
-											padding: '0px',
-											margin: '0px',
-										},
-										'& .MuiInputBase-root': {
-											height: '48px',
-											width: `${getTextWidth(name, '1.5rem') + 60}px`,
-										},
-									}}
-								/>
-							)}
-							sx={{ mr: 4, ml: 1 }}
-							onChange={(event, value) => {
-								if (value) {
-									setName(value.label);
-								}
-							}}
-						/>
-					) : (
-						<Typography variant='h5' sx={{ ml: 1 }}>
-							{exercise.name}
-						</Typography>
-					)
-				}
-				action={
-					<>
-						{editing ? (
-							<IconButton
-								onClick={async () => {
-									const res = await onSubmit();
-									if (res) {
-										setEditing(!editing);
-									}
-								}}>
-								<CheckCircleOutlinedIcon color='success' />
-							</IconButton>
-						) : (
-							<IconButton onClick={() => setEditing(!editing)}>
-								<EditOutlinedIcon color='secondary' />
-							</IconButton>
-						)}
-						<IconButton
-							onClick={() => {
-								onDelete(exercise.id);
-							}}>
-							<DeleteOutlinedIcon color='secondary' />
-						</IconButton>
-					</>
-				}
+		<Card sx={{ minWidth: 270, maxWidth: 400, minHeight: 200 }}>
+			<ExerciseHeader
+				editing={editing}
+				setEditing={setEditing}
+				options={options}
+				name={name}
+				setName={setName}
+				onDelete={() => onDelete(exercise.id)}
+				onSubmit={onSubmit}
 			/>
 			<CardContent
 				sx={{

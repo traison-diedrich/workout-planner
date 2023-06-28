@@ -1,14 +1,15 @@
 {
   "exercises": [
     {
-      "id": 1,
-      "name": "Push-up",
-      "sets": 4,
-      "reps": 9
+      "name": "Deadlift",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
+      "id": 1
     },
     {
       "id": 2,
-      "name": "Skull Crusher",
+      "name": "Squat",
       "sets": 3,
       "reps": 10
     },
@@ -27,17 +28,18 @@
       "id": 4
     },
     {
-      "id": 6,
       "name": "Deadlift",
-      "sets": 7,
-      "reps": 10
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
+      "id": 5
     },
     {
       "name": "Deadlift",
       "sets": 3,
       "reps": 10,
       "weight": 75,
-      "id": 9
+      "id": 6
     }
   ],
   "exerciseOptions": [
