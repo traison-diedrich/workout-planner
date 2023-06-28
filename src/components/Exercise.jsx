@@ -1,4 +1,3 @@
-import { AlternateEmail } from '@mui/icons-material';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -15,57 +14,10 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import EditableNumberBox from './EditableNumberBox';
 import NumberBox from './NumberBox';
-import Set from './Set';
-
-// const tempSets = [
-// 	{
-// 		id: 1,
-// 		reps: 10,
-// 		weight: 100,
-// 	},
-// 	{
-// 		id: 2,
-// 		reps: 8,
-// 		weight: 150,
-// 	},
-// ];
-
-const exerciseOptions = [
-	{ label: 'Bench Press' },
-	{ label: 'Squat' },
-	{ label: 'Deadlift' },
-	{ label: 'Barbell Row' },
-	{ label: 'Overhead Press' },
-	{ label: 'Pull-ups' },
-	{ label: 'Dips' },
-	{ label: 'Lunges' },
-	{ label: 'Chest Fly' },
-	{ label: 'Shoulder Press' },
-	{ label: 'Tricep Pushdown' },
-	{ label: 'Bicep Curls' },
-	{ label: 'Leg Press' },
-	{ label: 'Romanian Deadlift' },
-	{ label: 'Lat Pulldown' },
-	{ label: 'Arnold Press' },
-	{ label: 'Incline Bench Press' },
-	{ label: 'Hamstring Curl' },
-	{ label: 'Calf Raise' },
-	{ label: 'Front Squat' },
-	{ label: 'Push-ups' },
-	{ label: 'Seated Cable Row' },
-	{ label: 'Skull Crushers' },
-	{ label: 'Barbell Curl' },
-	{ label: 'Leg Extension' },
-	{ label: 'Hammer Curl' },
-	{ label: 'Step-ups' },
-	{ label: 'Cable Fly' },
-	{ label: 'Lateral Raise' },
-	{ label: 'Plank' },
-];
 
 // const ExpandMore = styled((props) => {
 // 	const { expand, ...other } = props;
@@ -77,47 +29,68 @@ const exerciseOptions = [
 // 	}),
 // }));
 
-const Exercise = ({ exercise, onUpdate, onDelete }) => {
+/**
+ * TODO: way too many components and way too much logic being handled here.
+ * Separate Exercise into Exercise, ExerciseSelector (Autocomplete), and
+ * ExerciseForm... maybe even button edit grouping
+ */
+
+const Exercise = ({ exercise, onUpdate, onDelete, options }) => {
 	const [expanded, setExpanded] = useState(false);
 	const [editing, setEditing] = useState(false);
 	const [name, setName] = useState(exercise.name);
 	const [sets, setSets] = useState(exercise.sets);
 	const [reps, setReps] = useState(exercise.reps);
-	const [weight, setWeight] = useState(exercise.weight);
 
 	const onEdit = (number, setNumber) => {
 		setNumber(number);
 	};
 
-	const onSubmit = async (e) => {
+	const onSubmit = async () => {
 		const updatedExercise = {
 			id: exercise.id,
 			name: name,
 			sets: sets,
 			reps: reps,
-			weight: weight,
 		};
+
+		if (sets === 0 || reps === 0) {
+			return false;
+		}
 
 		if (
 			updatedExercise.name === exercise.name &&
 			updatedExercise.sets === exercise.sets &&
-			updatedExercise.reps === exercise.reps &&
-			updatedExercise.weight === exercise.weight
+			updatedExercise.reps === exercise.reps
 		) {
-			return;
+			return true;
 		}
 
 		await onUpdate(updatedExercise);
+		return true;
+	};
+
+	const getTextWidth = (text, fontSize) => {
+		const canvas = document.createElement('canvas');
+		const context = canvas.getContext('2d');
+
+		const theme = useTheme();
+		const font = theme.typography.fontFamily;
+
+		context.font = `${fontSize} ${font}`;
+		const { width } = context.measureText(text);
+
+		return Math.ceil(width);
 	};
 
 	return (
-		<Card sx={{ my: 2 }}>
+		<Card sx={{ minWidth: 294, minHeight: 200 }}>
 			<CardHeader
 				title={
 					editing ? (
 						<Autocomplete
-							options={exerciseOptions}
-							defaultValue={name}
+							options={options}
+							value={options.find((option) => option.label === name)}
 							renderInput={(params) => (
 								<TextField
 									{...params}
@@ -129,8 +102,8 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 											margin: '0px',
 										},
 										'& .MuiInputBase-root': {
-											width: `200px`,
 											height: '48px',
+											width: `${getTextWidth(name, '1.5rem') + 60}px`,
 										},
 									}}
 								/>
@@ -152,9 +125,11 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 					<>
 						{editing ? (
 							<IconButton
-								onClick={async (e) => {
-									await onSubmit();
-									setEditing(!editing);
+								onClick={async () => {
+									const res = await onSubmit();
+									if (res) {
+										setEditing(!editing);
+									}
 								}}>
 								<CheckCircleOutlinedIcon color='success' />
 							</IconButton>
@@ -184,7 +159,6 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 						<EditableNumberBox
 							title='SETS'
 							number={sets}
-							borderColor={sets === 0 ? 'error.main' : 'primary.main'}
 							onEdit={onEdit}
 							setNumber={setSets}
 							min={0}
@@ -202,25 +176,12 @@ const Exercise = ({ exercise, onUpdate, onDelete }) => {
 							max={100}
 							step={1}
 						/>
-						<AlternateEmail fontSize='large' sx={{ mb: 8 }} />
-						<EditableNumberBox
-							title='LBS'
-							number={weight}
-							borderColor={weight === 0 ? 'error.main' : 'primary.main'}
-							onEdit={onEdit}
-							setNumber={setWeight}
-							min={0}
-							max={999}
-							step={5}
-						/>
 					</>
 				) : (
 					<>
 						<NumberBox title='SETS' number={exercise.sets} />
 						<CloseIcon fontSize='large' sx={{ mb: 4 }} />
 						<NumberBox title='REPS' number={exercise.reps} />
-						<AlternateEmail fontSize='large' sx={{ mb: 4 }} />
-						<NumberBox title='WEIGHT' number={exercise.weight} />
 					</>
 				)}
 			</CardContent>

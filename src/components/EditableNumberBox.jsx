@@ -9,7 +9,6 @@ import NumberStepper from './NumberStepper';
 const EditableNumberBox = ({
 	title,
 	number,
-	borderColor,
 	setNumber,
 	onEdit,
 	min,
@@ -33,7 +32,11 @@ const EditableNumberBox = ({
 
 	const validateNumber = (num) => {
 		if (!isNaN(num) && num >= min && num <= max) {
-			setError(false);
+			if (num === 0) {
+				setError(true);
+			} else {
+				setError(false);
+			}
 			setNumDigits(getNumDigits(num));
 			onEdit(num, setNumber);
 		} else {
@@ -55,7 +58,7 @@ const EditableNumberBox = ({
 					justifyContent: 'center',
 					alignContent: 'center',
 					alignItems: 'center',
-					borderColor: borderColor,
+					borderColor: error ? 'error.main' : 'primary.main',
 					borderRadius: '3px',
 					px: 1,
 					mx: 1,
@@ -65,8 +68,6 @@ const EditableNumberBox = ({
 					variant='standard'
 					onChange={handleEdit}
 					error={error}
-					// min+1 here to accommodate backspacing
-					helperText={error ? `${min + 1}-${max}` : ''}
 					sx={{
 						'& input': {
 							fontSize: '3.0rem',

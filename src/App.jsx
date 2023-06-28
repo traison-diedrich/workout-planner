@@ -64,7 +64,7 @@ function App() {
 
 	const createExercise = async () => {
 		const newExercise = {
-			name: 'New Exercise',
+			name: 'Deadlift',
 			sets: 3,
 			reps: 10,
 			weight: 75,
@@ -114,6 +114,27 @@ function App() {
 			: alert('Error Deleting This Task');
 	};
 
+	const [exerciseOptions, setExercisesOptions] = useState([]);
+
+	useEffect(() => {
+		const getExerciseOptions = async () => {
+			const optionsFromServer = await fetchExerciseOptions();
+			const parsedOptions = optionsFromServer.map(({ id, name }) => ({
+				label: name,
+			}));
+			setExercisesOptions(parsedOptions);
+		};
+
+		getExerciseOptions();
+	}, []);
+
+	const fetchExerciseOptions = async () => {
+		const res = await fetch('http://localhost:5000/exerciseOptions');
+		const data = await res.json();
+
+		return data;
+	};
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Container
@@ -133,27 +154,30 @@ function App() {
 					sx={{
 						width: 7 / 8,
 						my: 3,
+						pt: 2,
 						border: 2,
 						borderRadius: 2,
 						borderColor: 'primary.main',
 						backgroundColor: 'background.default',
-						minWidth: 403,
-						maxWidth: 604,
+						display: 'grid',
+						gap: 2,
+						gridTemplateColumns: 'repeat(auto-fit, minmax(294px, 1fr))',
 					}}>
-					<Typography
+					{/* <Typography
 						variant='h3'
 						color='textPrimary'
 						align='center'
 						sx={{ mt: 1 }}>
 						Push Day
 					</Typography>
-					<Divider sx={{ bgcolor: 'primary.main', mx: 14, mt: 1 }} />
-					{exercises.map((exercise, index) => (
+					<Divider sx={{ bgcolor: 'primary.main', mx: 14, mt: 1 }} /> */}
+					{exercises.map((exercise) => (
 						<Exercise
 							key={exercise.id}
 							exercise={exercise}
 							onUpdate={updateExercise}
 							onDelete={deleteExercise}
+							options={exerciseOptions}
 						/>
 					))}
 					<Card
@@ -162,6 +186,7 @@ function App() {
 							justifyContent: 'center',
 							alignItems: 'center',
 							display: 'flex',
+							maxWidth: 367,
 						}}>
 						<Fab
 							color='primary'

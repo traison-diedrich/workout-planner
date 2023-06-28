@@ -2,52 +2,164 @@
   "exercises": [
     {
       "id": 1,
-      "name": "Deadlift",
-      "sets": 3,
-      "reps": 10,
-      "weight": 175
+      "name": "Push-up",
+      "sets": 4,
+      "reps": 9
     },
     {
-      "id": 4,
-      "name": "Squat",
-      "sets": 12,
-      "reps": 10,
-      "weight": 100
+      "id": 2,
+      "name": "Skull Crusher",
+      "sets": 3,
+      "reps": 10
     },
     {
       "name": "Deadlift",
       "sets": 3,
       "reps": 10,
       "weight": 75,
-      "id": 5
+      "id": 3
+    },
+    {
+      "name": "Deadlift",
+      "sets": 3,
+      "reps": 10,
+      "weight": 75,
+      "id": 4
     },
     {
       "id": 6,
-      "name": "Lunges",
-      "sets": 6,
-      "reps": 10,
-      "weight": 75
-    },
-    {
-      "id": 7,
       "name": "Deadlift",
-      "sets": 3,
-      "reps": 10,
-      "weight": 75
+      "sets": 7,
+      "reps": 10
     },
     {
-      "name": "New Exercise",
-      "sets": 3,
-      "reps": 10,
-      "weight": 75,
-      "id": 8
-    },
-    {
-      "name": "New Exercise",
+      "name": "Deadlift",
       "sets": 3,
       "reps": 10,
       "weight": 75,
       "id": 9
+    }
+  ],
+  "exerciseOptions": [
+    {
+      "id": 1,
+      "name": "Bench Press"
+    },
+    {
+      "id": 2,
+      "name": "Squat"
+    },
+    {
+      "id": 3,
+      "name": "Deadlift"
+    },
+    {
+      "id": 4,
+      "name": "Barbell Row"
+    },
+    {
+      "id": 5,
+      "name": "Overhead Press"
+    },
+    {
+      "id": 6,
+      "name": "Dumbbell Curl"
+    },
+    {
+      "id": 7,
+      "name": "Tricep Dip"
+    },
+    {
+      "id": 8,
+      "name": "Push-up"
+    },
+    {
+      "id": 9,
+      "name": "Pull-up"
+    },
+    {
+      "id": 10,
+      "name": "Lunges"
+    },
+    {
+      "id": 11,
+      "name": "Crunches"
+    },
+    {
+      "id": 12,
+      "name": "Plank"
+    },
+    {
+      "id": 13,
+      "name": "Leg Press"
+    },
+    {
+      "id": 14,
+      "name": "Chest Fly"
+    },
+    {
+      "id": 15,
+      "name": "Lat Pulldown"
+    },
+    {
+      "id": 16,
+      "name": "Shoulder Press"
+    },
+    {
+      "id": 17,
+      "name": "Bicep Curl"
+    },
+    {
+      "id": 18,
+      "name": "Skull Crusher"
+    },
+    {
+      "id": 19,
+      "name": "Dips"
+    },
+    {
+      "id": 20,
+      "name": "Step-ups"
+    },
+    {
+      "id": 21,
+      "name": "Russian Twist"
+    },
+    {
+      "id": 22,
+      "name": "Leg Extension"
+    },
+    {
+      "id": 23,
+      "name": "Hamstring Curl"
+    },
+    {
+      "id": 24,
+      "name": "Seated Row"
+    },
+    {
+      "id": 25,
+      "name": "Incline Bench Press"
+    },
+    {
+      "id": 26,
+      "name": "Arnold Press"
+    },
+    {
+      "id": 27,
+      "name": "Hammer Curl"
+    },
+    {
+      "id": 28,
+      "name": "Tricep Pushdown"
+    },
+    {
+      "id": 29,
+      "name": "Goblet Squat"
+    },
+    {
+      "id": 30,
+      "name": "Side Plank"
     }
   ]
 }
