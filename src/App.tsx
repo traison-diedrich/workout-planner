@@ -3,41 +3,32 @@
 
 import * as React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Navigation } from './components/Navigation';
+import { Navigation } from './components/Navigation/Navigation';
+import { Home, NewWorkout, Workouts } from './pages';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: (
-            <div className="h-full w-full">
-                <h1 className="text-4xl">Home</h1>
-            </div>
-        ),
-    },
-    {
-        path: '/workouts',
-        element: (
-            <div className="h-full w-full">
-                <h1 className="text-4xl">My Workouts</h1>
-            </div>
-        ),
-    },
-    {
-        path: '/new',
-        element: (
-            <div className="h-full w-full">
-                <h1 className="text-4xl">New Workout</h1>
-            </div>
-        ),
+        element: <Navigation />,
+        children: [
+            {
+                path: 'home',
+                element: <Home />,
+            },
+            {
+                path: 'workouts',
+                element: <Workouts />,
+            },
+            {
+                path: 'new',
+                element: <NewWorkout />,
+            },
+        ],
     },
 ]);
 
 function App() {
-    return (
-        <Navigation>
-            <RouterProvider router={router} />
-        </Navigation>
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default App;
