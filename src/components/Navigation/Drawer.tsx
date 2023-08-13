@@ -16,7 +16,6 @@ export const Drawer: React.FC<DrawerProps> = ({ toggleOpen }) => {
                     to="workouts"
                     onClick={toggleOpen}
                 />
-                <DrawerLink title="New Workout" to="new" onClick={toggleOpen} />
             </ul>
         </div>
     );

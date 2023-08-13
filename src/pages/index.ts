@@ -1,3 +1,3 @@
+export { AllWorkouts } from './AllWorkouts';
 export { Home } from './Home';
-export { NewWorkout } from './NewWorkout';
-export { Workouts } from './Workouts';
+export { Workout } from './Workout';

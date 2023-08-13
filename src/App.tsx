@@ -4,7 +4,8 @@
 import * as React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigation } from './components/Navigation/Navigation';
-import { Home, NewWorkout, Workouts } from './pages';
+import { loadExercises, loadWorkouts } from './data/loaders';
+import { AllWorkouts, Home, Workout } from './pages';
 
 const router = createBrowserRouter([
     {
@@ -17,11 +18,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'workouts',
-                element: <Workouts />,
+                element: <AllWorkouts />,
+                loader: loadWorkouts,
             },
             {
-                path: 'new',
-                element: <NewWorkout />,
+                path: 'workouts/:wid',
+                element: <Workout />,
+                loader: ({ params }) => {
+                    return loadExercises(params.wid);
+                },
             },
         ],
     },

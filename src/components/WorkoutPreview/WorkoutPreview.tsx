@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import {
     DbResult,
     ExerciseInfoType,
@@ -42,19 +43,21 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     }, [wid]);
 
     return (
-        <div className="card glass w-96 bg-base-100 shadow-xl">
-            <div className="card-body">
-                <h2 className="card-title">{name}</h2>
-                <ul>
-                    {exercises?.map(exercise => (
-                        <li
-                            key={exercise.id}
-                        >{`${exercise.exercise_types?.label} 
+        <Link to={`/workouts/${wid}`}>
+            <div className="card glass w-96 bg-base-100 shadow-xl">
+                <div className="card-body">
+                    <h2 className="card-title">{name}</h2>
+                    <ul>
+                        {exercises?.map(exercise => (
+                            <li
+                                key={exercise.id}
+                            >{`${exercise.exercise_types?.label} 
                         ${exercise.sets} x 
                         ${exercise.reps}`}</li>
-                    ))}
-                </ul>
+                        ))}
+                    </ul>
+                </div>
             </div>
-        </div>
+        </Link>
     );
 };
