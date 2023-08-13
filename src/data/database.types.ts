@@ -28,21 +28,21 @@ export interface Database {
             };
             exercises: {
                 Row: {
-                    e_type_id: number | null;
+                    e_type_id: number;
                     id: number;
                     reps: number;
                     sets: number;
                     wid: number;
                 };
                 Insert: {
-                    e_type_id?: number | null;
+                    e_type_id?: number;
                     id?: number;
                     reps?: number;
                     sets?: number;
                     wid: number;
                 };
                 Update: {
-                    e_type_id?: number | null;
+                    e_type_id?: number;
                     id?: number;
                     reps?: number;
                     sets?: number;

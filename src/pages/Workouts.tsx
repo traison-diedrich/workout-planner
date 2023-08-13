@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { WorkoutPreview } from '../components/WorkoutPreview/WorkoutPreview';
-import { DbResult, WorkoutType } from '../database.types';
-import { supabase } from '../supabaseClient';
+import { DbResult, WorkoutType } from '../data/database.types';
+import { supabase } from '../data/supabaseClient';
 
 export const Workouts: React.FC = () => {
     const [workouts, setWorkouts] = React.useState<WorkoutType[] | null>(null);
@@ -27,7 +27,7 @@ export const Workouts: React.FC = () => {
     return (
         <div className="h-full w-full text-center">
             <h1 className="w-full text-4xl">Workouts</h1>
-            <div className="flex h-full min-h-screen w-full flex-col items-center gap-8">
+            <div className="grid h-full min-h-screen w-full grid-cols-1 content-evenly justify-center justify-items-center gap-6 p-4  md:grid-cols-2 xl:grid-cols-3">
                 {workouts?.map(workout => (
                     <WorkoutPreview
                         key={workout.id}

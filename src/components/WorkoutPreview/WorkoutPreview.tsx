@@ -1,6 +1,10 @@
 import * as React from 'react';
-import { DbResult, ExerciseInfoType, ExerciseType } from '../../database.types';
-import { supabase } from '../../supabaseClient';
+import {
+    DbResult,
+    ExerciseInfoType,
+    ExerciseType,
+} from '../../data/database.types';
+import { supabase } from '../../data/supabaseClient';
 
 interface WorkoutPreviewProps {
     wid: number;
@@ -8,7 +12,7 @@ interface WorkoutPreviewProps {
 }
 
 interface ExercisePreviewType extends ExerciseType {
-    exercise_types: ExerciseInfoType;
+    exercise_types: ExerciseInfoType | null;
 }
 
 export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
@@ -45,7 +49,9 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
                     {exercises?.map(exercise => (
                         <li
                             key={exercise.id}
-                        >{`${exercise.name} ${exercise.sets} x ${exercise.reps}`}</li>
+                        >{`${exercise.exercise_types?.label} 
+                        ${exercise.sets} x 
+                        ${exercise.reps}`}</li>
                     ))}
                 </ul>
             </div>
