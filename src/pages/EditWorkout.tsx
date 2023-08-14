@@ -3,7 +3,7 @@ import { useLoaderData, useLocation } from 'react-router-dom';
 import { Exercise } from '../components/Exercise/Exercise';
 import { ExerciseType } from '../data/database.types';
 
-export const Workout: React.FC = () => {
+export const EditWorkout: React.FC = () => {
     const exercises = useLoaderData() as ExerciseType[];
     const state = useLocation();
 

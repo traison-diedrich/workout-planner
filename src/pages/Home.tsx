@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Home: React.FC = () => {
     return (
@@ -12,7 +13,9 @@ export const Home: React.FC = () => {
                         A solution for easily planning and tracking your
                         workouts
                     </p>
-                    <button className="btn btn-primary">Get Started</button>
+                    <Link to="/workouts">
+                        <button className="btn btn-primary">Get Started</button>
+                    </Link>
                 </div>
             </div>
         </div>

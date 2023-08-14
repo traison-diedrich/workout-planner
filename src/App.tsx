@@ -1,11 +1,8 @@
-// TODO: build out app functionality in js before worrying about user context
-// and database integration
-
-import * as React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigation } from './components/Navigation/Navigation';
+import { createWorkout } from './data/creators';
 import { loadExercises, loadWorkouts } from './data/loaders';
-import { AllWorkouts, Home, Workout } from './pages';
+import { AllWorkouts, EditWorkout, Home, Workout } from './pages';
 
 const router = createBrowserRouter([
     {
@@ -20,13 +17,17 @@ const router = createBrowserRouter([
                 path: 'workouts',
                 element: <AllWorkouts />,
                 loader: loadWorkouts,
+                action: createWorkout,
             },
             {
                 path: 'workouts/:wid',
                 element: <Workout />,
-                loader: ({ params }) => {
-                    return loadExercises(params.wid);
-                },
+                loader: loadExercises,
+            },
+            {
+                path: 'workouts/:wid/edit',
+                element: <EditWorkout />,
+                loader: loadExercises,
             },
         ],
     },

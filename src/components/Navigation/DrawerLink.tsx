@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface DrawerLinkProps {
     title: string;
-    to: 'home' | 'workouts' | 'new';
+    to: 'home' | 'workouts';
     onClick: () => void;
 }
 
@@ -14,9 +14,9 @@ export const DrawerLink: React.FC<DrawerLinkProps> = ({
 }) => {
     return (
         <li>
-            <Link to={to} onClick={onClick}>
+            <NavLink to={to} end onClick={onClick}>
                 {title}
-            </Link>
+            </NavLink>
         </li>
     );
 };

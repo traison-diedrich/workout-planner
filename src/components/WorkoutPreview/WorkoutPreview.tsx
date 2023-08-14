@@ -43,7 +43,7 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     }, [wid]);
 
     return (
-        <Link to={`/workouts/${wid}`}>
+        <Link to={`/workouts/${wid}`} state={{ name: name }}>
             <div className="card glass w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
                     <h2 className="card-title">{name}</h2>

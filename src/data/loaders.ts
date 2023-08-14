@@ -1,9 +1,10 @@
+import { LoaderFunction } from 'react-router-dom';
 import { DbResult } from './database.types';
 import { supabase } from './supabaseClient';
 
 const temp_uid = '0a2ee282-9aa0-4e5f-8d0a-06025d74d791';
 
-export async function loadWorkouts() {
+export const loadWorkouts: LoaderFunction = async () => {
     const query = supabase.from('workouts').select('*').eq('uid', temp_uid);
     const res: DbResult<typeof query> = await query;
 
@@ -12,13 +13,18 @@ export async function loadWorkouts() {
     } else {
         return res.data;
     }
+};
+
+interface exerciseParams {
+    wid: string;
 }
 
-export async function loadExercises(wid: string | undefined) {
+export const loadExercises: LoaderFunction = async ({ params }) => {
+    const typedParams = params as unknown as exerciseParams;
     const query = supabase
         .from('exercises')
         .select('*, exercise_types(*)')
-        .eq('wid', wid);
+        .eq('wid', typedParams.wid);
     const res: DbResult<typeof query> = await query;
 
     if (res.error) {
@@ -26,4 +32,4 @@ export async function loadExercises(wid: string | undefined) {
     } else {
         return res.data;
     }
-}
+};
