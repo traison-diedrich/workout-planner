@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Navigation } from './components/Navigation/Navigation';
+import { Navigation } from './components/Navigation';
 import { createWorkout } from './data/creators';
 import { loadExercises, loadWorkouts } from './data/loaders';
-import { AllWorkouts, EditWorkout, Home, Workout } from './pages';
+import { AllWorkouts, Home, Workout } from './pages';
 
 const router = createBrowserRouter([
     {
@@ -22,11 +22,6 @@ const router = createBrowserRouter([
             {
                 path: 'workouts/:wid',
                 element: <Workout />,
-                loader: loadExercises,
-            },
-            {
-                path: 'workouts/:wid/edit',
-                element: <EditWorkout />,
                 loader: loadExercises,
             },
         ],

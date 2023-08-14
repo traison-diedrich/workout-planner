@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import {
     DbResult,
     ExerciseInfoType,
     ExerciseType,
 } from '../../data/database.types';
 import { supabase } from '../../data/supabaseClient';
+import { Exercise } from './Exercise';
+import { Header } from './Header';
 
 interface WorkoutPreviewProps {
     wid: number;
     name: string;
 }
 
+// TODO: This type is goofy and needs to be sorted out on the database
+// end of this project. maybe exercise should include its name for
+// simplicity's sake and then leave e_type_id to handle the muscle groups
 interface ExercisePreviewType extends ExerciseType {
     exercise_types: ExerciseInfoType | null;
 }
@@ -24,6 +28,8 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
         ExercisePreviewType[] | null
     >(null);
 
+    // TODO: I would like to use the loader from data but the typings
+    // drove me insane
     React.useEffect(() => {
         const fetchExercises = async () => {
             const query = supabase
@@ -43,21 +49,20 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     }, [wid]);
 
     return (
-        <Link to={`/workouts/${wid}`} state={{ name: name }}>
-            <div className="card glass w-96 bg-base-100 shadow-xl">
-                <div className="card-body">
-                    <h2 className="card-title">{name}</h2>
-                    <ul>
-                        {exercises?.map(exercise => (
-                            <li
-                                key={exercise.id}
-                            >{`${exercise.exercise_types?.label} 
-                        ${exercise.sets} x 
-                        ${exercise.reps}`}</li>
-                        ))}
-                    </ul>
-                </div>
+        <div className="card glass w-96 bg-base-100 shadow-xl">
+            <div className="card-body">
+                <Header title={name} wid={wid} />
+                <ul>
+                    {exercises?.map(exercise => (
+                        <Exercise
+                            key={exercise.id}
+                            name={exercise.exercise_types?.label}
+                            sets={exercise.sets}
+                            reps={exercise.reps}
+                        />
+                    ))}
+                </ul>
             </div>
-        </Link>
+        </div>
     );
 };

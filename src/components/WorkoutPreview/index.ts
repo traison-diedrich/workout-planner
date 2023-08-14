@@ -1,0 +1,1 @@
+export { WorkoutPreview } from './WorkoutPreview';

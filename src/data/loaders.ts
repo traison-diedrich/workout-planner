@@ -16,7 +16,7 @@ export const loadWorkouts: LoaderFunction = async () => {
 };
 
 interface exerciseParams {
-    wid: string;
+    wid: number;
 }
 
 export const loadExercises: LoaderFunction = async ({ params }) => {

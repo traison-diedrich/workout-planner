@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { NewWorkoutButton } from '../components/NewWorkoutButton/NewWorkoutButton';
-import { WorkoutPreview } from '../components/WorkoutPreview/WorkoutPreview';
+import { WorkoutPreview } from '../components/WorkoutPreview';
 import { WorkoutType } from '../data/database.types';
 
 export const AllWorkouts: React.FC = () => {
