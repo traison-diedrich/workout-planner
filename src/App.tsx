@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
 import { createWorkout } from './data/creators';
+import { deleteWorkout } from './data/deleters';
 import { loadExercises, loadWorkouts } from './data/loaders';
 import { AllWorkouts, Home, Workout } from './pages';
 
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
                 path: 'workouts/:wid',
                 element: <Workout />,
                 loader: loadExercises,
+            },
+            {
+                path: 'workouts/:wid/delete',
+                action: deleteWorkout,
             },
         ],
     },

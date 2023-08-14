@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { NewWorkoutButton } from '../components/NewWorkoutButton/NewWorkoutButton';
-import { WorkoutPreview } from '../components/WorkoutPreview';
-import { WorkoutType } from '../data/database.types';
+import { WorkoutPreview } from '../../components/WorkoutPreview';
+import { WorkoutType } from '../../data/database.types';
+import { AddWorkoutCard } from './AddWorkoutCard';
 
 export const AllWorkouts: React.FC = () => {
     const workouts: WorkoutType[] = useLoaderData() as WorkoutType[];
 
     return (
-        <div className="h-full min-h-screen w-full text-center">
+        <div className="flex h-full min-h-screen w-full flex-col gap-6 p-6 text-center">
             <h1 className="w-full text-4xl">Workouts</h1>
-            <div className="flex flex-wrap justify-center gap-6 p-4">
+            <div className="flex flex-wrap justify-center gap-6">
                 {workouts?.map(workout => (
                     <WorkoutPreview
                         key={workout.id}
@@ -18,7 +18,7 @@ export const AllWorkouts: React.FC = () => {
                         name={workout.name}
                     />
                 ))}
-                <NewWorkoutButton />
+                <AddWorkoutCard />
             </div>
         </div>
     );

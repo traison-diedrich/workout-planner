@@ -1,3 +1,4 @@
+import { IconHome, IconWeight } from '@tabler/icons-react';
 import * as React from 'react';
 import { DrawerLink } from './DrawerLink';
 
@@ -8,10 +9,16 @@ interface DrawerProps {
 export const Drawer: React.FC<DrawerProps> = ({ toggleOpen }) => {
     return (
         <div className="drawer-side">
-            <label htmlFor="my-drawer" className="drawer-overlay"></label>
-            <ul className="menu h-full w-80 bg-base-200 px-4 text-base-content">
-                <DrawerLink title="Home" to="home" onClick={toggleOpen} />
+            <label htmlFor="my-drawer" className="drawer-overlay" />
+            <ul className="py-30 menu h-full w-60 gap-2 bg-base-200 px-4 py-24 text-base-content">
                 <DrawerLink
+                    Icon={IconHome}
+                    title="Home"
+                    to="home"
+                    onClick={toggleOpen}
+                />
+                <DrawerLink
+                    Icon={IconWeight}
                     title="My Workouts"
                     to="workouts"
                     onClick={toggleOpen}

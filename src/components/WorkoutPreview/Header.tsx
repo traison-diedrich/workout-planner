@@ -1,3 +1,4 @@
+import { IconPencil, IconTrash } from '@tabler/icons-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -10,9 +11,11 @@ export const Header: React.FC<HeaderProps> = ({ title, wid }) => {
     return (
         <div className="flex w-full">
             <h2 className="card-title">{title}</h2>
-            <div className="ml-auto flex">
+            <div className="ml-auto flex gap-2">
                 <Link to={`/workouts/${wid}`} state={{ name: title }}>
-                    <button className="btn btn-square btn-ghost">Edit</button>
+                    <button className="btn btn-square btn-ghost">
+                        <IconPencil />
+                    </button>
                 </Link>
             </div>
         </div>
