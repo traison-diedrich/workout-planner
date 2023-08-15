@@ -23,7 +23,9 @@ export const Navigation: React.FC = () => {
                 />
                 <div className="drawer-content">
                     <Navbar toggleOpen={toggleOpen} />
-                    <Outlet />
+                    <div className="relative">
+                        <Outlet />
+                    </div>
                 </div>
                 <Drawer toggleOpen={toggleOpen} />
             </div>

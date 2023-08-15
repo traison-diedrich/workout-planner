@@ -14,7 +14,7 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
 }) => {
     return (
         <dialog open={open} className="modal">
-            <Form method="post" action="delete" className="modal-box gap-4">
+            <Form method="post" action="delete" className="modal-box">
                 <h2 className="text-center text-lg font-bold">
                     Are you sure you want to delete {name}?
                 </h2>

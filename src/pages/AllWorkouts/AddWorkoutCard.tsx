@@ -5,7 +5,7 @@ import { Form } from 'react-router-dom';
 export const AddWorkoutCard: React.FC = () => {
     return (
         <Form method="post">
-            <div className="card glass w-96 bg-base-100 shadow-xl">
+            <div className="card w-96 bg-neutral shadow-xl">
                 <div className="card-body">
                     <div className="card-actions justify-center">
                         <button

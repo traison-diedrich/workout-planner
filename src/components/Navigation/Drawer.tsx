@@ -8,9 +8,9 @@ interface DrawerProps {
 
 export const Drawer: React.FC<DrawerProps> = ({ toggleOpen }) => {
     return (
-        <div className="drawer-side">
+        <div className="drawer-side z-50">
             <label htmlFor="my-drawer" className="drawer-overlay" />
-            <ul className="py-30 menu h-full w-60 gap-2 bg-base-200 px-4 py-24 text-base-content">
+            <ul className="py-30 menu h-full w-60 gap-2 bg-base-200 px-4 py-16 text-base-content">
                 <DrawerLink
                     Icon={IconHome}
                     title="Home"

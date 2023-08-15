@@ -7,7 +7,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
     return (
-        <div className="navbar gap-2 bg-base-100 shadow-lg">
+        <div className="navbar sticky top-0 z-10 gap-2 bg-base-100 shadow-lg">
             <div className="flex-none">
                 <button
                     onClick={toggleOpen}
