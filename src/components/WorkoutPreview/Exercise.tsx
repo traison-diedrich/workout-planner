@@ -1,5 +1,6 @@
 import { IconX } from '@tabler/icons-react';
 import * as React from 'react';
+import { NumberBox } from '../Exercise/NumberBox';
 
 interface ExerciseProps {
     name: string;
@@ -12,13 +13,9 @@ export const Exercise: React.FC<ExerciseProps> = ({ name, sets, reps }) => {
         <li className="p-1">
             <div className="flex items-center gap-2 ">
                 <p className="text-xl">{name}</p>
-                <div className="rounded border border-primary p-1 text-3xl">
-                    {sets}
-                </div>
+                <NumberBox value={sets} size="text-3xl" />
                 <IconX />
-                <div className="rounded border border-primary p-1 text-3xl">
-                    {reps}
-                </div>
+                <NumberBox value={reps} size="text-3xl" />
             </div>
         </li>
     );

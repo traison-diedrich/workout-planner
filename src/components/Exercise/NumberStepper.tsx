@@ -12,13 +12,13 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
 }) => {
     return (
         <div className="join">
-            <div onClick={onAdd} className="btn btn-primary join-item btn-sm">
-                <IconMinus />
-            </div>
             <div
                 onClick={onSubtract}
                 className="btn btn-primary join-item btn-sm"
             >
+                <IconMinus />
+            </div>
+            <div onClick={onAdd} className="btn btn-primary join-item btn-sm">
                 <IconPlus />
             </div>
         </div>

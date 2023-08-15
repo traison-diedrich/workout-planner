@@ -1,61 +1,92 @@
 import { ActionFunction, redirect } from 'react-router-dom';
-import { DbResult } from './database.types';
+import { Database, DbResult } from './database.types';
 import { supabase } from './supabaseClient';
 
 interface workoutParams {
     wid: number;
 }
 
+// TODO: this update single-handedly made me understand the need for api's
+// create an api to handle the parsing and multiple queries
 export const updateWorkout: ActionFunction = async ({ request, params }) => {
+    {
+        /*
+    TODO: there has to be a better way of grouping/nesting form data together
+    than parsing it like this. Look into form libraries like react-hook-form
+    or formik to see if they have options
+    */
+    }
+
+    const typedParams = params as unknown as workoutParams;
+
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
+    console.log(updates);
 
-    const exerciseData = {};
+    type InsertExerciseType =
+        Database['public']['Tables']['exercises']['Insert'];
+
+    const exerciseData: InsertExerciseType[] = [];
 
     for (const key of Object.keys(updates)) {
         if (key.startsWith('exercise-')) {
-            const [, exerciseId, attribute] = key.match(
-                /^exercise-(\d+)-(\w+)$/,
+            const [, exerciseIndex, exerciseId, attribute] = key.match(
+                /^exercise-(\d+)-(\d+)-(\w+)$/,
             );
 
-            if (!exerciseData[exerciseId]) {
-                exerciseData[exerciseId] = {};
+            if (!exerciseData[exerciseIndex]) {
+                exerciseData.push({
+                    wid: typedParams.wid,
+                } as InsertExerciseType);
             }
 
-            exerciseData[exerciseId][attribute] = formData.get(key);
+            if (exerciseId !== '0' && !exerciseData[exerciseIndex]['id']) {
+                exerciseData[exerciseIndex]['id'] = exerciseId;
+            }
+
+            exerciseData[exerciseIndex][attribute] = updates[key];
         }
     }
 
-    const formattedExerciseData = Object.entries(exerciseData).map(
-        ([exerciseId, data]) => ({
-            id: exerciseId,
-            wid: params.wid,
-            sets: data['sets'],
-            reps: data['reps'],
-        }),
+    const hasId: InsertExerciseType[] = exerciseData.filter(
+        e => e.id !== undefined,
     );
-
-    console.log('Formatted Exercise Data:', formattedExerciseData);
-
-    const typedParams = params as unknown as workoutParams;
+    const noId: InsertExerciseType[] = exerciseData.filter(
+        e => e.id === undefined,
+    );
 
     const workoutQuery = supabase
         .from('workouts')
         .update({ name: updates.name.toString() })
         .eq('id', typedParams.wid);
-
     const workoutRes: DbResult<typeof workoutQuery> = await workoutQuery;
 
-    const exerciseQuery = supabase
+    const deleteIds =
+        '(' +
+        exerciseData
+            .filter(e => e.id !== undefined)
+            .map(e => e.id)
+            .join(', ') +
+        ')';
+
+    const deleteQuery = supabase
         .from('exercises')
-        .upsert(formattedExerciseData);
+        .delete()
+        .eq('wid', typedParams.wid)
+        .not('id', 'in', deleteIds);
+    const deleteRes: DbResult<typeof deleteQuery> = await deleteQuery;
 
-    const exerciseRes: DbResult<typeof exerciseQuery> = await exerciseQuery;
+    const idQuery = supabase.from('exercises').upsert(hasId);
+    const idRes: DbResult<typeof idQuery> = await idQuery;
 
-    if (workoutRes.error) {
-        console.error(workoutRes.error);
-    } else if (exerciseRes.error) {
-        console.error(exerciseRes.error);
+    const noIdQuery = supabase.from('exercises').upsert(noId);
+    const noIdRes: DbResult<typeof noIdQuery> = await noIdQuery;
+
+    if (workoutRes.error || deleteRes.error || idRes.error || noIdRes.error) {
+        console.error(
+            workoutRes.error || deleteRes.error || idRes.error || noIdRes.error,
+        );
+        return redirect('/workouts');
     } else {
         return redirect('/workouts');
     }

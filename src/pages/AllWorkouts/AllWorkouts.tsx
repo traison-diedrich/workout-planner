@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useLoaderData } from 'react-router-dom';
+import { AddCard } from '../../components/AddCard';
 import { WorkoutPreview } from '../../components/WorkoutPreview';
 import { WorkoutType } from '../../data/database.types';
-import { AddWorkoutCard } from './AddWorkoutCard';
 
 export const AllWorkouts: React.FC = () => {
     const workouts: WorkoutType[] = useLoaderData() as WorkoutType[];
@@ -18,7 +18,7 @@ export const AllWorkouts: React.FC = () => {
                         name={workout.name}
                     />
                 ))}
-                <AddWorkoutCard />
+                <AddCard type="submit" />
             </div>
         </div>
     );

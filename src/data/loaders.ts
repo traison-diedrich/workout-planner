@@ -21,15 +21,18 @@ interface exerciseParams {
 
 export const loadExercises: LoaderFunction = async ({ params }) => {
     const typedParams = params as unknown as exerciseParams;
-    const query = supabase
+    const exerciseQuery = supabase
         .from('exercises')
-        .select('*, exercise_types(*)')
+        .select('*')
         .eq('wid', typedParams.wid);
-    const res: DbResult<typeof query> = await query;
+    const exercises: DbResult<typeof exerciseQuery> = await exerciseQuery;
 
-    if (res.error) {
-        console.error(res.error);
+    const typesQuery = supabase.from('exercise_types').select('*');
+    const types: DbResult<typeof typesQuery> = await typesQuery;
+
+    if (exercises.error || types.error) {
+        console.error(exercises.error || types.error);
     } else {
-        return res.data;
+        return { initialExercises: exercises.data, options: types.data };
     }
 };

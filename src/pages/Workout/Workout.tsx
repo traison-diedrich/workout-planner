@@ -6,12 +6,18 @@ import {
     useLocation,
     useNavigate,
 } from 'react-router-dom';
+import { AddCard } from '../../components/AddCard';
 import { Exercise } from '../../components/Exercise/Exercise';
-import { ExerciseType } from '../../data/database.types';
+import { ExerciseInfoType, ExerciseType } from '../../data/database.types';
 import { DeleteModal } from './DeleteModal';
 
+interface loaderData {
+    initialExercises: ExerciseType[];
+    options: ExerciseInfoType[];
+}
+
 export const Workout: React.FC = () => {
-    const exercises = useLoaderData() as ExerciseType[];
+    const { initialExercises, options } = useLoaderData() as loaderData;
 
     const state = useLocation();
     const navigate = useNavigate();
@@ -22,6 +28,25 @@ export const Workout: React.FC = () => {
         setShowModal(!showModal);
     };
 
+    const [exercises, setExercises] = React.useState(initialExercises);
+
+    const deleteExercise = (index: number) => {
+        console.log(index, exercises);
+
+        setExercises(exercises.filter((_, i) => i !== index));
+    };
+
+    const addExercise = () => {
+        const newExercise: ExerciseType = {
+            id: 0,
+            wid: state.state.id,
+            e_type_id: 1,
+            sets: 3,
+            reps: 10,
+        };
+        setExercises([...exercises, newExercise]);
+    };
+
     return (
         <>
             <DeleteModal
@@ -29,6 +54,11 @@ export const Workout: React.FC = () => {
                 toggleOpen={toggleModal}
                 name={state.state.name}
             />
+            {/* TODO: it would be nice in the future if this form would only
+            submit the inputs that have changed rather than every possible
+            input. Current path looks like using input disabled to stop the
+            field from being submitted, but that would conflict with class
+            styling from daisy */}
             <Form
                 method="post"
                 id="workout"
@@ -37,6 +67,7 @@ export const Workout: React.FC = () => {
                 <div className="flex w-full justify-between">
                     <button
                         onClick={() => navigate(-1)}
+                        type="button"
                         className="btn btn-square btn-ghost"
                     >
                         <IconArrowLeft />
@@ -56,18 +87,21 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="flex w-full justify-between"></div>
                 <div className="flex w-full flex-wrap justify-center gap-6">
-                    {exercises?.map(exercise => (
+                    {exercises.map((exercise, index) => (
                         <Exercise
-                            key={exercise.id}
+                            key={index}
+                            index={index}
+                            options={options}
                             id={exercise.id}
-                            name={exercise.exercise_types?.label}
-                            sets={exercise.sets}
-                            reps={exercise.reps}
+                            e_type_id={exercise.e_type_id}
+                            initialSets={exercise.sets}
+                            initialReps={exercise.reps}
+                            onDelete={deleteExercise}
                         />
                     ))}
                 </div>
+                <AddCard type="button" onAdd={addExercise} />
                 <button
                     type="submit"
                     className="btn btn-primary w-1/2 max-w-lg"
