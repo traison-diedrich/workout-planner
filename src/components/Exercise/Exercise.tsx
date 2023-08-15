@@ -20,7 +20,7 @@ export const Exercise: React.FC<ExerciseProps> = props => {
     const [reps, setReps] = React.useState<number>(props.initialReps);
 
     return (
-        <div className="card w-96 bg-neutral shadow-xl">
+        <div className="card w-96 shadow-xl">
             <input
                 type="number"
                 name={`exercise-${props.index}-${props.id}-sets`}

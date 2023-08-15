@@ -10,13 +10,13 @@ interface AddCardProps {
 export const AddCard: React.FC<AddCardProps> = ({ onAdd, type }) => {
     return (
         <Form method="post">
-            <div className="card w-96 bg-neutral shadow-xl">
+            <div className="card w-96 shadow-xl">
                 <div className="card-body">
                     <div className="card-actions justify-center">
                         <button
                             onClick={onAdd}
                             type={type}
-                            className="btn btn-circle btn-neutral btn-lg"
+                            className="btn btn-circle btn-ghost btn-lg"
                         >
                             <IconPlus size={40} />
                         </button>

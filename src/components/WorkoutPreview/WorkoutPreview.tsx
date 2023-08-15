@@ -49,7 +49,7 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     }, [wid]);
 
     return (
-        <div className="card w-96 bg-neutral shadow-xl">
+        <div className="card w-96 shadow-xl">
             <div className="card-body">
                 <Header title={name} wid={wid} />
                 <ul>

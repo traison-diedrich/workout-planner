@@ -6,6 +6,7 @@ import {
     useLocation,
     useNavigate,
 } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 import { AddCard } from '../../components/AddCard';
 import { Exercise } from '../../components/Exercise/Exercise';
 import { ExerciseInfoType, ExerciseType } from '../../data/database.types';
@@ -14,6 +15,10 @@ import { DeleteModal } from './DeleteModal';
 interface loaderData {
     initialExercises: ExerciseType[];
     options: ExerciseInfoType[];
+}
+
+interface ClientExerciseType extends ExerciseType {
+    cid: string;
 }
 
 export const Workout: React.FC = () => {
@@ -28,16 +33,17 @@ export const Workout: React.FC = () => {
         setShowModal(!showModal);
     };
 
-    const [exercises, setExercises] = React.useState(initialExercises);
+    // give exercise uuid for key management, client side only
+    const clientExercises: ClientExerciseType[] = initialExercises.map(e => ({
+        cid: uuid(),
+        ...e,
+    }));
 
-    const deleteExercise = (index: number) => {
-        console.log(index, exercises);
-
-        setExercises(exercises.filter((_, i) => i !== index));
-    };
+    const [exercises, setExercises] = React.useState(clientExercises);
 
     const addExercise = () => {
-        const newExercise: ExerciseType = {
+        const newExercise: ClientExerciseType = {
+            cid: uuid(),
             id: 0,
             wid: state.state.id,
             e_type_id: 1,
@@ -45,6 +51,11 @@ export const Workout: React.FC = () => {
             reps: 10,
         };
         setExercises([...exercises, newExercise]);
+    };
+
+    const deleteExercise = (index: number) => {
+        const newList = exercises.filter((_, i) => i !== index);
+        setExercises(newList);
     };
 
     return (
@@ -64,6 +75,8 @@ export const Workout: React.FC = () => {
                 id="workout"
                 className="flex h-full min-h-screen w-full flex-col items-center gap-6 p-6"
             >
+                {/* TODO: implement a check to make sure user wants to 
+                leave page with unsaved changes */}
                 <div className="flex w-full justify-between">
                     <button
                         onClick={() => navigate(-1)}
@@ -90,7 +103,7 @@ export const Workout: React.FC = () => {
                 <div className="flex w-full flex-wrap justify-center gap-6">
                     {exercises.map((exercise, index) => (
                         <Exercise
-                            key={index}
+                            key={exercise.cid}
                             index={index}
                             options={options}
                             id={exercise.id}
