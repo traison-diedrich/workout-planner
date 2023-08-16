@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
+import { signup } from './data/auth';
 import { createWorkout } from './data/creators';
 import { deleteWorkout } from './data/deleters';
 import { loadExercises, loadWorkouts } from './data/loaders';
@@ -34,8 +35,9 @@ const router = createBrowserRouter([
         ],
     },
     {
-        path: '/signup',
+        path: '/auth/signup',
         element: <Signup />,
+        action: signup,
     },
 ]);
 

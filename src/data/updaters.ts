@@ -21,7 +21,6 @@ export const updateWorkout: ActionFunction = async ({ request, params }) => {
 
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
-    console.log(updates);
 
     type InsertExerciseType =
         Database['public']['Tables']['exercises']['Insert'];
