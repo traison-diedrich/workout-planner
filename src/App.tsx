@@ -4,7 +4,7 @@ import { createWorkout } from './data/creators';
 import { deleteWorkout } from './data/deleters';
 import { loadExercises, loadWorkouts } from './data/loaders';
 import { updateWorkout } from './data/updaters';
-import { AllWorkouts, Home, Workout } from './pages';
+import { AllWorkouts, Home, Signup, Workout } from './pages';
 
 const router = createBrowserRouter([
     {
@@ -32,6 +32,10 @@ const router = createBrowserRouter([
                 action: deleteWorkout,
             },
         ],
+    },
+    {
+        path: '/signup',
+        element: <Signup />,
     },
 ]);
 
