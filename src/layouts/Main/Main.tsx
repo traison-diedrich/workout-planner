@@ -4,7 +4,7 @@ import { Drawer } from './Drawer';
 import { Footer } from './Footer';
 import { Navbar } from './Navbar';
 
-export const Navigation: React.FC = () => {
+export const Main: React.FC = () => {
     const [open, setOpen] = React.useState(false);
 
     const toggleOpen = () => {

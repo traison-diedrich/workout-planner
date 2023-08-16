@@ -2,7 +2,7 @@ import { IconAlertTriangle } from '@tabler/icons-react';
 import * as React from 'react';
 import { Form, Link, useNavigation } from 'react-router-dom';
 
-export const Signup: React.FC = () => {
+export const Login: React.FC = () => {
     const [emailError, setEmailError] = React.useState(false);
     const [passwordError, setPasswordError] = React.useState(false);
 
@@ -32,18 +32,15 @@ export const Signup: React.FC = () => {
 
     return (
         <div className="relative grid min-h-screen w-full place-items-center">
-            <Link
-                to="/login"
-                className="btn btn-ghost btn-sm absolute right-8 top-8"
-            >
+            <button className="btn btn-ghost btn-sm absolute right-8 top-8">
                 Login
-            </Link>
+            </button>
             <Link to="/" className="btn btn-ghost btn-sm absolute left-8 top-8">
                 WP
             </Link>
             <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold">Create an account</h1>
+                    <h1 className="text-3xl font-bold">Login Page</h1>
                     <p className="py-3">
                         Enter your email below to create your account
                     </p>

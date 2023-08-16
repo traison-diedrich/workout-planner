@@ -85,8 +85,8 @@ export const updateWorkout: ActionFunction = async ({ request, params }) => {
         console.error(
             workoutRes.error || deleteRes.error || idRes.error || noIdRes.error,
         );
-        return redirect('/workouts');
+        return redirect('/auth/workouts');
     } else {
-        return redirect('/workouts');
+        return redirect('/auth/workouts');
     }
 };

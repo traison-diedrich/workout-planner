@@ -13,7 +13,7 @@ export const Home: React.FC = () => {
                         A solution for easily planning and tracking your
                         workouts
                     </p>
-                    <Link to="/workouts">
+                    <Link to="/auth/workouts">
                         <button className="btn btn-primary">Get Started</button>
                     </Link>
                 </div>

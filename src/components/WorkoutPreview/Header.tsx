@@ -12,7 +12,10 @@ export const Header: React.FC<HeaderProps> = ({ title, wid }) => {
         <div className="flex w-full">
             <h2 className="card-title text-2xl">{title}</h2>
             <div className="ml-auto flex gap-2">
-                <Link to={`/workouts/${wid}`} state={{ name: title, id: wid }}>
+                <Link
+                    to={`/auth/workouts/${wid}`}
+                    state={{ name: title, id: wid }}
+                >
                     <button className="btn btn-square btn-ghost">
                         <IconPencil />
                     </button>

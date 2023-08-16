@@ -5,7 +5,7 @@ import {
     ExerciseType,
 } from '../../data/database.types';
 import { supabase } from '../../data/supabaseClient';
-import { Exercise } from './Exercise';
+import { ExercisePreview } from './ExercisePreview';
 import { Header } from './Header';
 
 interface WorkoutPreviewProps {
@@ -54,7 +54,7 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
                 <Header title={name} wid={wid} />
                 <ul>
                     {exercises?.map(exercise => (
-                        <Exercise
+                        <ExercisePreview
                             key={exercise.id}
                             name={exercise.exercise_types?.label}
                             sets={exercise.sets}

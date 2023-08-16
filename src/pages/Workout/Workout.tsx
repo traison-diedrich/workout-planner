@@ -7,10 +7,10 @@ import {
     useNavigate,
 } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
-import { AddCard } from '../../components/AddCard';
-import { Exercise } from '../../components/Exercise/Exercise';
+import { AddCard } from '../../components';
 import { ExerciseInfoType, ExerciseType } from '../../data/database.types';
 import { DeleteModal } from './DeleteModal';
+import { Exercise } from './Exercise';
 
 interface loaderData {
     initialExercises: ExerciseType[];

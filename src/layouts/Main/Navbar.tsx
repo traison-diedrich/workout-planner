@@ -1,4 +1,4 @@
-import { IconMenu2, IconMoon, IconSunHigh } from '@tabler/icons-react';
+import { IconMenu2, IconSunMoon } from '@tabler/icons-react';
 import * as React from 'react';
 import { themeChange } from 'theme-change';
 
@@ -26,23 +26,14 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                     Workout Planner
                 </h1>
             </div>
-            {/* for some reason the checkbox/swap will not work unless
-                there is another component that is designed to be used
-                with theme-change */}
+            {/* This button is EXTREMELY BUGGY regardless of the type */}
             <button
                 data-toggle-theme="dark,light"
                 data-act-class="ACTIVECLASS"
-                className="invisible h-0 w-0"
-            />
-            <label className="swap-rotate swap">
-                <input
-                    type="checkbox"
-                    data-toggle-theme="dark,light"
-                    data-act-class="ACTIVECLASS"
-                />
-                <IconMoon className="swap-off" />
-                <IconSunHigh className="swap-on" />
-            </label>
+                className="btn btn-square btn-ghost"
+            >
+                <IconSunMoon />
+            </button>
         </div>
     );
 };

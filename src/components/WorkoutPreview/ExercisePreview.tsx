@@ -1,14 +1,18 @@
 import { IconX } from '@tabler/icons-react';
 import * as React from 'react';
-import { NumberBox } from '../Exercise/NumberBox';
+import { NumberBox } from '../NumberBox';
 
-interface ExerciseProps {
+interface ExercisePreviewProps {
     name: string;
     sets: number;
     reps: number;
 }
 
-export const Exercise: React.FC<ExerciseProps> = ({ name, sets, reps }) => {
+export const ExercisePreview: React.FC<ExercisePreviewProps> = ({
+    name,
+    sets,
+    reps,
+}) => {
     return (
         <li className="p-1">
             <div className="flex items-center gap-2 ">
