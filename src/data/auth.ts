@@ -14,8 +14,8 @@ export const signup: ActionFunction = async ({ request }) => {
 
     if (res.error) {
         console.error(res.error);
-        return redirect('/auth/signup');
+        return redirect('/signup');
     }
 
-    return redirect('/home');
+    return redirect('/login');
 };

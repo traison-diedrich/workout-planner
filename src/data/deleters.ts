@@ -9,6 +9,6 @@ export const deleteWorkout: ActionFunction = async ({ params }) => {
     if (res.error) {
         console.error(res.error);
     } else {
-        return redirect('/workouts');
+        return redirect('/auth/workouts');
     }
 };

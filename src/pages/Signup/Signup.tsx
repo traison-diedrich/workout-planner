@@ -3,32 +3,35 @@ import * as React from 'react';
 import { Form, Link, useNavigation } from 'react-router-dom';
 
 export const Signup: React.FC = () => {
-    const [emailError, setEmailError] = React.useState(false);
-    const [passwordError, setPasswordError] = React.useState(false);
+    // const [emailError, setEmailError] = React.useState(false);
+    // const [passwordError, setPasswordError] = React.useState(false);
 
     const navigation = useNavigation();
+    // const submit = useSubmit();
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
-        const email = form.email.value;
-        const password = form.password.value;
+    // const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    //     const form = e.currentTarget;
+    //     const email = form.email.value;
+    //     const password = form.password.value;
 
-        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        const validPassword = password.length > 5;
+    //     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    //     const validPassword = password.length > 5;
 
-        if (!validEmail) {
-            setEmailError(true);
-            return;
-        }
-        setEmailError(false);
-        if (!validPassword) {
-            setPasswordError(true);
-            return;
-        }
-        setPasswordError(false);
-        form.submit();
-    };
+    //     if (!validEmail) {
+    //         setEmailError(true);
+    //         return;
+    //     }
+    //     setEmailError(false);
+    //     if (!validPassword) {
+    //         setPasswordError(true);
+    //         return;
+    //     }
+    //     setPasswordError(false);
+
+    //     console.log('submitting sign in');
+    //     submit(e.currentTarget, { method: 'post', action: '/signup' });
+    // };
 
     return (
         <div className="relative grid min-h-screen w-full place-items-center">
@@ -52,7 +55,7 @@ export const Signup: React.FC = () => {
                     method="post"
                     id="signup"
                     className="flex w-full flex-col gap-2"
-                    onSubmit={onSubmit}
+                    // onSubmit={onSubmit}
                 >
                     <div className="form-control">
                         <input
@@ -61,14 +64,14 @@ export const Signup: React.FC = () => {
                             placeholder="name@example.com"
                             className="input input-bordered w-full"
                         />
-                        {emailError && (
+                        {/* {emailError && (
                             <label className="label justify-start gap-2 text-warning">
                                 <IconAlertTriangle />
                                 <span className="text-sm">
                                     Please enter a valid email
                                 </span>
                             </label>
-                        )}
+                        )} */}
                     </div>
                     <div className="form-control">
                         <input
@@ -77,7 +80,7 @@ export const Signup: React.FC = () => {
                             placeholder="password"
                             className="input input-bordered w-full"
                         />
-                        {passwordError && (
+                        {/* {passwordError && (
                             <label className="label justify-start gap-2 text-warning">
                                 <IconAlertTriangle />
                                 <span className="text-sm">
@@ -85,7 +88,7 @@ export const Signup: React.FC = () => {
                                     characters
                                 </span>
                             </label>
-                        )}
+                        )} */}
                     </div>
                     <button type="submit" className="btn btn-primary w-full">
                         {navigation.state === 'loading' ? (

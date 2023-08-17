@@ -29,7 +29,6 @@ export const Workout: React.FC = () => {
 
     const [showModal, setShowModal] = React.useState(false);
     const toggleModal = () => {
-        console.log(showModal);
         setShowModal(!showModal);
     };
 
@@ -43,7 +42,7 @@ export const Workout: React.FC = () => {
 
     const addExercise = () => {
         const newExercise: ClientExerciseType = {
-            cid: uuid(),
+            cid: uuid().slice(0, 8),
             id: 0,
             wid: state.state.id,
             e_type_id: 1,

@@ -1,43 +1,76 @@
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import * as React from 'react';
 import { DbResult } from '../data/database.types';
 import { supabase } from '../data/supabaseClient';
 
-const authContext = React.createContext<Session | null>(null);
+interface SessionData {
+    user: User | null;
+    session: Session | null;
+}
 
-// pretty sure the way this is structured will check the session on every
-// page load, more research on how to handle user auth properly
+interface Auth {
+    session: SessionData | null;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
+}
+
+const defaultAuthValue: Auth = {
+    session: null,
+    login: async () => {},
+    logout: async () => {},
+};
+
+const authContext = React.createContext<Auth>(defaultAuthValue);
+
 function useAuth() {
-    const [session, setSession] = React.useState<Session | null>(null);
+    const [session, setSession] = React.useState<SessionData | null>(null);
 
-    React.useEffect(() => {
-        const fetchSession = async () => {
-            const query = supabase.auth.getSession();
+    return {
+        session: session,
+        login: async (email: string, password: string) => {
+            const query = supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
             const res: DbResult<typeof query> = await query;
 
             if (res.error) {
                 console.error(res.error);
-                setSession(null);
-                return;
             }
 
-            setSession(res.data.session);
-        };
+            return new Promise<void>((resolve, reject) => {
+                if (res.error) {
+                    console.error(res.error);
+                    reject();
+                }
 
-        fetchSession();
-    }, []);
+                setSession(res.data);
+                resolve();
+            });
+        },
+        logout: async () => {
+            const query = supabase.auth.signOut();
+            const res: DbResult<typeof query> = await query;
 
-    return session;
+            return new Promise<void>((resolve, reject) => {
+                if (res.error) {
+                    console.error(res.error);
+                    reject();
+                }
+
+                setSession(null);
+                resolve();
+            });
+        },
+    };
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const session = useAuth();
+    const auth = useAuth();
 
-    return (
-        <authContext.Provider value={session}>{children}</authContext.Provider>
-    );
+    return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
 
 export default function AuthConsumer() {

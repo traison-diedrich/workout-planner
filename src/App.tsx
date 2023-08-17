@@ -4,6 +4,9 @@ import {
     createBrowserRouter,
     createRoutesFromElements,
 } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { RequireAuth } from './context/RequireAuth';
+import { signup } from './data/auth';
 import { createWorkout } from './data/creators';
 import { deleteWorkout } from './data/deleters';
 import { loadExercises, loadWorkouts } from './data/loaders';
@@ -15,9 +18,16 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <>
             <Route path="/" element={<Welcome />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup" element={<Signup />} action={signup} />
             <Route path="/login" element={<Login />} />
-            <Route path="/auth/" element={<Main />}>
+            <Route
+                path="/auth/"
+                element={
+                    <RequireAuth>
+                        <Main />
+                    </RequireAuth>
+                }
+            >
                 <Route path="home" element={<Home />} />
                 <Route
                     path="workouts"
@@ -38,7 +48,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    );
 }
 
 export default App;
