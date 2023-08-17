@@ -3,7 +3,7 @@ import * as React from 'react';
 import { NumberBox } from '../NumberBox';
 
 interface ExercisePreviewProps {
-    name: string;
+    name: string | undefined;
     sets: number;
     reps: number;
 }

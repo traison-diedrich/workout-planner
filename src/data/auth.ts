@@ -1,6 +1,6 @@
 import { ActionFunction, redirect } from 'react-router-dom';
-import { DbResult } from './database.types';
-import { supabase } from './supabaseClient';
+import { DbResult } from './supabase/database.types';
+import { supabase } from './supabase/supabaseClient';
 
 export const signup: ActionFunction = async ({ request }) => {
     const formData = await request.formData();

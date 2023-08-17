@@ -1,6 +1,6 @@
 import { ActionFunction, redirect } from 'react-router-dom';
-import { Database, DbResult } from './database.types';
-import { supabase } from './supabaseClient';
+import { Database, DbResult } from '../supabase/database.types';
+import { supabase } from '../supabase/supabaseClient';
 
 interface workoutParams {
     wid: number;
@@ -75,6 +75,7 @@ export const updateWorkout: ActionFunction = async ({ request, params }) => {
         .not('id', 'in', deleteIds);
     const deleteRes: DbResult<typeof deleteQuery> = await deleteQuery;
 
+    // supabase wont handle id and id-less upserts in the same query
     const idQuery = supabase.from('exercises').upsert(hasId);
     const idRes: DbResult<typeof idQuery> = await idQuery;
 

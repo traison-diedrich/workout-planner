@@ -1,5 +1,5 @@
-import { DbResult } from './database.types';
-import { supabase } from './supabaseClient';
+import { DbResult } from '../supabase/database.types';
+import { supabase } from '../supabase/supabaseClient';
 
 const temp_uid = '0a2ee282-9aa0-4e5f-8d0a-06025d74d791';
 

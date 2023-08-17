@@ -1,6 +1,6 @@
 import { IconTrash } from '@tabler/icons-react';
 import * as React from 'react';
-import { ExerciseInfoType } from '../../data/database.types';
+import { ExerciseInfoType } from '../../data/supabase/database.types';
 
 interface ExerciseHeaderProps {
     options: ExerciseInfoType[];

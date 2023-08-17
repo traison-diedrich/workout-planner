@@ -1,0 +1,24 @@
+import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAuth from '../../context/AuthContext';
+
+export const RequireAuth: React.FC<{ children: React.ReactNode }> = ({
+    children,
+}) => {
+    const { getSession } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        getSession().then(session =>
+            session.session
+                ? null
+                : navigate('/login', {
+                      state: location.pathname,
+                      replace: true,
+                  }),
+        );
+    }, []);
+
+    return children;
+};

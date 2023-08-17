@@ -1,7 +1,7 @@
 import { IconX } from '@tabler/icons-react';
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
-import { ExerciseInfoType } from '../../data/database.types';
+import { ExerciseInfoType } from '../../data/supabase/database.types';
 import { ExerciseHeader } from './ExerciseHeader';
 
 interface ExerciseProps {

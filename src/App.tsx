@@ -4,16 +4,17 @@ import {
     createBrowserRouter,
     createRoutesFromElements,
 } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { RequireAuth } from './context/RequireAuth';
+import { RequireAuth } from './components/RequireAuth';
+import { AuthProvider, DataProvider } from './context';
 import { signup } from './data/auth';
-import { createWorkout } from './data/creators';
-import { deleteWorkout } from './data/deleters';
-import { loadExercises, loadWorkouts } from './data/loaders';
-import { updateWorkout } from './data/updaters';
+import { createWorkout } from './data/crud/creators';
+import { deleteWorkout } from './data/crud/deleters';
+import { updateWorkout } from './data/crud/updaters';
 import { Main } from './layouts';
 import { AllWorkouts, Home, Login, Signup, Welcome, Workout } from './pages';
 
+// TODO: i hate react-router-dom and its silly forms and loaders
+// upgrade to next.js as fast as possible
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
@@ -32,13 +33,11 @@ const router = createBrowserRouter(
                 <Route
                     path="workouts"
                     element={<AllWorkouts />}
-                    loader={loadWorkouts}
                     action={createWorkout}
                 />
                 <Route
                     path="workouts/:wid"
                     element={<Workout />}
-                    loader={loadExercises}
                     action={updateWorkout}
                 />
                 <Route path="workouts/:wid/delete" action={deleteWorkout} />
@@ -50,7 +49,9 @@ const router = createBrowserRouter(
 function App() {
     return (
         <AuthProvider>
-            <RouterProvider router={router} />
+            <DataProvider>
+                <RouterProvider router={router} />
+            </DataProvider>
         </AuthProvider>
     );
 }

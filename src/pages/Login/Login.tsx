@@ -1,13 +1,22 @@
 import { IconAlertTriangle } from '@tabler/icons-react';
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../context/AuthContext';
 
 export const Login: React.FC = () => {
     const [loginError, setLoginError] = React.useState(false);
 
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, getSession } = useAuth();
+    const { state } = useLocation();
+
+    // TODO: should be able to navigate to state.path (previous attempted
+    // route) but it wont read the correct state from require auth
+    React.useEffect(() => {
+        getSession().then(session => {
+            session.session && navigate(state?.path || '/auth/home');
+        });
+    }, []);
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -16,7 +25,7 @@ export const Login: React.FC = () => {
         const password = form.password.value;
 
         login(email, password)
-            .then(() => navigate('/auth/home'))
+            .then(() => navigate(state?.path || '/auth/home'))
             .catch(() => {
                 form.password.value = '';
                 setLoginError(true);

@@ -1,28 +1,34 @@
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import * as React from 'react';
-import {
-    Form,
-    useLoaderData,
-    useLocation,
-    useNavigate,
-} from 'react-router-dom';
+import { Form, useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { AddCard } from '../../components';
-import { ExerciseInfoType, ExerciseType } from '../../data/database.types';
-import { DeleteModal } from './DeleteModal';
-import { Exercise } from './Exercise';
-
-interface loaderData {
-    initialExercises: ExerciseType[];
-    options: ExerciseInfoType[];
-}
+import { ExerciseType } from '../../data/supabase/';
+import { useData } from '../../hooks/useData';
+import { DeleteModal, Exercise } from './';
 
 interface ClientExerciseType extends ExerciseType {
     cid: string;
 }
 
 export const Workout: React.FC = () => {
-    const { initialExercises, options } = useLoaderData() as loaderData;
+    const { readExercises, exerciseInfo, readExerciseInfo } = useData();
+
+    const [exercises, setExercises] = React.useState<ClientExerciseType[]>([]);
+
+    React.useEffect(() => {
+        readExerciseInfo();
+        // give exercise uuid for key management, client side only
+        readExercises(state.state.id).then(exs => {
+            const clientExs = exs
+                ? exs.map(e => ({
+                      cid: uuid().slice(0, 8),
+                      ...e,
+                  }))
+                : [];
+            setExercises(clientExs);
+        });
+    }, []);
 
     const state = useLocation();
     const navigate = useNavigate();
@@ -31,14 +37,6 @@ export const Workout: React.FC = () => {
     const toggleModal = () => {
         setShowModal(!showModal);
     };
-
-    // give exercise uuid for key management, client side only
-    const clientExercises: ClientExerciseType[] = initialExercises.map(e => ({
-        cid: uuid(),
-        ...e,
-    }));
-
-    const [exercises, setExercises] = React.useState(clientExercises);
 
     const addExercise = () => {
         const newExercise: ClientExerciseType = {
@@ -84,6 +82,8 @@ export const Workout: React.FC = () => {
                     >
                         <IconArrowLeft />
                     </button>
+                    {/* FIXME: this is not a safe way of accessing 
+                        the workout name */}
                     <input
                         type="text"
                         placeholder="Workout Name"
@@ -104,7 +104,7 @@ export const Workout: React.FC = () => {
                         <Exercise
                             key={exercise.cid}
                             index={index}
-                            options={options}
+                            options={exerciseInfo || []}
                             id={exercise.id}
                             e_type_id={exercise.e_type_id}
                             initialSets={exercise.sets}

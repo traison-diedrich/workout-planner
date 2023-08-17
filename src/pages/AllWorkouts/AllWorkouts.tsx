@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { useLoaderData } from 'react-router-dom';
 import { AddCard, WorkoutPreview } from '../../components';
-import { WorkoutType } from '../../data/database.types';
+import { useData } from '../../hooks/useData';
 
 export const AllWorkouts: React.FC = () => {
-    const workouts: WorkoutType[] = useLoaderData() as WorkoutType[];
+    const { workouts, readWorkouts } = useData();
+
+    React.useEffect(() => {
+        readWorkouts();
+    }, []);
 
     return (
         <div className="flex h-full min-h-screen w-full flex-col gap-6 p-6 text-center">
