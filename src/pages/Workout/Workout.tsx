@@ -1,6 +1,6 @@
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import * as React from 'react';
-import { Form, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { AddCard } from '../../components';
 import { ExerciseType } from '../../data/supabase/';
@@ -11,9 +11,31 @@ interface ClientExerciseType extends ExerciseType {
     cid: string;
 }
 
-export const Workout: React.FC = () => {
-    const { readExercises, exerciseInfo, readExerciseInfo } = useData();
+export type ExerciseStateType = {
+    e_type_id: number;
+    sets: number;
+    reps: number;
+};
 
+export const Workout: React.FC = () => {
+    // getting workout name through state.state.name until I can
+    // figure out how to pass it down properly
+    const state = useLocation();
+    const navigate = useNavigate();
+
+    const [showModal, setShowModal] = React.useState(false);
+    const toggleModal = () => {
+        setShowModal(!showModal);
+    };
+
+    const {
+        readExercises,
+        exerciseInfo,
+        readExerciseInfo,
+        deleteWorkout,
+        updateWorkout,
+    } = useData();
+    const [name, setName] = React.useState(state.state.name);
     const [exercises, setExercises] = React.useState<ClientExerciseType[]>([]);
 
     React.useEffect(() => {
@@ -28,17 +50,25 @@ export const Workout: React.FC = () => {
                 : [];
             setExercises(clientExs);
         });
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const state = useLocation();
-    const navigate = useNavigate();
-
-    const [showModal, setShowModal] = React.useState(false);
-    const toggleModal = () => {
-        setShowModal(!showModal);
+    const onDelete = () => {
+        deleteWorkout(state.state.id).then(() => navigate('/auth/workouts'));
     };
 
-    const addExercise = () => {
+    const onSubmit = () => {
+        const serverExercises = exercises.map(e => {
+            const { cid, ...exercise } = e;
+            return exercise;
+        });
+
+        updateWorkout(state.state.id, name, serverExercises).then(() =>
+            navigate('/auth/workouts'),
+        );
+    };
+
+    const createExercise = () => {
         const newExercise: ClientExerciseType = {
             cid: uuid().slice(0, 8),
             id: 0,
@@ -50,6 +80,15 @@ export const Workout: React.FC = () => {
         setExercises([...exercises, newExercise]);
     };
 
+    const updateExercise = (index: number, exercise: ExerciseStateType) => {
+        const updatedExercises = [...exercises];
+        updatedExercises[index] = {
+            ...updatedExercises[index],
+            ...exercise,
+        };
+        setExercises(updatedExercises);
+    };
+
     const deleteExercise = (index: number) => {
         const newList = exercises.filter((_, i) => i !== index);
         setExercises(newList);
@@ -59,19 +98,11 @@ export const Workout: React.FC = () => {
         <>
             <DeleteModal
                 open={showModal}
-                toggleOpen={toggleModal}
                 name={state.state.name}
+                toggleOpen={toggleModal}
+                onDelete={onDelete}
             />
-            {/* TODO: it would be nice in the future if this form would only
-            submit the inputs that have changed rather than every possible
-            input. Current path looks like using input disabled to stop the
-            field from being submitted, but that would conflict with class
-            styling from daisy */}
-            <Form
-                method="post"
-                id="workout"
-                className="flex h-full min-h-screen w-full flex-col items-center gap-6 p-6"
-            >
+            <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 p-6">
                 {/* TODO: implement a check to make sure user wants to 
                 leave page with unsaved changes */}
                 <div className="flex w-full justify-between">
@@ -90,10 +121,10 @@ export const Workout: React.FC = () => {
                         name="name"
                         defaultValue={state.state.name}
                         className="input input-bordered input-primary w-auto max-w-xs text-center text-4xl"
+                        onChange={e => setName(e.target.value)}
                     />
                     <button
                         onClick={toggleModal}
-                        type="button"
                         className="btn btn-square btn-ghost"
                     >
                         <IconTrash />
@@ -103,24 +134,26 @@ export const Workout: React.FC = () => {
                     {exercises.map((exercise, index) => (
                         <Exercise
                             key={exercise.cid}
-                            index={index}
                             options={exerciseInfo || []}
                             id={exercise.id}
                             e_type_id={exercise.e_type_id}
                             initialSets={exercise.sets}
                             initialReps={exercise.reps}
-                            onDelete={deleteExercise}
+                            onDelete={() => deleteExercise(index)}
+                            setExercise={(e: ExerciseStateType) =>
+                                updateExercise(index, e)
+                            }
                         />
                     ))}
                 </div>
-                <AddCard type="button" onAdd={addExercise} />
+                <AddCard type="button" onAdd={createExercise} />
                 <button
-                    type="submit"
+                    onClick={onSubmit}
                     className="btn btn-primary w-1/2 max-w-lg"
                 >
                     Save
                 </button>
-            </Form>
+            </div>
         </>
     );
 };

@@ -1,7 +1,6 @@
-import { IconMenu2, IconSunMoon } from '@tabler/icons-react';
+import { IconMenu2 } from '@tabler/icons-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { themeChange } from 'theme-change';
 import useAuth from '../../context/AuthContext';
 
 interface NavbarProps {
@@ -9,10 +8,6 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
-    React.useEffect(() => {
-        themeChange(false);
-    }, []);
-
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -41,14 +36,6 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
             </div>
             <button onClick={handleLogout} className="btn btn-square btn-ghost">
                 Logout
-            </button>
-            {/* This button is EXTREMELY BUGGY regardless of the type */}
-            <button
-                data-toggle-theme="dark,light"
-                data-act-class="ACTIVECLASS"
-                className="btn btn-square btn-ghost"
-            >
-                <IconSunMoon />
             </button>
         </div>
     );

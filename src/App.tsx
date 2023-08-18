@@ -7,9 +7,6 @@ import {
 import { RequireAuth } from './components/RequireAuth';
 import { AuthProvider, DataProvider } from './context';
 import { signup } from './data/auth';
-import { createWorkout } from './data/crud/creators';
-import { deleteWorkout } from './data/crud/deleters';
-import { updateWorkout } from './data/crud/updaters';
 import { Main } from './layouts';
 import { AllWorkouts, Home, Login, Signup, Welcome, Workout } from './pages';
 
@@ -30,17 +27,8 @@ const router = createBrowserRouter(
                 }
             >
                 <Route path="home" element={<Home />} />
-                <Route
-                    path="workouts"
-                    element={<AllWorkouts />}
-                    action={createWorkout}
-                />
-                <Route
-                    path="workouts/:wid"
-                    element={<Workout />}
-                    action={updateWorkout}
-                />
-                <Route path="workouts/:wid/delete" action={deleteWorkout} />
+                <Route path="workouts" element={<AllWorkouts />} />
+                <Route path="workouts/:wid" element={<Workout />} />
             </Route>
         </>,
     ),

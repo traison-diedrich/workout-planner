@@ -4,25 +4,23 @@ import { ExerciseInfoType } from '../../data/supabase/database.types';
 
 interface ExerciseHeaderProps {
     options: ExerciseInfoType[];
-    onDelete: (id: number) => void;
+    onDelete: () => void;
     e_type_id: number;
-    id: number;
-    index: number;
+    setType: (id: number) => void;
 }
 
 export const ExerciseHeader: React.FC<ExerciseHeaderProps> = ({
     options,
     onDelete,
-    id,
     e_type_id,
-    index,
+    setType,
 }) => {
     return (
         <div className="flex w-full items-center">
             <select
-                name={`exercise-${index}-${id}-e_type_id`}
                 className="select w-full max-w-xs"
                 defaultValue={e_type_id}
+                onChange={e => setType(parseInt(e.target.value))}
             >
                 {options.map(option => (
                     <option key={option.id} value={option.id}>
@@ -33,7 +31,7 @@ export const ExerciseHeader: React.FC<ExerciseHeaderProps> = ({
             <button
                 className="btn btn-square btn-ghost"
                 type="button"
-                onClick={() => onDelete(index)}
+                onClick={onDelete}
             >
                 <IconTrash />
             </button>

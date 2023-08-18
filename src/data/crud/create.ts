@@ -1,18 +1,17 @@
 import { DbResult } from '../supabase/database.types';
 import { supabase } from '../supabase/supabaseClient';
 
-const temp_uid = '0a2ee282-9aa0-4e5f-8d0a-06025d74d791';
+type uid = string | undefined;
 
-export async function createWorkout() {
+export async function createWorkout(uid: uid) {
     const query = supabase
         .from('workouts')
-        .insert([{ uid: temp_uid, name: 'New Workout' }])
+        .insert([{ uid: uid, name: 'New Workout' }])
         .select();
     const res: DbResult<typeof query> = await query;
 
     if (res.error) {
-        console.error(res.error);
-    } else {
-        return res.data;
+        throw res.error;
     }
+    return res.data[0];
 }

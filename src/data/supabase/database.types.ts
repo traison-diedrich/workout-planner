@@ -109,6 +109,8 @@ export interface Database {
 
 export type WorkoutType = Database['public']['Tables']['workouts']['Row'];
 export type ExerciseType = Database['public']['Tables']['exercises']['Row'];
+export type ExerciseInsertType =
+    Database['public']['Tables']['exercises']['Insert'];
 export type ExerciseInfoType =
     Database['public']['Tables']['exercise_types']['Row'];
 
