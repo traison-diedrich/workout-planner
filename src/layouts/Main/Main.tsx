@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 import { Drawer } from './Drawer';
 import { Footer } from './Footer';
 import { Navbar } from './Navbar';
@@ -24,6 +24,7 @@ export const Main: React.FC = () => {
                 <div className="drawer-content">
                     <Navbar toggleOpen={toggleOpen} />
                     <div className="relative">
+                        <ScrollRestoration />
                         <Outlet />
                     </div>
                 </div>

@@ -16,9 +16,9 @@ export const ExerciseHeader: React.FC<ExerciseHeaderProps> = ({
     setType,
 }) => {
     return (
-        <div className="flex w-full items-center">
+        <div className="flex w-full items-center gap-1">
             <select
-                className="select w-full max-w-xs"
+                className="select select-primary w-full max-w-xs"
                 defaultValue={e_type_id}
                 onChange={e => setType(parseInt(e.target.value))}
             >

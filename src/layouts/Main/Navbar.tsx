@@ -1,7 +1,14 @@
-import { IconMenu2 } from '@tabler/icons-react';
+import {
+    IconLogout,
+    IconMenu2,
+    IconMoon,
+    IconSunHigh,
+    IconUser,
+} from '@tabler/icons-react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../context/AuthContext';
+import { useTheme } from '../../hooks';
 
 interface NavbarProps {
     toggleOpen: () => void;
@@ -10,6 +17,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
     const { logout } = useAuth();
     const navigate = useNavigate();
+    const { toggleTheme } = useTheme();
 
     const handleLogout = () => {
         logout()
@@ -34,9 +42,29 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                     Workout Planner
                 </h1>
             </div>
-            <button onClick={handleLogout} className="btn btn-square btn-ghost">
-                Logout
-            </button>
+            <div className="flex gap-1">
+                <label className="btn btn-square btn-ghost swap swap-rotate">
+                    <input type="checkbox" onChange={toggleTheme} />
+                    <IconSunHigh className="swap-on" />
+                    <IconMoon className="swap-off" />
+                </label>
+                <div className="dropdown dropdown-end">
+                    <label tabIndex={0} className="btn btn-square btn-ghost">
+                        <IconUser />
+                    </label>
+                    <ul
+                        tabIndex={0}
+                        className="menu dropdown-content rounded-box z-[1] mt-4 bg-base-100 p-2 shadow"
+                    >
+                        <li>
+                            <a onClick={handleLogout}>
+                                <IconLogout />
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };

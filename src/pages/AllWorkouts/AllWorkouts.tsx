@@ -10,7 +10,7 @@ export const AllWorkouts: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full min-h-screen w-full flex-col gap-6 p-6 text-center">
+        <div className="flex h-full min-h-screen w-full flex-col gap-6 bg-base-200 p-6 text-center">
             <h1 className="w-full text-4xl">Workouts</h1>
             <div className="flex flex-wrap justify-center gap-6">
                 {workouts?.map(workout => (
@@ -20,7 +20,7 @@ export const AllWorkouts: React.FC = () => {
                         name={workout.name}
                     />
                 ))}
-                <AddCard type="button" onAdd={onAdd} />
+                <AddCard onAdd={onAdd} />
             </div>
         </div>
     );

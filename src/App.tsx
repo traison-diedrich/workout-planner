@@ -5,7 +5,7 @@ import {
     createRoutesFromElements,
 } from 'react-router-dom';
 import { RequireAuth } from './components/RequireAuth';
-import { AuthProvider, DataProvider } from './context';
+import { AuthProvider, DataProvider, ThemeProvider } from './context';
 import { signup } from './data/auth';
 import { Main } from './layouts';
 import {
@@ -44,11 +44,13 @@ const router = createBrowserRouter(
 
 function App() {
     return (
-        <AuthProvider>
-            <DataProvider>
-                <RouterProvider router={router} />
-            </DataProvider>
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <DataProvider>
+                    <RouterProvider router={router} />
+                </DataProvider>
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

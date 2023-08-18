@@ -96,10 +96,10 @@ export const Workout: React.FC = () => {
                 toggleOpen={toggleModal}
                 onDelete={onDelete}
             />
-            <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 p-6">
+            <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
                 {/* TODO: implement a check to make sure user wants to 
                 leave page with unsaved changes */}
-                <div className="flex w-full justify-between">
+                <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
                         onClick={onSubmit}
                         type="button"
@@ -114,7 +114,7 @@ export const Workout: React.FC = () => {
                         placeholder="Workout Name"
                         name="name"
                         defaultValue={state.state.name}
-                        className="input input-bordered input-primary w-auto max-w-xs text-center text-4xl"
+                        className="input input-bordered input-primary w-full text-center text-4xl"
                         onChange={e => setName(e.target.value)}
                     />
                     <button
@@ -140,7 +140,10 @@ export const Workout: React.FC = () => {
                         />
                     ))}
                 </div>
-                <AddCard type="button" onAdd={createExercise} />
+                <AddCard onAdd={createExercise} />
+                <button onClick={onSubmit} className="btn btn-primary w-96">
+                    Save
+                </button>
             </div>
         </>
     );

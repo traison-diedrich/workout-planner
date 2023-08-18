@@ -32,7 +32,7 @@ export const Exercise: React.FC<ExerciseProps> = props => {
     }, [e_type_id, sets, reps]);
 
     return (
-        <div className="card w-96 shadow-xl">
+        <div className="card w-96 bg-base-100 shadow-xl">
             <div className="card-body gap-4">
                 <ExerciseHeader
                     options={props.options}
