@@ -1,22 +1,15 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBrandGithubFilled } from '@tabler/icons-react';
 import * as React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../context/AuthContext';
 
 export const Login: React.FC = () => {
     const [loginError, setLoginError] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const navigate = useNavigate();
-    const { login, getSession } = useAuth();
+    const { login, session, loginWith } = useAuth();
     const { state } = useLocation();
-
-    // TODO: should be able to navigate to state.path (previous attempted
-    // route) but it wont read the correct state from require auth
-    React.useEffect(() => {
-        getSession().then(session => {
-            session.session && navigate(state?.path || '/auth/home');
-        });
-    }, []);
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -24,15 +17,19 @@ export const Login: React.FC = () => {
         const email = form.email.value;
         const password = form.password.value;
 
+        setLoading(true);
         login(email, password)
             .then(() => navigate(state?.path || '/auth/home'))
             .catch(() => {
                 form.password.value = '';
                 setLoginError(true);
             });
+        setLoading(false);
     };
 
-    return (
+    return session?.session ? (
+        <Navigate to={state?.path || '/auth/home'} replace />
+    ) : (
         <div className="relative grid min-h-screen w-full place-items-center">
             <Link
                 to="/signup"
@@ -78,12 +75,21 @@ export const Login: React.FC = () => {
                         </span>
                     )}
                     <button type="submit" className="btn btn-primary w-full">
-                        Login
+                        {loading ? (
+                            <span className="loading loading-spinner" />
+                        ) : (
+                            <span>Login</span>
+                        )}
                     </button>
                 </form>
                 <div className="divider w-full">OR CONTINUE WITH</div>
-                <button type="button" className="btn btn-outline w-full">
-                    Provider
+                <button
+                    onClick={() => loginWith('github')}
+                    type="button"
+                    className="btn btn-outline w-full"
+                >
+                    <IconBrandGithubFilled />
+                    Github
                 </button>
             </div>
         </div>

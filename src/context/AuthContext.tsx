@@ -1,10 +1,11 @@
+import { Provider } from '@supabase/gotrue-js';
 import * as React from 'react';
 import { SessionData, useAuth } from '../hooks/useAuth';
 
 interface Auth {
     session: SessionData | null;
-    getSession: () => Promise<SessionData>;
-    login: (email: string, password: string) => Promise<SessionData>;
+    login: (email: string, password: string) => Promise<void>;
+    loginWith: (provider: Provider) => Promise<void>;
     logout: () => Promise<void>;
 }
 

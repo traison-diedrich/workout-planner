@@ -11,17 +11,29 @@ import { ExerciseInfoType, ExerciseType, WorkoutType } from '../data/supabase';
 import { useAuth } from './useAuth';
 
 export const useData = () => {
-    const { getSession } = useAuth();
+    const { session } = useAuth();
 
     const [workouts, setWorkouts] = React.useState<WorkoutType[]>([]);
     const [exerciseInfo, setExerciseInfo] = React.useState<ExerciseInfoType[]>(
         [],
     );
 
+    React.useEffect(() => {
+        readExerciseInfo()
+            .then(ei => setExerciseInfo(ei))
+            .catch(e => console.error(e));
+        if (session) {
+            const uid = session?.user?.id;
+            readWorkouts(uid)
+                .then(w => setWorkouts(w))
+                .catch(e => console.error(e));
+        }
+    }, [session]);
+
     return {
         workouts: workouts,
         createWorkout: async () => {
-            const uid = (await getSession()).user?.id;
+            const uid = session?.user?.id;
             createWorkout(uid)
                 .then(w => {
                     setWorkouts([...workouts, w]);
@@ -29,7 +41,7 @@ export const useData = () => {
                 .catch(e => console.error(e));
         },
         readWorkouts: async () => {
-            const uid = (await getSession()).user?.id;
+            const uid = session?.user?.id;
             readWorkouts(uid)
                 .then(w => setWorkouts(w))
                 .catch(e => console.error(e));
@@ -40,7 +52,7 @@ export const useData = () => {
             exercises: ExerciseType[],
         ) => {
             updateWorkout(wid, name, exercises)
-                .then(() => readExercises(wid))
+                .then(() => readWorkouts(session?.user?.id))
                 .catch(e => console.error(e));
         },
         deleteWorkout: async (wid: number) => {

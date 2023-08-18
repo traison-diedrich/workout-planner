@@ -3,12 +3,7 @@ import { AddCard, WorkoutPreview } from '../../components';
 import { useData } from '../../hooks/useData';
 
 export const AllWorkouts: React.FC = () => {
-    const { workouts, readWorkouts, createWorkout } = useData();
-
-    React.useEffect(() => {
-        readWorkouts();
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const { workouts, createWorkout } = useData();
 
     const onAdd = () => {
         createWorkout();

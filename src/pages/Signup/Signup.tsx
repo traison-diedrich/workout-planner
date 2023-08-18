@@ -1,37 +1,39 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBrandGithubFilled } from '@tabler/icons-react';
 import * as React from 'react';
-import { Form, Link, useNavigation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 export const Signup: React.FC = () => {
-    // const [emailError, setEmailError] = React.useState(false);
-    // const [passwordError, setPasswordError] = React.useState(false);
+    const [emailError, setEmailError] = React.useState(false);
+    const [passwordError, setPasswordError] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
-    const navigation = useNavigation();
-    // const submit = useSubmit();
+    const navigate = useNavigate();
+    const { signup, loginWith } = useAuth();
 
-    // const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-    //     const form = e.currentTarget;
-    //     const email = form.email.value;
-    //     const password = form.password.value;
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const email = form.email.value;
+        const password = form.password.value;
 
-    //     const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    //     const validPassword = password.length > 5;
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const validPassword = password.length > 5;
 
-    //     if (!validEmail) {
-    //         setEmailError(true);
-    //         return;
-    //     }
-    //     setEmailError(false);
-    //     if (!validPassword) {
-    //         setPasswordError(true);
-    //         return;
-    //     }
-    //     setPasswordError(false);
+        if (!validEmail) {
+            setEmailError(true);
+            return;
+        }
+        setEmailError(false);
+        if (!validPassword) {
+            setPasswordError(true);
+            return;
+        }
+        setPasswordError(false);
 
-    //     console.log('submitting sign in');
-    //     submit(e.currentTarget, { method: 'post', action: '/signup' });
-    // };
+        setLoading(true);
+        signup(email, password).then(() => navigate('/login'));
+    };
 
     return (
         <div className="relative grid min-h-screen w-full place-items-center">
@@ -51,11 +53,11 @@ export const Signup: React.FC = () => {
                         Enter your email below to create your account
                     </p>
                 </div>
-                <Form
+                <form
                     method="post"
                     id="signup"
                     className="flex w-full flex-col gap-2"
-                    // onSubmit={onSubmit}
+                    onSubmit={onSubmit}
                 >
                     <div className="form-control">
                         <input
@@ -64,14 +66,14 @@ export const Signup: React.FC = () => {
                             placeholder="name@example.com"
                             className="input input-bordered w-full"
                         />
-                        {/* {emailError && (
+                        {emailError && (
                             <label className="label justify-start gap-2 text-warning">
                                 <IconAlertTriangle />
                                 <span className="text-sm">
                                     Please enter a valid email
                                 </span>
                             </label>
-                        )} */}
+                        )}
                     </div>
                     <div className="form-control">
                         <input
@@ -80,7 +82,7 @@ export const Signup: React.FC = () => {
                             placeholder="password"
                             className="input input-bordered w-full"
                         />
-                        {/* {passwordError && (
+                        {passwordError && (
                             <label className="label justify-start gap-2 text-warning">
                                 <IconAlertTriangle />
                                 <span className="text-sm">
@@ -88,19 +90,24 @@ export const Signup: React.FC = () => {
                                     characters
                                 </span>
                             </label>
-                        )} */}
+                        )}
                     </div>
                     <button type="submit" className="btn btn-primary w-full">
-                        {navigation.state === 'loading' ? (
+                        {loading ? (
                             <span className="loading loading-spinner" />
                         ) : (
                             <span>Sign Up With Email</span>
                         )}
                     </button>
-                </Form>
+                </form>
                 <div className="divider w-full">OR CONTINUE WITH</div>
-                <button type="button" className="btn btn-outline w-full">
-                    Provider
+                <button
+                    onClick={() => loginWith('github')}
+                    type="button"
+                    className="btn btn-outline w-full"
+                >
+                    <IconBrandGithubFilled />
+                    Github
                 </button>
                 <div className="text-center">
                     <p className="py-3 text-sm">

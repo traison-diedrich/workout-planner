@@ -28,19 +28,12 @@ export const Workout: React.FC = () => {
         setShowModal(!showModal);
     };
 
-    const {
-        readExercises,
-        exerciseInfo,
-        readExerciseInfo,
-        deleteWorkout,
-        updateWorkout,
-    } = useData();
+    const { readExercises, exerciseInfo, deleteWorkout, updateWorkout } =
+        useData();
     const [name, setName] = React.useState(state.state.name);
     const [exercises, setExercises] = React.useState<ClientExerciseType[]>([]);
 
     React.useEffect(() => {
-        readExerciseInfo();
-        // give exercise uuid for key management, client side only
         readExercises(state.state.id).then(exs => {
             const clientExs = exs
                 ? exs.map(e => ({
@@ -59,6 +52,7 @@ export const Workout: React.FC = () => {
 
     const onSubmit = () => {
         const serverExercises = exercises.map(e => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { cid, ...exercise } = e;
             return exercise;
         });
@@ -107,7 +101,7 @@ export const Workout: React.FC = () => {
                 leave page with unsaved changes */}
                 <div className="flex w-full justify-between">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={onSubmit}
                         type="button"
                         className="btn btn-square btn-ghost"
                     >
@@ -147,12 +141,6 @@ export const Workout: React.FC = () => {
                     ))}
                 </div>
                 <AddCard type="button" onAdd={createExercise} />
-                <button
-                    onClick={onSubmit}
-                    className="btn btn-primary w-1/2 max-w-lg"
-                >
-                    Save
-                </button>
             </div>
         </>
     );

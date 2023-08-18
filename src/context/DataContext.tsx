@@ -13,7 +13,7 @@ interface DataAccess {
         exercises: ExerciseType[],
     ) => Promise<void>;
     deleteWorkout: (wid: number) => Promise<void>;
-    readExercises: (wid: string) => Promise<ExerciseType[] | null>;
+    readExercises: (wid: number) => Promise<ExerciseType[] | null>;
     exerciseInfo: ExerciseInfoType[] | null;
     readExerciseInfo: () => Promise<void>;
 }

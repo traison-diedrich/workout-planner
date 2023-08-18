@@ -37,6 +37,7 @@ export async function updateWorkout(
         exercise => exercise.id === 0,
     );
     insert = insert.map(exercise => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...rest } = exercise;
         return rest;
     });
