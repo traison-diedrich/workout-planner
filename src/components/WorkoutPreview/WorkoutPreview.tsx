@@ -23,6 +23,7 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
         readExercises(wid).then(exercises => {
             setExercises(exercises);
         });
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
