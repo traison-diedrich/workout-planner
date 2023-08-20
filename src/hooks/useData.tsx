@@ -22,8 +22,8 @@ export const useData = () => {
         readExerciseInfo()
             .then(ei => setExerciseInfo(ei))
             .catch(e => console.error(e));
-        if (session) {
-            const uid = session?.user?.id;
+        if (session?.user?.id) {
+            const uid = session.user.id;
             readWorkouts(uid)
                 .then(w => setWorkouts(w))
                 .catch(e => console.error(e));

@@ -2,6 +2,7 @@ import { IconAlertTriangle, IconBrandGithubFilled } from '@tabler/icons-react';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import WP from '/WP.svg';
 
 export const Signup: React.FC = () => {
     const [emailError, setEmailError] = React.useState(false);
@@ -37,14 +38,15 @@ export const Signup: React.FC = () => {
 
     return (
         <div className="relative grid min-h-screen w-full place-items-center">
-            <Link
-                to="/login"
-                className="btn btn-ghost btn-sm absolute right-8 top-8"
-            >
+            <Link to="/login" className="btn btn-ghost absolute right-8 top-8">
                 Login
             </Link>
-            <Link to="/" className="btn btn-ghost btn-sm absolute left-8 top-8">
-                WP
+            <Link to="/" className="btn btn-ghost absolute left-8 top-8">
+                <img
+                    src={WP}
+                    alt="Workout Planner Logo"
+                    className="h-10 w-10"
+                />
             </Link>
             <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4">
                 <div className="text-center">
@@ -61,7 +63,7 @@ export const Signup: React.FC = () => {
                 >
                     <div className="form-control">
                         <input
-                            type="text"
+                            type="email"
                             name="email"
                             placeholder="name@example.com"
                             className="input input-bordered w-full"
@@ -111,7 +113,7 @@ export const Signup: React.FC = () => {
                 </button>
                 <div className="text-center">
                     <p className="py-3 text-sm">
-                        By clicking continue, you agree to absolutely nothing
+                        By clicking sign up, you agree to absolutely nothing
                     </p>
                 </div>
             </div>

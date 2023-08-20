@@ -10,7 +10,7 @@ export const Drawer: React.FC<DrawerProps> = ({ toggleOpen }) => {
     return (
         <div className="drawer-side z-50">
             <label htmlFor="my-drawer" className="drawer-overlay" />
-            <ul className="menu h-full w-60 gap-2 bg-base-200 px-4 pt-16 text-base-content">
+            <ul className="menu h-full w-60 gap-2 bg-base-100 px-4 pt-16 text-base-content">
                 <DrawerLink
                     Icon={IconHome}
                     title="Home"

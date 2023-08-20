@@ -31,6 +31,26 @@ export const useAuth = () => {
             .catch(e => console.error(e));
     }, []);
 
+    // a temporary solution until i can get a reset password page
+    // working properly
+    React.useEffect(() => {
+        supabase.auth.onAuthStateChange(async event => {
+            if (event == 'PASSWORD_RECOVERY') {
+                const newPassword = prompt(
+                    'What would you like your new password to be?',
+                );
+                const { data, error } = await supabase.auth.updateUser({
+                    password: newPassword,
+                });
+
+                if (error) alert('There was an error updating your password.');
+                if (data) {
+                    alert('Password updated successfully!');
+                }
+            }
+        });
+    }, []);
+
     return {
         session: session,
         login: async (email: string, password: string) => {
