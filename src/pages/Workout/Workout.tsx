@@ -17,7 +17,7 @@ export const Workout: React.FC = () => {
     // getting workout name through state.pathname until I can
     // figure out how to pass it down properly
     const state = useLocation();
-    const wid = state.pathname.split('/').pop();
+    const wid = parseInt(state.pathname.split('/').pop() || '');
 
     const navigate = useNavigate();
 
@@ -28,11 +28,11 @@ export const Workout: React.FC = () => {
 
     const { data: workout } = useQuery({
         queryKey: ['workouts', wid],
-        queryFn: () => readWorkout(parseInt(wid || '0')),
+        queryFn: () => readWorkout(wid),
     });
     const { data: exercises } = useQuery({
         queryKey: ['exercises', wid],
-        queryFn: () => readExercises(parseInt(wid || '0')),
+        queryFn: () => readExercises(wid),
     });
     const { data: exerciseInfo } = useQuery({
         queryKey: ['exerciseInfo'],
