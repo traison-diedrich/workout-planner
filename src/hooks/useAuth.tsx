@@ -22,6 +22,22 @@ async function getSession() {
     return fetchedSession;
 }
 
+async function handlePasswordRecovery() {
+    const newPassword = prompt('What would you like your new password to be?');
+
+    if (newPassword) {
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword,
+        });
+
+        if (error) {
+            alert('There was an error updating your password.');
+        } else if (data) {
+            alert('Password updated successfully!');
+        }
+    }
+}
+
 export const useAuth = () => {
     const [session, setSession] = React.useState<SessionData | null>(null);
 
@@ -29,6 +45,16 @@ export const useAuth = () => {
         getSession()
             .then(session => setSession(session))
             .catch(e => console.error(e));
+    }, []);
+
+    // a temporary solution until i can get a reset password page
+    // working properly
+    React.useEffect(() => {
+        supabase.auth.onAuthStateChange(event => {
+            if (event == 'PASSWORD_RECOVERY') {
+                handlePasswordRecovery();
+            }
+        });
     }, []);
 
     return {

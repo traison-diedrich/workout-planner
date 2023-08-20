@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 import { RequireAuth } from './components/RequireAuth';
 import { AuthProvider, DataProvider, ThemeProvider } from './context';
-import { signup } from './data/auth';
 import { Main } from './layouts';
 import {
     AllWorkouts,
@@ -24,7 +23,7 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="" errorElement={<Error />}>
             <Route path="/" element={<Welcome />} />
-            <Route path="/signup" element={<Signup />} action={signup} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route
                 path="/auth/"
