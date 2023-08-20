@@ -5,17 +5,7 @@ import { ExerciseInfoType, ExerciseType, WorkoutType } from '../data/supabase';
 
 interface DataAccess {
     workouts: WorkoutType[] | null;
-    createWorkout: () => Promise<void>;
-    readWorkouts: () => Promise<void>;
-    updateWorkout: (
-        wid: number,
-        name: string,
-        exercises: ExerciseType[],
-    ) => Promise<void>;
-    deleteWorkout: (wid: number) => Promise<void>;
-    readExercises: (wid: number) => Promise<ExerciseType[] | null>;
     exerciseInfo: ExerciseInfoType[] | null;
-    readExerciseInfo: () => Promise<void>;
 }
 
 const dataContext = React.createContext<DataAccess | null>(null);

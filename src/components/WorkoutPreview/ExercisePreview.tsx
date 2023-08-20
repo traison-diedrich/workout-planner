@@ -15,11 +15,13 @@ export const ExercisePreview: React.FC<ExercisePreviewProps> = ({
 }) => {
     return (
         <li className="p-1">
-            <div className="flex items-center gap-2 ">
-                <p className="text-xl">{name}</p>
-                <NumberBox value={sets} size="text-3xl" />
-                <IconX />
-                <NumberBox value={reps} size="text-3xl" />
+            <div className="flex items-center">
+                <p className="text-left text-xl">{name}</p>
+                <div className="flex items-center justify-end gap-2">
+                    <NumberBox value={sets} size="text-3xl" />
+                    <IconX />
+                    <NumberBox value={reps} size="text-3xl" />
+                </div>
             </div>
         </li>
     );

@@ -1,6 +1,6 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { ExerciseType } from '../../data/supabase/database.types';
-import { useData } from '../../hooks/useData';
+import { createWorkout, readExerciseInfo, readExercises } from '../../data/crud';
 import { ExercisePreview } from './ExercisePreview';
 import { Header } from './Header';
 
@@ -13,18 +13,16 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     wid,
     name,
 }) => {
-    const { readExercises, exerciseInfo, readExerciseInfo } = useData();
-    const [exercises, setExercises] = React.useState<ExerciseType[] | null>(
-        null,
-    );
+    const queryClient = useQueryClient();
 
-    React.useEffect(() => {
-        readExerciseInfo();
-        readExercises(wid).then(exercises => {
-            setExercises(exercises);
-        });
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const { data: exerciseInfo } = useQuery({
+        queryKey: ['exerciseInfo'],
+        queryFn: readExerciseInfo,
+    });
+    const { data: exercises } = useQuery({
+        queryKey: ['exercises', wid],
+        queryFn: () => readExercises(wid),
+    });
 
     return (
         <div className="card w-96 bg-base-100 shadow-xl">

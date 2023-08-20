@@ -12,6 +12,16 @@ export async function readWorkouts(uid: uid) {
     return res.data;
 }
 
+export async function readWorkout(wid: number) {
+    const query = supabase.from('workouts').select('*').eq('id', wid);
+    const res: DbResult<typeof query> = await query;
+
+    if (res.error) {
+        throw res.error;
+    }
+    return res.data[0];
+}
+
 export async function readExercises(wid: number) {
     const query = supabase.from('exercises').select('*').eq('wid', wid);
     const res: DbResult<typeof query> = await query;

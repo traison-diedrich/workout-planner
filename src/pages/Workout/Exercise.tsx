@@ -11,8 +11,6 @@ interface ExerciseProps {
     initialReps: number;
     e_type_id: number;
     options: ExerciseInfoType[];
-    onDelete: () => void;
-    setExercise(exercise: ExerciseStateType): void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = props => {
@@ -20,25 +18,14 @@ export const Exercise: React.FC<ExerciseProps> = props => {
     const [sets, setSets] = React.useState<number>(props.initialSets);
     const [reps, setReps] = React.useState<number>(props.initialReps);
 
-    React.useEffect(() => {
-        const updatedExercise: ExerciseStateType = {
-            e_type_id: e_type_id,
-            sets: sets,
-            reps: reps,
-        };
-
-        props.setExercise(updatedExercise);
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [e_type_id, sets, reps]);
-
     return (
         <div className="card w-96 bg-base-100 shadow-xl">
             <div className="card-body gap-4">
                 <ExerciseHeader
                     options={props.options}
                     e_type_id={props.e_type_id}
-                    onDelete={props.onDelete}
-                    setType={setEid}
+                    onDelete={null}
+                    setType={null}
                 />
                 <div className="flex w-full items-center justify-center gap-4">
                     <div className="inline-flex flex-col items-center gap-2">

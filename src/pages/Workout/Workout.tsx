@@ -1,15 +1,11 @@
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import { AddCard } from '../../components';
-import { ExerciseType } from '../../data/supabase/';
-import { useData } from '../../hooks/useData';
+import { readExerciseInfo, readExercises, readWorkout } from '../../data/crud';
 import { DeleteModal, Exercise } from './';
-
-interface ClientExerciseType extends ExerciseType {
-    cid: string;
-}
 
 export type ExerciseStateType = {
     e_type_id: number;
@@ -18,9 +14,11 @@ export type ExerciseStateType = {
 };
 
 export const Workout: React.FC = () => {
-    // getting workout name through state.state.name until I can
+    // getting workout name through state.pathname until I can
     // figure out how to pass it down properly
     const state = useLocation();
+    const wid = state.pathname.split('/').pop();
+
     const navigate = useNavigate();
 
     const [showModal, setShowModal] = React.useState(false);
@@ -28,80 +26,33 @@ export const Workout: React.FC = () => {
         setShowModal(!showModal);
     };
 
-    const { readExercises, exerciseInfo, deleteWorkout, updateWorkout } =
-        useData();
-    const [name, setName] = React.useState(state.state.name);
-    const [exercises, setExercises] = React.useState<ClientExerciseType[]>([]);
-
-    React.useEffect(() => {
-        readExercises(state.state.id).then(exs => {
-            const clientExs = exs
-                ? exs.map(e => ({
-                      cid: uuid().slice(0, 8),
-                      ...e,
-                  }))
-                : [];
-            setExercises(clientExs);
-        });
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const onDelete = () => {
-        deleteWorkout(state.state.id).then(() => navigate('/auth/workouts'));
-    };
-
-    const onSubmit = () => {
-        const serverExercises = exercises.map(e => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { cid, ...exercise } = e;
-            return exercise;
-        });
-
-        updateWorkout(state.state.id, name, serverExercises).then(() =>
-            navigate('/auth/workouts'),
-        );
-    };
-
-    const createExercise = () => {
-        const newExercise: ClientExerciseType = {
-            cid: uuid().slice(0, 8),
-            id: 0,
-            wid: state.state.id,
-            e_type_id: 1,
-            sets: 3,
-            reps: 10,
-        };
-        setExercises([...exercises, newExercise]);
-    };
-
-    const updateExercise = (index: number, exercise: ExerciseStateType) => {
-        const updatedExercises = [...exercises];
-        updatedExercises[index] = {
-            ...updatedExercises[index],
-            ...exercise,
-        };
-        setExercises(updatedExercises);
-    };
-
-    const deleteExercise = (index: number) => {
-        const newList = exercises.filter((_, i) => i !== index);
-        setExercises(newList);
-    };
+    const { data: workout } = useQuery({
+        queryKey: ['workouts', wid],
+        queryFn: () => readWorkout(parseInt(wid || '0')),
+    });
+    const { data: exercises } = useQuery({
+        queryKey: ['exercises', wid],
+        queryFn: () => readExercises(parseInt(wid || '0')),
+    });
+    const { data: exerciseInfo } = useQuery({
+        queryKey: ['exerciseInfo'],
+        queryFn: readExerciseInfo,
+    });
 
     return (
         <>
             <DeleteModal
                 open={showModal}
-                name={state.state.name}
+                name={workout?.name || ''}
                 toggleOpen={toggleModal}
-                onDelete={onDelete}
+                onDelete={null}
             />
             <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
                 {/* TODO: implement a check to make sure user wants to 
                 leave page with unsaved changes */}
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
-                        onClick={onSubmit}
+                        onClick={() => navigate(-1)}
                         type="button"
                         className="btn btn-square btn-ghost"
                     >
@@ -115,7 +66,6 @@ export const Workout: React.FC = () => {
                         name="name"
                         defaultValue={state.state.name}
                         className="input input-bordered input-primary w-full text-center text-4xl"
-                        onChange={e => setName(e.target.value)}
                     />
                     <button
                         onClick={toggleModal}
@@ -125,23 +75,21 @@ export const Workout: React.FC = () => {
                     </button>
                 </div>
                 <div className="flex w-full flex-wrap justify-center gap-6">
-                    {exercises.map((exercise, index) => (
+                    {exercises?.map((exercise, index) => (
                         <Exercise
-                            key={exercise.cid}
+                            key={index}
                             options={exerciseInfo || []}
                             id={exercise.id}
                             e_type_id={exercise.e_type_id}
                             initialSets={exercise.sets}
                             initialReps={exercise.reps}
-                            onDelete={() => deleteExercise(index)}
-                            setExercise={(e: ExerciseStateType) =>
-                                updateExercise(index, e)
-                            }
+                            onDelete={null}
+                            setExercise={null}
                         />
                     ))}
                 </div>
-                <AddCard onAdd={createExercise} />
-                <button onClick={onSubmit} className="btn btn-primary w-96">
+                <AddCard onAdd={null} />
+                <button onClick={null} className="btn btn-primary w-96">
                     Save
                 </button>
             </div>
