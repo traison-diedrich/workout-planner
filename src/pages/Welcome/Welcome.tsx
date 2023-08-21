@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import exercise from '../../assets/exercise.svg';
 
 export const Welcome: React.FC = () => {
     return (
@@ -10,9 +11,20 @@ export const Welcome: React.FC = () => {
             >
                 Login
             </Link>
-            <div className="hero-content flex-col">
-                <h1>Welcome to Workout Planner</h1>
-                <Link to="/signup" className="btn btn-primary">
+            <div className="hero-content flex-col p-5">
+                <h1 className="text-center text-5xl">
+                    Welcome to{' '}
+                    <span className="text-primary">Workout Planner</span>
+                </h1>
+                <img
+                    src={exercise}
+                    alt="woman exercising"
+                    className="h-auto w-4/5"
+                />
+                <p className="text-center text-xl">
+                    A free and open source workout assistant
+                </p>
+                <Link to="/signup" className="btn btn-primary btn-wide">
                     Get Started
                 </Link>
             </div>

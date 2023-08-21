@@ -1,0 +1,16 @@
+<svg version="1.1" id="hobbies_1_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+  <style>
+    .st0{display:none;}
+    .st1{display:inline;}
+    .st2{fill:#7ca5b8;}
+    .st3{display:inline;}
+    .st3,.st4{fill-rule:evenodd;clip-rule:evenodd;fill:#7ca5b8;} /* Color changed to #7ca5b8 */
+  </style>
+  <g id="row2_1_">
+    <g id="gym_1_">
+      <path class="st2" d="M5.9,30.1C3.9,36,0,47.8,0,47.8v32.5l5.9,17.6h25.5l5.9-17.6V47.8l-5.9-17.6C17.6,30.3,5.9,30.1,5.9,30.1z M116.2,30.1
+      s-12.9,0.2-25.5,0c-2,5.9-5.9,17.6-5.9,17.6v32.5l5.9,17.6h25.5l5.9-17.6V47.8l-5.9-17.7L116.2,30.1z" id="weights"/>
+      <path id="holder" class="st4" d="M41.3,53.5h45.3v20.9H41.3z"/>
+    </g>
+  </g>
+</svg>
