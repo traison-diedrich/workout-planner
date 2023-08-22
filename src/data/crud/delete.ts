@@ -10,3 +10,13 @@ export async function deleteWorkout(wid: number) {
     }
     return;
 }
+
+export async function deleteExercise(eid: number) {
+    const query = supabase.from('exercises').delete().eq('id', eid);
+    const res: DbResult<typeof query> = await query;
+
+    if (res.error) {
+        throw res.error;
+    }
+    return;
+}

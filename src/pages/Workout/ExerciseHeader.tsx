@@ -4,15 +4,15 @@ import { ExerciseInfoType } from '../../data/supabase/database.types';
 
 interface ExerciseHeaderProps {
     options: ExerciseInfoType[];
-    onDelete: () => void;
     e_type_id: number;
-    setType: (id: number) => void;
+    onDelete: () => void;
+    setType: (type: number) => void;
 }
 
 export const ExerciseHeader: React.FC<ExerciseHeaderProps> = ({
     options,
-    onDelete,
     e_type_id,
+    onDelete,
     setType,
 }) => {
     return (

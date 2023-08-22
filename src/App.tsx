@@ -5,7 +5,7 @@ import {
     createRoutesFromElements,
 } from 'react-router-dom';
 import { RequireAuth } from './components/RequireAuth';
-import { AuthProvider, DataProvider, ThemeProvider } from './context';
+import { AuthProvider, ThemeProvider } from './context';
 import { Main } from './layouts';
 import {
     AllWorkouts,
@@ -16,6 +16,8 @@ import {
     Welcome,
     Workout,
 } from './pages';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // TODO: i hate react-router-dom and its silly forms and loaders
 // upgrade to next.js as fast as possible
@@ -41,14 +43,16 @@ const router = createBrowserRouter(
     ),
 );
 
+const queryClient = new QueryClient();
+
 function App() {
     return (
         <ThemeProvider>
-            <AuthProvider>
-                <DataProvider>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
                     <RouterProvider router={router} />
-                </DataProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </QueryClientProvider>
         </ThemeProvider>
     );
 }

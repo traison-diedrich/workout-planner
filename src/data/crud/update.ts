@@ -5,8 +5,9 @@ import {
 } from '../supabase/database.types';
 import { supabase } from '../supabase/supabaseClient';
 
-// TODO: this update single-handedly made me understand the need for api's
-// create an api to handle the parsing and multiple queries
+// TODO: this update single-handedly made me understand the need for apis
+// create an api to handle the parsing and multiple queries and return
+// the updated workout values
 export async function updateWorkout(
     wid: number,
     name: string,
@@ -55,12 +56,22 @@ export async function updateWorkout(
         updateRes.error ||
         insertRes.error
     ) {
-        throw (
-            workoutRes.error ||
-            deleteRes.error ||
-            updateRes.error ||
-            insertRes.error
-        );
+        if (workoutRes.error) {
+            console.error('Workout error:', workoutRes.error);
+            throw workoutRes.error;
+        }
+        if (deleteRes.error) {
+            console.error('Delete error:', deleteRes.error);
+            throw deleteRes.error;
+        }
+        if (updateRes.error) {
+            console.error('Update error:', updateRes.error);
+            throw updateRes.error;
+        }
+        if (insertRes.error) {
+            console.error('Insert error:', insertRes.error);
+            throw insertRes.error;
+        }
     }
     return;
 }
