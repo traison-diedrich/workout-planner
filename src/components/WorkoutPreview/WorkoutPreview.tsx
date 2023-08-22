@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
-import { createWorkout, readExerciseInfo, readExercises } from '../../data/crud';
+import { readExerciseInfo, readExercises } from '../../data/crud';
 import { ExercisePreview } from './ExercisePreview';
 import { Header } from './Header';
 
@@ -13,8 +13,6 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     wid,
     name,
 }) => {
-    const queryClient = useQueryClient();
-
     const { data: exerciseInfo } = useQuery({
         queryKey: ['exerciseInfo'],
         queryFn: readExerciseInfo,
