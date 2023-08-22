@@ -136,7 +136,7 @@ export const Workout: React.FC = () => {
                     </button>
                 </div>
                 <div className="flex w-full flex-wrap justify-center gap-6">
-                    {isLoading ? (
+                    {isLoading && exercises.length > 0 ? (
                         <span className="loading loading-spinner loading-lg" />
                     ) : (
                         <>
@@ -151,18 +151,20 @@ export const Workout: React.FC = () => {
                                 />
                             ))}
                             <AddCard onAdd={() => creation.mutate()} />
-                            <button
-                                className="btn btn-primary btn-wide"
-                                onClick={() => {
-                                    update.mutate();
-                                    navigate(-1);
-                                }}
-                            >
-                                Save Workout
-                            </button>
                         </>
                     )}
                 </div>
+                {!isLoading && exercises.length > 0 && (
+                    <button
+                        className="btn btn-primary btn-wide"
+                        onClick={() => {
+                            update.mutate();
+                            navigate(-1);
+                        }}
+                    >
+                        Save Workout
+                    </button>
+                )}
             </div>
         </>
     );
