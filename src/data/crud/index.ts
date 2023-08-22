@@ -1,6 +1,7 @@
-export { createWorkout } from './create';
-export { deleteWorkout } from './delete';
+export { createExercise, createWorkout } from './create';
+export { deleteExercise, deleteWorkout } from './delete';
 export {
+    readExercise,
     readExerciseInfo,
     readExercises,
     readWorkout,

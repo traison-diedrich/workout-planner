@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
             <div className="flex-none">
                 <button
                     onClick={toggleOpen}
-                    className="btn btn-square btn-ghost lg:hidden"
+                    className="btn btn-square btn-ghost xl:hidden"
                 >
                     <IconMenu2 />
                 </button>

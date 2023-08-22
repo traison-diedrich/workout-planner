@@ -32,6 +32,16 @@ export async function readExercises(wid: number) {
     return res.data;
 }
 
+export async function readExercise(eid: number) {
+    const query = supabase.from('exercises').select('*').eq('id', eid);
+    const res: DbResult<typeof query> = await query;
+
+    if (res.error) {
+        throw res.error;
+    }
+    return res.data[0];
+}
+
 export async function readExerciseInfo() {
     const query = supabase.from('exercise_types').select('*');
     const res: DbResult<typeof query> = await query;

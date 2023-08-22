@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AddCard, WorkoutPreview } from '../../components';
 import { createWorkout, readWorkouts } from '../../data/crud';
 import { useAuth } from '../../hooks';
@@ -7,6 +8,8 @@ import { useAuth } from '../../hooks';
 export const AllWorkouts: React.FC = () => {
     const { session } = useAuth();
     const queryClient = useQueryClient();
+
+    const navigate = useNavigate();
 
     const { data: workouts, isLoading } = useQuery({
         queryKey: ['workouts'],
@@ -16,8 +19,9 @@ export const AllWorkouts: React.FC = () => {
 
     const mutation = useMutation({
         mutationFn: createWorkout,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+        onSuccess: data => {
+            queryClient.invalidateQueries(['workouts']);
+            navigate(`/auth/workouts/${data.id}`);
         },
     });
 
