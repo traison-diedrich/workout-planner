@@ -9,15 +9,23 @@ import {
     readExerciseInfo,
     readExercises,
     readWorkout,
+    updateWorkout,
 } from '../../data/crud';
+import { ExerciseType } from '../../data/supabase';
 import { DeleteModal, Exercise } from './';
 
-export type ExerciseStateType = {
+export type ExerciseUpdateType = {
     e_type_id: number;
     sets: number;
     reps: number;
 };
 
+/** TODO: as of right now, the workout changes will only be saved
+ *  if the user clicks the save or back button. react-router-dom v6
+ *  no longer supports the tools to block navigation with dirty data
+ *  either create a custom useBlocker() hook to prevent navigation
+ *  with unsaved changes or find a different router lmao
+ */
 export const Workout: React.FC = () => {
     const [showModal, setShowModal] = React.useState(false);
     const toggleModal = () => {
@@ -30,19 +38,52 @@ export const Workout: React.FC = () => {
     // figure out how to pass it down properly
     const wid = parseInt(state.pathname.split('/').pop() || '');
 
-    const queryClient = useQueryClient();
+    const [name, setName] = React.useState('');
 
-    const { data: workout } = useQuery({
+    useQuery({
         queryKey: ['workouts', wid],
         queryFn: () => readWorkout(wid),
+        onSuccess: data => setName(data.name),
     });
     const { data: exerciseInfo } = useQuery({
         queryKey: ['exerciseInfo'],
         queryFn: readExerciseInfo,
     });
-    const { data: exercises, isLoading } = useQuery({
+
+    const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
+
+    const queryClient = useQueryClient();
+    const { isLoading } = useQuery({
         queryKey: ['exercises', wid],
         queryFn: () => readExercises(wid),
+        onSuccess: data => setExercises(data),
+    });
+
+    const creation = useMutation({
+        mutationFn: () => createExercise(wid),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['exercises']);
+        },
+    });
+
+    const updateExercise = (index: number, exercise: ExerciseUpdateType) => {
+        const updatedExercises = [...exercises];
+        updatedExercises[index] = {
+            ...updatedExercises[index],
+            ...exercise,
+        };
+        setExercises(updatedExercises);
+    };
+
+    // there is a better way to do this where the function updateWorkout
+    // returns the updated workout, but without a custom api this will do
+    // see: https://tanstack.com/query/latest/docs/react/guides/updates-from-mutation-responses
+    const update = useMutation({
+        mutationFn: () => updateWorkout(wid, name, exercises),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['workouts', wid]);
+            navigate('/auth/workouts/');
+        },
     });
 
     const deletion = useMutation({
@@ -53,27 +94,18 @@ export const Workout: React.FC = () => {
         },
     });
 
-    const creation = useMutation({
-        mutationFn: () => createExercise(wid),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['exercises']);
-        },
-    });
-
     return (
         <>
             <DeleteModal
                 open={showModal}
-                name={workout?.name || ''}
+                name={name}
                 toggleOpen={toggleModal}
                 onDelete={() => deletion.mutate()}
             />
             <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
-                {/* TODO: implement a check to make sure user wants to 
-                leave page with unsaved changes */}
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => update.mutate()}
                         type="button"
                         className="btn btn-square btn-ghost"
                     >
@@ -83,8 +115,9 @@ export const Workout: React.FC = () => {
                         type="text"
                         placeholder="Workout Name"
                         name="name"
-                        defaultValue={workout?.name}
+                        defaultValue={name}
                         className="input input-bordered input-primary w-full text-center text-4xl"
+                        onChange={e => setName(e.target.value)}
                     />
                     <button
                         onClick={toggleModal}
@@ -102,10 +135,19 @@ export const Workout: React.FC = () => {
                                 <Exercise
                                     key={index}
                                     options={exerciseInfo || []}
-                                    id={exercise.id}
+                                    exercise={exercise}
+                                    setExercise={(exercise: ExerciseType) =>
+                                        updateExercise(index, exercise)
+                                    }
                                 />
                             ))}
                             <AddCard onAdd={() => creation.mutate()} />
+                            <button
+                                className="btn btn-primary btn-wide"
+                                onClick={() => update.mutate()}
+                            >
+                                Save Workout
+                            </button>
                         </>
                     )}
                 </div>
