@@ -15,15 +15,16 @@ From front to back:
 
 - [x] User authentication
 - [x] Create, edit, and delete workouts
+- [x] Integrate TanstackQuery for better state management and data fetching
 
 ## Todo's
 
 Upcoming features and tasks:
 
+- [ ] Better exercise selector
 - [ ] Workout tracking
 - [ ] Create and plan workout splits
 - [ ] Custom api for better data processing and access
-- [ ] Integrate TanstackQuery for better state management and data fetching
 
 ## Contributing
 
