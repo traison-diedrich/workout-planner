@@ -1,16 +1,21 @@
 import { IconAlertTriangle, IconBrandGithubFilled } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { loginWith, signup } from '../../data/auth';
 import WP from '/WP.svg';
 
 export const Signup: React.FC = () => {
     const [emailError, setEmailError] = React.useState(false);
     const [passwordError, setPasswordError] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
 
     const navigate = useNavigate();
-    const { signup, loginWith } = useAuth();
+
+    const signupMutation = useMutation({
+        mutationFn: (data: { email: string; password: string }) =>
+            signup(data.email, data.password),
+        onSuccess: () => navigate('/login', { state: { signup: true } }),
+    });
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,8 +37,7 @@ export const Signup: React.FC = () => {
         }
         setPasswordError(false);
 
-        setLoading(true);
-        signup(email, password).then(() => navigate('/login'));
+        signupMutation.mutate({ email: email, password: password });
     };
 
     return (
@@ -95,7 +99,7 @@ export const Signup: React.FC = () => {
                         )}
                     </div>
                     <button type="submit" className="btn btn-primary w-full">
-                        {loading ? (
+                        {signupMutation.isLoading ? (
                             <span className="loading loading-spinner" />
                         ) : (
                             <span>Sign Up With Email</span>

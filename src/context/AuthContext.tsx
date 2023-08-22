@@ -1,24 +1,32 @@
-import { Provider } from '@supabase/gotrue-js';
 import * as React from 'react';
-import { SessionData, useAuth } from '../hooks/useAuth';
+import { supabase } from '../data/supabase';
 
-interface Auth {
-    session: SessionData | null;
-    login: (email: string, password: string) => Promise<void>;
-    loginWith: (provider: Provider) => Promise<void>;
-    logout: () => Promise<void>;
+async function handlePasswordRecovery() {
+    const newPassword = prompt('What would you like your new password to be?');
+
+    if (newPassword) {
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword,
+        });
+
+        if (error) {
+            alert('There was an error updating your password.');
+        } else if (data) {
+            alert('Password updated successfully!');
+        }
+    }
 }
-
-const authContext = React.createContext<Auth>({} as Auth);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const auth = useAuth();
+    React.useEffect(() => {
+        supabase.auth.onAuthStateChange(event => {
+            if (event == 'PASSWORD_RECOVERY') {
+                handlePasswordRecovery();
+            }
+        });
+    }, []);
 
-    return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+    return children;
 };
-
-export default function AuthConsumer() {
-    return React.useContext(authContext);
-}

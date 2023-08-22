@@ -24,7 +24,7 @@ export type ExerciseUpdateType = {
  *  if the user clicks the save or back button. react-router-dom v6
  *  no longer supports the tools to block navigation with dirty data
  *  either create a custom useBlocker() hook to prevent navigation
- *  with unsaved changes or find a different router lmao
+ *  with unsaved changes or find a different router (most likely option)
  */
 export const Workout: React.FC = () => {
     const [showModal, setShowModal] = React.useState(false);
@@ -81,8 +81,12 @@ export const Workout: React.FC = () => {
     const update = useMutation({
         mutationFn: () => updateWorkout(wid, name, exercises),
         onSuccess: () => {
-            queryClient.invalidateQueries(['workouts', wid]);
-            navigate('/auth/workouts/');
+            queryClient.invalidateQueries({
+                queryKey: ['workouts', wid],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['exercises', wid],
+            });
         },
     });
 
@@ -90,7 +94,6 @@ export const Workout: React.FC = () => {
         mutationFn: () => deleteWorkout(wid),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
-            navigate('/auth/workouts/');
         },
     });
 
@@ -100,12 +103,18 @@ export const Workout: React.FC = () => {
                 open={showModal}
                 name={name}
                 toggleOpen={toggleModal}
-                onDelete={() => deletion.mutate()}
+                onDelete={() => {
+                    deletion.mutate();
+                    navigate(-1);
+                }}
             />
             <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
-                        onClick={() => update.mutate()}
+                        onClick={() => {
+                            update.mutate();
+                            navigate(-1);
+                        }}
                         type="button"
                         className="btn btn-square btn-ghost"
                     >
@@ -144,7 +153,10 @@ export const Workout: React.FC = () => {
                             <AddCard onAdd={() => creation.mutate()} />
                             <button
                                 className="btn btn-primary btn-wide"
-                                onClick={() => update.mutate()}
+                                onClick={() => {
+                                    update.mutate();
+                                    navigate(-1);
+                                }}
                             >
                                 Save Workout
                             </button>

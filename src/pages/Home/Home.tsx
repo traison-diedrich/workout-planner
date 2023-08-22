@@ -1,9 +1,13 @@
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import useAuth from '../../context/AuthContext';
+import { getSession } from '../../data/auth';
 
 export const Home: React.FC = () => {
-    const { session } = useAuth();
+    const { data: session } = useQuery({
+        queryKey: ['session'],
+        queryFn: getSession,
+    });
 
     const email = session?.user?.email;
 

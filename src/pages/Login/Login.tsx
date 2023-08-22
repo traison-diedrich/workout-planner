@@ -1,17 +1,36 @@
-import { IconAlertTriangle, IconBrandGithubFilled } from '@tabler/icons-react';
+import {
+    IconAlertTriangle,
+    IconBrandGithubFilled,
+    IconInfoCircle,
+} from '@tabler/icons-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../../context/AuthContext';
+import { getSession, login, loginWith } from '../../data/auth';
 import { PasswordReset } from './PasswordReset';
 import WP from '/WP.svg';
 
 export const Login: React.FC = () => {
-    const [loginError, setLoginError] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
-
     const navigate = useNavigate();
-    const { login, session, loginWith } = useAuth();
     const { state } = useLocation();
+
+    console.log(state?.signup);
+
+    const queryClient = useQueryClient();
+
+    const { data: session } = useQuery({
+        queryKey: ['session'],
+        queryFn: getSession,
+    });
+
+    const loginMutation = useMutation({
+        mutationFn: (info: { email: string; password: string }) =>
+            login(info.email, info.password),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['session']);
+            navigate('/auth/home');
+        },
+    });
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -19,14 +38,7 @@ export const Login: React.FC = () => {
         const email = form.email.value;
         const password = form.password.value;
 
-        setLoading(true);
-        login(email, password)
-            .then(() => navigate(state?.path || '/auth/home'))
-            .catch(() => {
-                form.password.value = '';
-                setLoginError(true);
-            });
-        setLoading(false);
+        loginMutation.mutate({ email: email, password: password });
     };
 
     const [showReset, setShowReset] = React.useState(false);
@@ -81,7 +93,15 @@ export const Login: React.FC = () => {
                                 placeholder="password"
                                 className="input input-bordered w-full"
                             />
-                            <label className="ml-auto px-1 py-1">
+                        </div>
+                        <div className="flex items-center p-1">
+                            {loginMutation.isError && (
+                                <span className="flex items-end justify-center gap-2 text-sm text-red-500">
+                                    <IconAlertTriangle />
+                                    Invalid email or password
+                                </span>
+                            )}
+                            <label className="ml-auto">
                                 <button
                                     type="button"
                                     className="link"
@@ -91,17 +111,11 @@ export const Login: React.FC = () => {
                                 </button>
                             </label>
                         </div>
-                        {loginError && (
-                            <span className="flex justify-center gap-2 text-center text-sm text-red-500">
-                                <IconAlertTriangle />
-                                Invalid username or password
-                            </span>
-                        )}
                         <button
                             type="submit"
                             className="btn btn-primary w-full"
                         >
-                            {loading ? (
+                            {loginMutation.isLoading ? (
                                 <span className="loading loading-spinner" />
                             ) : (
                                 <span>Login</span>
@@ -118,6 +132,15 @@ export const Login: React.FC = () => {
                         Github
                     </button>
                 </div>
+                {state?.signup && (
+                    <div className="alert absolute bottom-5 w-4/5 max-w-xl bg-primary text-primary-content">
+                        <span className="flex items-center gap-2">
+                            <IconInfoCircle />
+                            Thanks for signing up! Please confirm your email to
+                            login
+                        </span>
+                    </div>
+                )}
             </div>
         </>
     );

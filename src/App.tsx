@@ -48,11 +48,11 @@ const queryClient = new QueryClient();
 function App() {
     return (
         <ThemeProvider>
-            <AuthProvider>
-                <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
                     <RouterProvider router={router} />
-                </QueryClientProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </QueryClientProvider>
         </ThemeProvider>
     );
 }
