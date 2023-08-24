@@ -2,14 +2,14 @@ import { IconAlertTriangle } from '@tabler/icons-react';
 import * as React from 'react';
 import { DbResult, supabase } from '../../data/supabase';
 
-interface PasswordResetProps {
+interface ResetModalProps {
     open: boolean;
     toggleOpen: () => void;
 }
 
 const passwordReset = async (email: string) => {
     const query = supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://workout-planner.fit/login',
+        redirectTo: 'https://workout-planner.fit/access/login',
     });
     const res: DbResult<typeof query> = await query;
 
@@ -18,10 +18,7 @@ const passwordReset = async (email: string) => {
     }
 };
 
-export const PasswordReset: React.FC<PasswordResetProps> = ({
-    open,
-    toggleOpen,
-}) => {
+export const ResetModal: React.FC<ResetModalProps> = ({ open, toggleOpen }) => {
     const [emailError, setEmailError] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(false);
 

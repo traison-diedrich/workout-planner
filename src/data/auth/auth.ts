@@ -1,4 +1,5 @@
 import { Provider } from '@supabase/supabase-js';
+import { IconError404Off } from '@tabler/icons-react';
 import { DbResult, supabase } from '../supabase';
 
 export async function getSession() {
@@ -37,6 +38,17 @@ export async function loginWith(provider: Provider) {
 
     if (res.error) {
         throw res.error;
+    }
+}
+
+export async function resetPassword(password: string) {
+    const query = supabase.auth.updateUser({
+        password: password,
+    });
+    const { error } = await query;
+
+    if (error) {
+        throw IconError404Off;
     }
 }
 

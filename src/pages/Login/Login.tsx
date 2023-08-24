@@ -3,25 +3,17 @@ import {
     IconBrandGithubFilled,
     IconInfoCircle,
 } from '@tabler/icons-react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { getSession, login, loginWith } from '../../data/auth';
-import { PasswordReset } from './PasswordReset';
-import WP from '/WP.svg';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { login, loginWith } from '../../data/auth';
+import { ResetModal } from './ResetModal';
 
 export const Login: React.FC = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
 
-    console.log(state?.signup);
-
     const queryClient = useQueryClient();
-
-    const { data: session } = useQuery({
-        queryKey: ['session'],
-        queryFn: getSession,
-    });
 
     const loginMutation = useMutation({
         mutationFn: (info: { email: string; password: string }) =>
@@ -47,35 +39,17 @@ export const Login: React.FC = () => {
         setShowReset(!showReset);
     };
 
-    return session?.session ? (
-        <Navigate to={state?.path || '/auth/home'} replace />
-    ) : (
-        <div className="relative flex h-screen w-full">
-            <PasswordReset open={showReset} toggleOpen={toggleReset} />
-            <Link to="/signup" className="btn btn-ghost absolute right-8 top-8">
-                Sign-Up
-            </Link>
-            <Link
-                to="/"
-                className="btn btn-ghost absolute left-8 top-8 z-10 flex items-center gap-2 lg:btn-neutral"
-            >
-                <img src={WP} alt="Workout Planner Logo" className="h-8 w-8" />
-                WP
-            </Link>
-            <div className="relative hidden h-full w-1/2 lg:block">
-                <img
-                    src={gym}
-                    alt="gym"
-                    className="h-full w-full object-cover"
-                />
-                <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col justify-end bg-opacity-20 bg-gradient-to-t from-black via-transparent to-transparent p-8">
-                    <p className="mb-2 text-lg font-bold">
-                        "Don't stop when you're tired. Stop when you're done."
-                    </p>
-                    <p className="text-sm">David Goggins</p>
-                </div>
-            </div>
-            <div className="grid min-h-screen w-full place-items-center lg:w-1/2">
+    return (
+        <>
+            <ResetModal open={showReset} toggleOpen={toggleReset} />
+
+            <div className="relative grid min-h-screen w-full place-items-center lg:w-1/2">
+                <Link
+                    to="/access/signup"
+                    className="btn btn-ghost absolute right-8 top-8"
+                >
+                    Sign-Up
+                </Link>
                 <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4">
                     <div className="text-center">
                         <h1 className="text-3xl font-bold">
@@ -152,6 +126,6 @@ export const Login: React.FC = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </>
     );
 };

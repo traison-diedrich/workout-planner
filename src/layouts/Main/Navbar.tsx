@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                             <a
                                 onClick={() => {
                                     logoutMutation.mutate();
-                                    navigate('/login');
+                                    navigate('/access/login');
                                 }}
                             >
                                 <IconLogout />

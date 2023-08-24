@@ -3,7 +3,6 @@ import { useMutation } from '@tanstack/react-query';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginWith, signup } from '../../data/auth';
-import WP from '/WP.svg';
 
 export const Signup: React.FC = () => {
     const [emailError, setEmailError] = React.useState(false);
@@ -14,7 +13,7 @@ export const Signup: React.FC = () => {
     const signupMutation = useMutation({
         mutationFn: (data: { email: string; password: string }) =>
             signup(data.email, data.password),
-        onSuccess: () => navigate('/login', { state: { signup: true } }),
+        onSuccess: () => navigate('/access/login', { state: { signup: true } }),
     });
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,16 +40,12 @@ export const Signup: React.FC = () => {
     };
 
     return (
-        <div className="relative grid min-h-screen w-full place-items-center">
-            <Link to="/login" className="btn btn-ghost absolute right-8 top-8">
+        <div className="relative grid min-h-screen w-full place-items-center lg:w-1/2">
+            <Link
+                to="/access/login"
+                className="btn btn-ghost absolute right-8 top-8"
+            >
                 Login
-            </Link>
-            <Link to="/" className="btn btn-ghost absolute left-8 top-8">
-                <img
-                    src={WP}
-                    alt="Workout Planner Logo"
-                    className="h-10 w-10"
-                />
             </Link>
             <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4">
                 <div className="text-center">

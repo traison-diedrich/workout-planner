@@ -8,7 +8,7 @@ export default {
     daisyui: {
         themes: [
             {
-                dark: {
+                wpdark: {
                     primary: '#7ca5b8',
                     secondary: '#ec7357',
                     accent: '#c084fc',
@@ -19,7 +19,7 @@ export default {
                     warning: '#fbbd23',
                     error: '#ef4444',
                 },
-                light: {
+                wplight: {
                     primary: '#7ca5b8',
                     secondary: '#ec7357',
                     accent: '#c084fc',
@@ -31,7 +31,6 @@ export default {
                     error: '#ef4444',
                 },
             },
-            'light',
         ],
     },
 };

@@ -16,6 +16,10 @@ export const RequireAuth: React.FC<{ children: React.ReactNode }> = ({
     return session?.session ? (
         children
     ) : (
-        <Navigate to="/login" replace state={{ path: location.pathname }} />
+        <Navigate
+            to="/access/login"
+            replace
+            state={{ path: location.pathname }}
+        />
     );
 };
