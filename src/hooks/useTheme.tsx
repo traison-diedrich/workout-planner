@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export const useTheme = () => {
-    const [theme, setTheme] = React.useState<'light' | 'dark'>('dark');
+    const [theme, setTheme] = React.useState<'wplight' | 'wpdark'>('wpdark');
 
     React.useEffect(() => {
         document
@@ -12,7 +12,7 @@ export const useTheme = () => {
     return {
         theme: theme,
         toggleTheme: () => {
-            setTheme(theme === 'light' ? 'dark' : 'light');
+            setTheme(theme === 'wplight' ? 'wpdark' : 'wplight');
         },
     };
 };

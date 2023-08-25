@@ -5,9 +5,7 @@ import {
     IconSunHigh,
     IconUser,
 } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { logout } from '../../data/auth';
 import { useTheme } from '../../hooks';
 
@@ -16,17 +14,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
-    const navigate = useNavigate();
     const { toggleTheme } = useTheme();
-
-    const queryClient = useQueryClient();
-
-    const logoutMutation = useMutation({
-        mutationFn: logout,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['session'] });
-        },
-    });
 
     return (
         <div className="navbar sticky top-0 z-10 gap-2 bg-base-100 px-4 shadow-lg">
@@ -58,12 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                         className="menu dropdown-content rounded-box z-[1] mt-4 bg-base-100 p-2 shadow"
                     >
                         <li>
-                            <a
-                                onClick={() => {
-                                    logoutMutation.mutate();
-                                    navigate('/login');
-                                }}
-                            >
+                            <a onClick={() => logout()}>
                                 <IconLogout />
                                 Logout
                             </a>

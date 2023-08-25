@@ -8,30 +8,29 @@ export default {
     daisyui: {
         themes: [
             {
-                dark: {
+                wpdark: {
                     primary: '#7ca5b8',
                     secondary: '#ec7357',
                     accent: '#c084fc',
                     neutral: '#2e3638',
                     'base-100': '#1c2122',
-                    info: '#38bdf8',
+                    info: '#7ca5b8',
                     success: '#22c55e',
                     warning: '#fbbd23',
                     error: '#ef4444',
                 },
-                light: {
+                wplight: {
                     primary: '#7ca5b8',
                     secondary: '#ec7357',
                     accent: '#c084fc',
                     neutral: '#2e3638',
                     'base-100': '#ffffff',
-                    info: '#38bdf8',
+                    info: '#7ca5b8',
                     success: '#22c55e',
                     warning: '#fbbd23',
                     error: '#ef4444',
                 },
             },
-            'light',
         ],
     },
 };

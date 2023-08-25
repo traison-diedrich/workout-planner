@@ -1,1 +1,9 @@
-export { getSession, login, loginWith, logout, signup } from './auth';
+export {
+    getSession,
+    login,
+    loginWith,
+    logout,
+    resetPassword,
+    sendPasswordResetEmail,
+    signup,
+} from './auth';

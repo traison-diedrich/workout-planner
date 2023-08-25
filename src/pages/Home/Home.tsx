@@ -1,15 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { getSession } from '../../data/auth';
+import { AuthConsumer } from '../../context';
 
 export const Home: React.FC = () => {
-    const { data: session } = useQuery({
-        queryKey: ['session'],
-        queryFn: getSession,
-    });
+    const { user } = AuthConsumer();
 
-    const email = session?.user?.email;
+    const email = user?.email;
 
     return (
         <div className="hero min-h-screen bg-base-200">
