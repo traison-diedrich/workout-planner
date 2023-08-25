@@ -14,7 +14,6 @@ import { ForgotModal } from './ForgotModal';
 export const Login: React.FC = () => {
     const { state } = useLocation();
     const [resetSent, setResetSent] = React.useState(false);
-    const [signup, setSignup] = React.useState(state?.signup || false);
 
     const loginMutation = useMutation({
         mutationFn: (info: { email: string; password: string }) =>
@@ -30,17 +29,19 @@ export const Login: React.FC = () => {
         loginMutation.mutate({ email: email, password: password });
     };
 
+    /**
+     * TODO: As the application grows, I think it will be necessary to
+     * create an alert system that can be used across the app rather
+     * than creating each alert separately
+     */
+    const [signup, setSignup] = React.useState(state?.signup || false);
     const [showReset, setShowReset] = React.useState(false);
-
-    const toggleReset = () => {
-        setShowReset(!showReset);
-    };
 
     return (
         <div className="relative grid min-h-screen w-full place-items-center lg:w-1/2">
             <ForgotModal
                 open={showReset}
-                toggleOpen={toggleReset}
+                toggleOpen={() => setShowReset(!showReset)}
                 setReset={() => setResetSent(true)}
             />
             <Link
@@ -88,7 +89,7 @@ export const Login: React.FC = () => {
                             <button
                                 type="button"
                                 className="link"
-                                onClick={toggleReset}
+                                onClick={() => setShowReset(!showReset)}
                             >
                                 Forgot password?
                             </button>
@@ -130,7 +131,7 @@ export const Login: React.FC = () => {
                 </div>
             )}
             {resetSent && (
-                <div className="alert alert-info absolute bottom-5 w-4/5 max-w-xl">
+                <div className="alert alert-info absolute bottom-5 flex w-4/5 max-w-xl items-center">
                     <span className="flex w-full items-center gap-2">
                         <IconMail />
                         Check your email for a reset link

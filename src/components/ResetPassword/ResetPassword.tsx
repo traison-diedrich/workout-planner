@@ -24,9 +24,11 @@ export const ResetPassword: React.FC = () => {
     const { event } = AuthConsumer();
     const [open, setOpen] = React.useState(false);
 
-    if (event === 'PASSWORD_RECOVERY') {
-        setOpen(true);
-    }
+    React.useEffect(() => {
+        if (event === 'PASSWORD_RECOVERY') {
+            setOpen(true);
+        }
+    }, [event]);
 
     return (
         <>
