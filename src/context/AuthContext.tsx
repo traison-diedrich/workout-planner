@@ -1,32 +1,23 @@
+import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import * as React from 'react';
-import { supabase } from '../data/supabase';
+import { useAuth } from '../hooks';
 
-async function handlePasswordRecovery() {
-    const newPassword = prompt('What would you like your new password to be?');
-
-    if (newPassword) {
-        const { data, error } = await supabase.auth.updateUser({
-            password: newPassword,
-        });
-
-        if (error) {
-            alert('There was an error updating your password.');
-        } else if (data) {
-            alert('Password updated successfully!');
-        }
-    }
-}
+const authContext = React.createContext<{
+    event: AuthChangeEvent | null;
+    user: User | null;
+    session: Session | null;
+}>({ event: null, user: null, session: null });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    React.useEffect(() => {
-        supabase.auth.onAuthStateChange(event => {
-            if (event == 'PASSWORD_RECOVERY') {
-                handlePasswordRecovery();
-            }
-        });
-    }, []);
+    const session = useAuth();
 
-    return children;
+    return (
+        <authContext.Provider value={session}>{children}</authContext.Provider>
+    );
 };
+
+export function AuthConsumer() {
+    return React.useContext(authContext);
+}

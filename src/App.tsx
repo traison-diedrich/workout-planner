@@ -1,9 +1,11 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
     Route,
     RouterProvider,
     createBrowserRouter,
     createRoutesFromElements,
 } from 'react-router-dom';
+import { ResetPassword } from './components';
 import { RequireAuth } from './components/RequireAuth';
 import { AuthProvider, ThemeProvider } from './context';
 import { Access, Main } from './layouts';
@@ -17,13 +19,11 @@ import {
     Workout,
 } from './pages';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 // TODO: i hate react-router-dom and its silly forms and loaders
 // upgrade to next.js as fast as possible
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="" errorElement={<Error />}>
+        <Route path="" errorElement={<Error />} element={<ResetPassword />}>
             <Route path="/" element={<Welcome />} />
             <Route path="/access/" element={<Access />}>
                 <Route path="signup" element={<Signup />} />
@@ -50,11 +50,11 @@ const queryClient = new QueryClient();
 function App() {
     return (
         <ThemeProvider>
-            <QueryClientProvider client={queryClient}>
-                <AuthProvider>
+            <AuthProvider>
+                <QueryClientProvider client={queryClient}>
                     <RouterProvider router={router} />
-                </AuthProvider>
-            </QueryClientProvider>
+                </QueryClientProvider>
+            </AuthProvider>
         </ThemeProvider>
     );
 }

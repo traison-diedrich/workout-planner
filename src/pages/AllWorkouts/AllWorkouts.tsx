@@ -2,23 +2,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AddCard, WorkoutPreview } from '../../components';
-import { getSession } from '../../data/auth';
+import { AuthConsumer } from '../../context';
 import { createWorkout, readWorkouts } from '../../data/crud';
 
 export const AllWorkouts: React.FC = () => {
     const queryClient = useQueryClient();
 
-    const { data: session } = useQuery({
-        queryKey: ['session'],
-        queryFn: getSession,
-    });
+    const { user } = AuthConsumer();
 
     const navigate = useNavigate();
 
     const { data: workouts, isLoading } = useQuery({
         queryKey: ['workouts'],
-        queryFn: () => readWorkouts(session?.user?.id),
-        enabled: !!session?.user?.id,
+        queryFn: () => readWorkouts(user?.id),
     });
 
     const mutation = useMutation({
@@ -44,9 +40,7 @@ export const AllWorkouts: React.FC = () => {
                                 name={workout.name}
                             />
                         ))}
-                        <AddCard
-                            onAdd={() => mutation.mutate(session?.user?.id)}
-                        />
+                        <AddCard onAdd={() => mutation.mutate(user?.id)} />
                     </>
                 )}
             </div>

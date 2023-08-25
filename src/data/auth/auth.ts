@@ -1,5 +1,4 @@
 import { Provider } from '@supabase/supabase-js';
-import { IconError404Off } from '@tabler/icons-react';
 import { DbResult, supabase } from '../supabase';
 
 export async function getSession() {
@@ -10,11 +9,7 @@ export async function getSession() {
         throw res.error;
     }
 
-    const fetchedSession = {
-        user: res.data.session?.user,
-        session: res.data.session,
-    };
-    return fetchedSession;
+    return res.data;
 }
 
 export async function login(email: string, password: string) {
@@ -30,10 +25,30 @@ export async function login(email: string, password: string) {
     return res.data;
 }
 
-export async function loginWith(provider: Provider) {
+export async function loginWith(provider: Provider, route: string) {
+    const redirect = window.location.origin + route;
+    console.log(redirect);
+
     const query = supabase.auth.signInWithOAuth({
         provider: provider,
+        options: {
+            redirectTo: redirect,
+        },
     });
+    const res: DbResult<typeof query> = await query;
+
+    if (res.error) {
+        throw res.error;
+    }
+}
+
+export async function sendPasswordResetEmail(email: string) {
+    const redirect = window.location.origin + '/access/login';
+
+    const query = supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirect,
+    });
+
     const res: DbResult<typeof query> = await query;
 
     if (res.error) {
@@ -48,11 +63,10 @@ export async function resetPassword(password: string) {
     const { error } = await query;
 
     if (error) {
-        throw IconError404Off;
+        throw error;
     }
 }
 
-//supabase logout
 export async function logout() {
     const query = supabase.auth.signOut();
     const { error } = await query;

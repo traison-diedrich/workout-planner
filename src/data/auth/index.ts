@@ -4,5 +4,6 @@ export {
     loginWith,
     logout,
     resetPassword,
+    sendPasswordResetEmail,
     signup,
 } from './auth';
