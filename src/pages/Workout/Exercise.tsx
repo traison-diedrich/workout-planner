@@ -57,7 +57,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
     };
 
     return (
-        <div className="card w-96 bg-base-100 shadow-xl">
+        <div className="card w-full bg-base-100 shadow-xl sm:max-w-lg">
             <div className="card-body gap-4">
                 <ExerciseHeader
                     e_type_id={exercise.e_type_id}

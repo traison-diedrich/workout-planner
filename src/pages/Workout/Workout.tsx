@@ -135,7 +135,7 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="flex w-full flex-wrap justify-center gap-6">
+                <div className="m-auto grid grid-cols-1 justify-center gap-6">
                     {isLoading && exercises.length > 0 ? (
                         <span className="loading loading-spinner loading-lg" />
                     ) : (
