@@ -26,11 +26,11 @@ export const Main: React.FC = () => {
                     <div className="relative">
                         <ScrollRestoration />
                         <Outlet />
+                        <Footer />
                     </div>
                 </div>
                 <Drawer toggleOpen={toggleOpen} />
             </div>
-            <Footer />
         </>
     );
 };
