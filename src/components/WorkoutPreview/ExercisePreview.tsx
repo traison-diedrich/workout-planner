@@ -6,23 +6,28 @@ interface ExercisePreviewProps {
     name: string | undefined;
     sets: number;
     reps: number;
+    index: number;
 }
 
 export const ExercisePreview: React.FC<ExercisePreviewProps> = ({
     name,
     sets,
     reps,
+    index,
 }) => {
     return (
-        <li className="p-1">
-            <div className="flex items-center">
-                <p className="text-left text-xl">{name}</p>
-                <div className="flex items-center justify-end gap-2">
-                    <NumberBox value={sets} size="text-3xl" />
-                    <IconX />
-                    <NumberBox value={reps} size="text-3xl" />
-                </div>
-            </div>
-        </li>
+        <tr>
+            <th>{index + 1}</th>
+            <td className="text-lg">{name}</td>
+            <td>
+                <NumberBox value={sets} size="text-3xl" />
+            </td>
+            <td className="">
+                <IconX />
+            </td>
+            <td>
+                <NumberBox value={reps} size="text-3xl" />
+            </td>
+        </tr>
     );
 };

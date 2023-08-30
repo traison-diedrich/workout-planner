@@ -27,7 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                 </button>
             </div>
             <div className="flex-1">
-                <h1 className="text-xl uppercase tracking-widest">
+                <h1 className="text-xl uppercase tracking-widest xl:invisible">
                     Workout Planner
                 </h1>
             </div>

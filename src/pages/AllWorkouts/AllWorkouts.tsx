@@ -26,9 +26,9 @@ export const AllWorkouts: React.FC = () => {
     });
 
     return (
-        <div className="flex h-full min-h-screen w-full flex-col gap-6 bg-base-200 p-6 text-center">
+        <div className="flex h-full min-h-screen w-full flex-col gap-6 bg-base-200 p-4 text-center sm:p-6">
             <h1 className="w-full text-4xl">Workouts</h1>
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="m-auto grid grid-cols-1 justify-center gap-4 sm:gap-6 lg:grid-cols-2">
                 {isLoading ? (
                     <span className="loading loading-spinner loading-lg" />
                 ) : (
