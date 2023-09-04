@@ -143,6 +143,7 @@ export const Workout: React.FC = () => {
                             {exercises?.map((exercise, index) => (
                                 <Exercise
                                     key={index}
+                                    index={index}
                                     options={exerciseInfo || []}
                                     exercise={exercise}
                                     setExercise={(exercise: ExerciseType) =>

@@ -1,4 +1,9 @@
-import { IconX } from '@tabler/icons-react';
+import {
+    IconArrowsMoveVertical,
+    IconDotsVertical,
+    IconTrash,
+    IconX,
+} from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
@@ -12,12 +17,14 @@ import { ExerciseHeader } from './ExerciseHeader';
 interface ExerciseProps {
     exercise: ExerciseType;
     options: ExerciseInfoType[];
+    index: number;
     setExercise: (exercise: ExerciseType) => void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,
     options,
+    index,
     setExercise,
 }) => {
     const queryClient = useQueryClient();
@@ -58,13 +65,34 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     return (
         <div className="card w-full bg-base-100 shadow-xl sm:max-w-lg">
-            <div className="card-body gap-4">
+            <div className="card-body relative gap-4">
                 <ExerciseHeader
+                    index={index}
                     e_type_id={exercise.e_type_id}
                     options={options}
-                    onDelete={() => deletion.mutate()}
                     setType={handleTypeChange}
                 />
+                <div className="dropdown dropdown-end absolute right-3 top-4">
+                    <label
+                        tabIndex={0}
+                        className="btn btn-square btn-ghost btn-sm"
+                    >
+                        <IconDotsVertical />
+                    </label>
+                    {/* TODO: This dropdown has no contrast, more of a
+                        theming issue that needs to be fixed */}
+                    <ul
+                        tabIndex={0}
+                        className="menu dropdown-content rounded-box z-[1] mt-1 bg-base-100 p-2 shadow"
+                    >
+                        <li>
+                            <a onClick={() => deletion.mutate()}>
+                                <IconTrash />
+                                Delete
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div className="flex w-full items-center justify-center gap-4">
                     <div className="inline-flex flex-col items-center gap-2">
                         <NumberBox
@@ -90,6 +118,9 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         />
                     </div>
                 </div>
+                <button className=" btn btn-ghost absolute right-2 top-1/2 -translate-y-1/2 px-0 pb-2 pt-1">
+                    <IconArrowsMoveVertical size={40} />
+                </button>
             </div>
         </div>
     );
