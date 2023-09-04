@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
     IconArrowsMoveVertical,
     IconDotsVertical,
@@ -13,7 +15,6 @@ import {
     ExerciseType,
 } from '../../data/supabase/database.types';
 import { ExerciseHeader } from './ExerciseHeader';
-
 interface ExerciseProps {
     exercise: ExerciseType;
     options: ExerciseInfoType[];
@@ -63,8 +64,21 @@ export const Exercise: React.FC<ExerciseProps> = ({
         setExercise(updatedExercise);
     };
 
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: exercise.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
     return (
-        <div className="card w-full bg-base-100 shadow-xl sm:max-w-lg">
+        <div
+            className="card w-full bg-base-100 shadow-xl sm:max-w-lg"
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+        >
             <div className="card-body relative gap-4">
                 <ExerciseHeader
                     index={index}
@@ -118,7 +132,10 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         />
                     </div>
                 </div>
-                <button className=" btn btn-ghost absolute right-2 top-1/2 -translate-y-1/2 px-0 pb-2 pt-1">
+                <button
+                    className=" btn btn-ghost absolute right-2 top-1/2 -translate-y-1/2 px-0 pb-2 pt-1"
+                    {...listeners}
+                >
                     <IconArrowsMoveVertical size={40} />
                 </button>
             </div>

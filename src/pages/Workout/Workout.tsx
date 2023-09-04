@@ -1,3 +1,19 @@
+import {
+    DndContext,
+    PointerSensor,
+    closestCenter,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    restrictToVerticalAxis,
+    restrictToWindowEdges,
+} from '@dnd-kit/modifiers';
+import {
+    SortableContext,
+    arrayMove,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
@@ -51,6 +67,7 @@ export const Workout: React.FC = () => {
     });
 
     const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
+    const sensors = useSensors(useSensor(PointerSensor));
 
     const queryClient = useQueryClient();
     const { isLoading } = useQuery({
@@ -97,6 +114,21 @@ export const Workout: React.FC = () => {
         },
     });
 
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+
+        console.log(active, over);
+
+        if (active.id !== over.id) {
+            setExercises(exercises => {
+                const oldIndex = exercises.indexOf(active.id);
+                const newIndex = exercises.indexOf(over.id);
+
+                return arrayMove(exercises, oldIndex, newIndex);
+            });
+        }
+    };
+
     return (
         <>
             <DeleteModal
@@ -139,20 +171,33 @@ export const Workout: React.FC = () => {
                     {isLoading && exercises.length > 0 ? (
                         <span className="loading loading-spinner loading-lg" />
                     ) : (
-                        <>
-                            {exercises?.map((exercise, index) => (
-                                <Exercise
-                                    key={index}
-                                    index={index}
-                                    options={exerciseInfo || []}
-                                    exercise={exercise}
-                                    setExercise={(exercise: ExerciseType) =>
-                                        updateExercise(index, exercise)
-                                    }
-                                />
-                            ))}
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                            modifiers={[
+                                restrictToVerticalAxis,
+                                restrictToWindowEdges,
+                            ]}
+                        >
+                            <SortableContext
+                                items={exercises}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {exercises?.map((exercise, index) => (
+                                    <Exercise
+                                        key={index}
+                                        index={index}
+                                        options={exerciseInfo || []}
+                                        exercise={exercise}
+                                        setExercise={(exercise: ExerciseType) =>
+                                            updateExercise(index, exercise)
+                                        }
+                                    />
+                                ))}
+                            </SortableContext>
                             <AddCard onAdd={() => creation.mutate()} />
-                        </>
+                        </DndContext>
                     )}
                 </div>
                 {!isLoading && exercises.length > 0 && (
