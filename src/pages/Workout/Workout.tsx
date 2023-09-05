@@ -4,14 +4,11 @@ import {
     DragOverlay,
     DragStartEvent,
     PointerSensor,
+    TouchSensor,
     closestCenter,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import {
-    restrictToParentElement,
-    restrictToVerticalAxis,
-} from '@dnd-kit/modifiers';
 import {
     SortableContext,
     arrayMove,
@@ -73,7 +70,11 @@ export const Workout: React.FC = () => {
     const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
     const [activeExercise, setActiveExercise] =
         React.useState<ExerciseType | null>(null);
-    const sensors = useSensors(useSensor(PointerSensor));
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(TouchSensor),
+    );
 
     const queryClient = useQueryClient();
     const { isLoading } = useQuery({
@@ -188,7 +189,7 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="mx-auto grid grid-cols-1 items-start justify-center gap-6">
+                <div className="mx-auto grid grid-cols-1 items-center justify-center gap-6">
                     {isLoading && exercises.length > 0 ? (
                         <span className="loading loading-spinner loading-lg" />
                     ) : (
@@ -198,10 +199,6 @@ export const Workout: React.FC = () => {
                                 collisionDetection={closestCenter}
                                 onDragStart={handleDragStart}
                                 onDragEnd={handleDragEnd}
-                                modifiers={[
-                                    restrictToVerticalAxis,
-                                    restrictToParentElement,
-                                ]}
                             >
                                 <SortableContext
                                     items={exercises}
@@ -221,12 +218,19 @@ export const Workout: React.FC = () => {
                                         />
                                     ))}
                                 </SortableContext>
+                                {/* TODO: the documentation for dnd-kit is
+                                extremely poor and frustrating... I have no idea how to get the
+                                drop animation to scale the object back down
+                                so for now it just jumps back to the original
+                                size */}
                                 <DragOverlay
                                     zIndex={2}
+                                    style={{ cursor: 'grabbing' }}
                                     dropAnimation={{
                                         duration: 500,
                                         easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
                                     }}
+                                    transition={`transform 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22)`}
                                 >
                                     {activeExercise ? (
                                         <DraggableExercise

@@ -4,12 +4,18 @@ export default {
         extend: {
             keyframes: {
                 scaleUp: {
-                    '0%': { transform: 'scale(1)' },
-                    '100%': { transform: 'scale(1.1)' },
+                    '0%': {
+                        transform: 'scale(1)',
+                        boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)',
+                    },
+                    '100%': {
+                        transform: 'scale(1.1)',
+                        boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.3)',
+                    },
                 },
             },
             animation: {
-                scaleUp: 'scaleUp .5s ease',
+                scaleUp: 'scaleUp .5s ease-in-out forwards',
             },
         },
     },

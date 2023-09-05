@@ -144,7 +144,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         </ul>
                     </div>
                     <button
-                        className="btn btn-ghost px-0 pb-2 pt-1"
+                        className="btn btn-ghost cursor-grab px-0 pb-2 pt-1"
                         ref={setActivatorNodeRef}
                         {...listeners}
                     >
