@@ -64,8 +64,15 @@ export const Exercise: React.FC<ExerciseProps> = ({
         setExercise(updatedExercise);
     };
 
-    const { attributes, listeners, setNodeRef, transform, transition } =
-        useSortable({ id: exercise.id });
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        setActivatorNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: exercise.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -74,7 +81,9 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     return (
         <div
-            className="h-full w-full max-w-lg cursor-default rounded-xl bg-base-100 shadow-xl"
+            className={`h-full w-full max-w-lg cursor-default rounded-xl bg-base-100 shadow-lg ${
+                isDragging ? 'opacity-30' : ''
+            }`}
             ref={setNodeRef}
             style={style}
             {...attributes}
@@ -136,6 +145,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     </div>
                     <button
                         className="btn btn-ghost px-0 pb-2 pt-1"
+                        ref={setActivatorNodeRef}
                         {...listeners}
                     >
                         <IconArrowsMoveVertical size={40} />

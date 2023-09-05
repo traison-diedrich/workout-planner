@@ -222,7 +222,6 @@ export const Workout: React.FC = () => {
                                     ))}
                                 </SortableContext>
                                 <DragOverlay
-                                    adjustScale={true}
                                     zIndex={2}
                                     dropAnimation={{
                                         duration: 500,
@@ -232,7 +231,13 @@ export const Workout: React.FC = () => {
                                     {activeExercise ? (
                                         <DraggableExercise
                                             exercise={activeExercise}
-                                            options={exerciseInfo || []}
+                                            name={
+                                                exerciseInfo?.find(
+                                                    exerciseInfo =>
+                                                        exerciseInfo.id ===
+                                                        activeExercise.e_type_id,
+                                                )?.label || 'Label not found'
+                                            }
                                         />
                                     ) : null}
                                 </DragOverlay>

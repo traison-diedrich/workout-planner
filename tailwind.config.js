@@ -1,7 +1,17 @@
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            keyframes: {
+                scaleUp: {
+                    '0%': { transform: 'scale(1)' },
+                    '100%': { transform: 'scale(1.1)' },
+                },
+            },
+            animation: {
+                scaleUp: 'scaleUp .5s ease',
+            },
+        },
     },
     plugins: [require('daisyui')],
 

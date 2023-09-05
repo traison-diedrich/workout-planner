@@ -5,26 +5,24 @@ import {
 } from '@tabler/icons-react';
 import { forwardRef } from 'react';
 import { NumberBox, NumberStepper } from '../../components';
-import { ExerciseInfoType, ExerciseType } from '../../data/supabase';
+import { ExerciseType } from '../../data/supabase';
 
 interface DraggableExerciseProps {
     exercise: ExerciseType;
-    options: ExerciseInfoType[];
+    name: string;
 }
 
 type Ref = HTMLIFrameElement;
 
 export const DraggableExercise = forwardRef<Ref, DraggableExerciseProps>(
-    ({ exercise, options, ...props }, ref) => {
+    ({ exercise, name, ...props }, ref) => {
         return (
             <div {...props} ref={ref} className="h-full w-full">
-                <div className="no-animation h-full w-full max-w-lg rounded-xl bg-base-100 shadow-xl">
-                    <div className="flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
+                <div className="h-full w-full max-w-lg rounded-xl bg-base-100 shadow-xl">
+                    <div className="no-animation flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
                         <div className="flex flex-col justify-center gap-4">
                             <div className="select select-primary w-full items-center">
-                                {options.find(
-                                    option => option.id === exercise.e_type_id,
-                                )?.label || 'Label not found'}
+                                {name}
                             </div>
                             <div className="flex w-full items-center justify-center gap-4">
                                 <div className="inline-flex flex-col items-center gap-2">
