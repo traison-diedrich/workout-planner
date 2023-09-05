@@ -3,6 +3,7 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
+    MouseSensor,
     PointerSensor,
     TouchSensor,
     closestCenter,
@@ -28,8 +29,7 @@ import {
     updateWorkout,
 } from '../../data/crud';
 import { ExerciseType } from '../../data/supabase';
-import { DeleteModal, Exercise } from './';
-import { DraggableExercise } from './DraggableExercise';
+import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
     e_type_id: number;
@@ -73,7 +73,13 @@ export const Workout: React.FC = () => {
 
     const sensors = useSensors(
         useSensor(PointerSensor),
-        useSensor(TouchSensor),
+        useSensor(MouseSensor),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 100,
+                tolerance: 5,
+            },
+        }),
     );
 
     const queryClient = useQueryClient();
@@ -219,10 +225,9 @@ export const Workout: React.FC = () => {
                                     ))}
                                 </SortableContext>
                                 {/* TODO: the documentation for dnd-kit is
-                                extremely poor and frustrating... I have no idea how to get the
-                                drop animation to scale the object back down
-                                so for now it just jumps back to the original
-                                size */}
+                                extremely poor and frustrating... I have no idea how 
+                                to get the drop animation to scale the object back down
+                                so for now it just jumps back to the original size */}
                                 <DragOverlay
                                     zIndex={2}
                                     style={{ cursor: 'grabbing' }}

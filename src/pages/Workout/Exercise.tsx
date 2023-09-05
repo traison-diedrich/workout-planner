@@ -81,7 +81,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     return (
         <div
-            className={`h-full w-full max-w-lg cursor-default rounded-xl bg-base-100 shadow-lg ${
+            className={`h-full w-full max-w-lg cursor-default touch-manipulation rounded-xl bg-base-100 shadow-lg ${
                 isDragging ? 'opacity-30' : ''
             }`}
             ref={setNodeRef}

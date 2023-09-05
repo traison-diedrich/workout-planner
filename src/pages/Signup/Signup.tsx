@@ -47,7 +47,7 @@ export const Signup: React.FC = () => {
             >
                 Login
             </Link>
-            <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4">
+            <div className="flex h-full w-full max-w-md flex-col items-center justify-center gap-4 p-6">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold">Create an account</h1>
                     <p className="py-3">
@@ -64,6 +64,7 @@ export const Signup: React.FC = () => {
                         <input
                             type="email"
                             name="email"
+                            autoComplete="email"
                             placeholder="name@example.com"
                             className="input input-bordered w-full"
                         />
@@ -80,6 +81,7 @@ export const Signup: React.FC = () => {
                         <input
                             type="password"
                             name="password"
+                            autoComplete="new-password"
                             placeholder="password"
                             className="input input-bordered w-full"
                         />

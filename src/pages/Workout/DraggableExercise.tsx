@@ -17,7 +17,11 @@ type Ref = HTMLIFrameElement;
 export const DraggableExercise = forwardRef<Ref, DraggableExerciseProps>(
     ({ exercise, name, ...props }, ref) => {
         return (
-            <div {...props} ref={ref} className="h-full w-full">
+            <div
+                {...props}
+                ref={ref}
+                className="h-full w-full touch-manipulation"
+            >
                 <div className="h-full w-full max-w-lg animate-scaleUp rounded-xl bg-base-100 shadow-xl">
                     <div className="no-animation flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
                         <div className="flex flex-col justify-center gap-4">

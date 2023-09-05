@@ -47,7 +47,7 @@ export const ForgotModal: React.FC<ForgotModalProps> = ({
             <div className="modal-box border border-primary">
                 <form
                     onSubmit={handleReset}
-                    className="flex flex-col gap-6 p-12"
+                    className="flex flex-col gap-6 p-4 sm:p-12"
                 >
                     <div className="text-center">
                         <h2 className="text-3xl font-bold">Forgot password?</h2>
@@ -60,6 +60,7 @@ export const ForgotModal: React.FC<ForgotModalProps> = ({
                         <input
                             type="email"
                             name="email"
+                            autoComplete="email"
                             className="input input-bordered input-primary w-full"
                             placeholder="name@example.com"
                         />
