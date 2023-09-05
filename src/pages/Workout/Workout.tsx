@@ -1,13 +1,16 @@
 import {
     DndContext,
+    DragEndEvent,
+    DragOverlay,
+    DragStartEvent,
     PointerSensor,
     closestCenter,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
 import {
+    restrictToParentElement,
     restrictToVerticalAxis,
-    restrictToWindowEdges,
 } from '@dnd-kit/modifiers';
 import {
     SortableContext,
@@ -29,6 +32,7 @@ import {
 } from '../../data/crud';
 import { ExerciseType } from '../../data/supabase';
 import { DeleteModal, Exercise } from './';
+import { DraggableExercise } from './DraggableExercise';
 
 export type ExerciseUpdateType = {
     e_type_id: number;
@@ -67,6 +71,8 @@ export const Workout: React.FC = () => {
     });
 
     const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
+    const [activeExercise, setActiveExercise] =
+        React.useState<ExerciseType | null>(null);
     const sensors = useSensors(useSensor(PointerSensor));
 
     const queryClient = useQueryClient();
@@ -114,19 +120,34 @@ export const Workout: React.FC = () => {
         },
     });
 
-    const handleDragEnd = (event: any) => {
+    const handleDragStart = (event: DragStartEvent) => {
+        const { active } = event;
+
+        const foundIndex = exercises.findIndex(
+            exercise => exercise.id === active.id,
+        );
+
+        exercises[foundIndex].exercise_order = foundIndex;
+        setActiveExercise(exercises[foundIndex]);
+    };
+
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        console.log(active, over);
-
-        if (active.id !== over.id) {
+        if (active.id !== over?.id) {
             setExercises(exercises => {
-                const oldIndex = exercises.indexOf(active.id);
-                const newIndex = exercises.indexOf(over.id);
+                const oldIndex = exercises.findIndex(
+                    exercise => exercise.id === active.id,
+                );
+                const newIndex = exercises.findIndex(
+                    exercise => exercise.id === over?.id,
+                );
 
                 return arrayMove(exercises, oldIndex, newIndex);
             });
         }
+
+        setActiveExercise(null);
     };
 
     return (
@@ -171,33 +192,53 @@ export const Workout: React.FC = () => {
                     {isLoading && exercises.length > 0 ? (
                         <span className="loading loading-spinner loading-lg" />
                     ) : (
-                        <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
-                            modifiers={[
-                                restrictToVerticalAxis,
-                                restrictToWindowEdges,
-                            ]}
-                        >
-                            <SortableContext
-                                items={exercises}
-                                strategy={verticalListSortingStrategy}
+                        <>
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragStart={handleDragStart}
+                                onDragEnd={handleDragEnd}
+                                modifiers={[
+                                    restrictToVerticalAxis,
+                                    restrictToParentElement,
+                                ]}
                             >
-                                {exercises?.map((exercise, index) => (
-                                    <Exercise
-                                        key={index}
-                                        index={index}
-                                        options={exerciseInfo || []}
-                                        exercise={exercise}
-                                        setExercise={(exercise: ExerciseType) =>
-                                            updateExercise(index, exercise)
-                                        }
-                                    />
-                                ))}
-                            </SortableContext>
+                                <SortableContext
+                                    items={exercises}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {exercises?.map((exercise, index) => (
+                                        <Exercise
+                                            key={exercise.id}
+                                            index={index}
+                                            options={exerciseInfo || []}
+                                            exercise={exercise}
+                                            setExercise={(
+                                                exercise: ExerciseType,
+                                            ) =>
+                                                updateExercise(index, exercise)
+                                            }
+                                        />
+                                    ))}
+                                </SortableContext>
+                                <DragOverlay
+                                    adjustScale={true}
+                                    zIndex={2}
+                                    dropAnimation={{
+                                        duration: 500,
+                                        easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+                                    }}
+                                >
+                                    {activeExercise ? (
+                                        <DraggableExercise
+                                            exercise={activeExercise}
+                                            options={exerciseInfo || []}
+                                        />
+                                    ) : null}
+                                </DragOverlay>
+                            </DndContext>
                             <AddCard onAdd={() => creation.mutate()} />
-                        </DndContext>
+                        </>
                     )}
                 </div>
                 {!isLoading && exercises.length > 0 && (

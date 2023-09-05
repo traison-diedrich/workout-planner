@@ -31,7 +31,7 @@ export async function readExercises(wid: number) {
         .from('exercises')
         .select('*')
         .eq('wid', wid)
-        .order('id', { ascending: true });
+        .order('exercise_order', { ascending: true });
     const res: DbResult<typeof query> = await query;
 
     if (res.error) {

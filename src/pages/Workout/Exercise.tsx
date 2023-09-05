@@ -74,70 +74,74 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     return (
         <div
-            className="card w-full bg-base-100 shadow-xl sm:max-w-lg"
+            className="h-full w-full max-w-lg cursor-default rounded-xl bg-base-100 shadow-xl"
             ref={setNodeRef}
             style={style}
             {...attributes}
         >
-            <div className="card-body relative gap-4">
-                <ExerciseHeader
-                    index={index}
-                    e_type_id={exercise.e_type_id}
-                    options={options}
-                    setType={handleTypeChange}
-                />
-                <div className="dropdown dropdown-end absolute right-3 top-4">
-                    <label
-                        tabIndex={0}
-                        className="btn btn-square btn-ghost btn-sm"
-                    >
-                        <IconDotsVertical />
-                    </label>
-                    {/* TODO: This dropdown has no contrast, more of a
+            <div className="flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
+                <div className="flex flex-col justify-center gap-4">
+                    <ExerciseHeader
+                        e_type_id={exercise.e_type_id}
+                        options={options}
+                        setType={handleTypeChange}
+                    />
+                    <div className="flex w-full items-center justify-center gap-4">
+                        <div className="inline-flex flex-col items-center gap-2">
+                            <NumberBox
+                                value={exercise.sets}
+                                title="SETS"
+                                size="text-5xl"
+                            />
+                            <NumberStepper
+                                onAdd={() => handleAdd('sets')}
+                                onSubtract={() => handleSubtract('sets')}
+                            />
+                        </div>
+                        <IconX size={32} className="mb-16" />
+                        <div className="inline-flex flex-col items-center gap-2">
+                            <NumberBox
+                                value={exercise.reps}
+                                title="REPS"
+                                size="text-5xl"
+                            />
+                            <NumberStepper
+                                onAdd={() => handleAdd('reps')}
+                                onSubtract={() => handleSubtract('reps')}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex min-h-full flex-col items-center justify-between">
+                    <div className="dropdown dropdown-end">
+                        <label
+                            tabIndex={0}
+                            className="btn btn-square btn-ghost btn-sm"
+                        >
+                            <IconDotsVertical />
+                        </label>
+                        {/* TODO: This dropdown has no contrast, more of a
                         theming issue that needs to be fixed */}
-                    <ul
-                        tabIndex={0}
-                        className="menu dropdown-content rounded-box z-[1] mt-1 bg-base-100 p-2 shadow"
+                        <ul
+                            tabIndex={0}
+                            className="menu dropdown-content rounded-box z-[1] mt-1 bg-base-100 p-2 shadow"
+                        >
+                            <li>
+                                <a onClick={() => deletion.mutate()}>
+                                    <IconTrash />
+                                    Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        className="btn btn-ghost px-0 pb-2 pt-1"
+                        {...listeners}
                     >
-                        <li>
-                            <a onClick={() => deletion.mutate()}>
-                                <IconTrash />
-                                Delete
-                            </a>
-                        </li>
-                    </ul>
+                        <IconArrowsMoveVertical size={40} />
+                    </button>
+                    <span className="text-3xl">{index + 1}</span>
                 </div>
-                <div className="flex w-full items-center justify-center gap-4">
-                    <div className="inline-flex flex-col items-center gap-2">
-                        <NumberBox
-                            value={exercise.sets}
-                            title="SETS"
-                            size="text-5xl"
-                        />
-                        <NumberStepper
-                            onAdd={() => handleAdd('sets')}
-                            onSubtract={() => handleSubtract('sets')}
-                        />
-                    </div>
-                    <IconX size={32} className="mb-16" />
-                    <div className="inline-flex flex-col items-center gap-2">
-                        <NumberBox
-                            value={exercise.reps}
-                            title="REPS"
-                            size="text-5xl"
-                        />
-                        <NumberStepper
-                            onAdd={() => handleAdd('reps')}
-                            onSubtract={() => handleSubtract('reps')}
-                        />
-                    </div>
-                </div>
-                <button
-                    className=" btn btn-ghost absolute right-2 top-1/2 -translate-y-1/2 px-0 pb-2 pt-1"
-                    {...listeners}
-                >
-                    <IconArrowsMoveVertical size={40} />
-                </button>
             </div>
         </div>
     );
