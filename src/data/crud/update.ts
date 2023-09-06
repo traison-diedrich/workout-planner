@@ -34,6 +34,13 @@ export async function updateWorkout(
         .not('id', 'in', deleteIds);
     const deleteRes: DbResult<typeof deleteQuery> = await deleteQuery;
 
+    // for every exercise map its index to its exercise_order
+
+    exercises = exercises.map((exercise, index) => {
+        exercise.exercise_order = index;
+        return exercise;
+    });
+
     let insert: ExerciseInsertType[] = exercises.filter(
         exercise => exercise.id === 0,
     );

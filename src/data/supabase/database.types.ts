@@ -33,6 +33,7 @@ export interface Database {
                     reps: number;
                     sets: number;
                     wid: number;
+                    exercise_order: number;
                 };
                 Insert: {
                     e_type_id?: number;
@@ -40,6 +41,7 @@ export interface Database {
                     reps?: number;
                     sets?: number;
                     wid: number;
+                    exercise_order?: number;
                 };
                 Update: {
                     e_type_id?: number;
@@ -47,6 +49,7 @@ export interface Database {
                     reps?: number;
                     sets?: number;
                     wid?: number;
+                    exercise_order?: number;
                 };
                 Relationships: [
                     {

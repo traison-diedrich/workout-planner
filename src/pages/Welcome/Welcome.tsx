@@ -7,11 +7,11 @@ export const Welcome: React.FC = () => {
         <div className="hero relative min-h-screen">
             <Link
                 to="/access/login"
-                className="btn btn-ghost btn-sm absolute right-8 top-8"
+                className="btn btn-ghost btn-sm absolute right-8 top-8 z-10"
             >
                 Login
             </Link>
-            <div className="hero-content flex-col p-5">
+            <div className="hero-content flex-col px-6 py-14">
                 <h1 className="text-center text-5xl">
                     Welcome to
                     <br />

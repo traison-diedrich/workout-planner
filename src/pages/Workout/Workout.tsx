@@ -1,3 +1,22 @@
+import {
+    DndContext,
+    DragEndEvent,
+    DragOverlay,
+    DragStartEvent,
+    MeasuringStrategy,
+    MouseSensor,
+    PointerSensor,
+    TouchSensor,
+    closestCenter,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
+import {
+    SortableContext,
+    arrayMove,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
@@ -12,12 +31,18 @@ import {
     updateWorkout,
 } from '../../data/crud';
 import { ExerciseType } from '../../data/supabase';
-import { DeleteModal, Exercise } from './';
+import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
     e_type_id: number;
     sets: number;
     reps: number;
+};
+
+const measuringConfig = {
+    droppable: {
+        strategy: MeasuringStrategy.Always,
+    },
 };
 
 /** TODO: as of right now, the workout changes will only be saved
@@ -51,6 +76,19 @@ export const Workout: React.FC = () => {
     });
 
     const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
+    const [activeExercise, setActiveExercise] =
+        React.useState<ExerciseType | null>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(MouseSensor),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 100,
+                tolerance: 5,
+            },
+        }),
+    );
 
     const queryClient = useQueryClient();
     const { isLoading } = useQuery({
@@ -97,6 +135,36 @@ export const Workout: React.FC = () => {
         },
     });
 
+    const handleDragStart = (event: DragStartEvent) => {
+        const { active } = event;
+
+        const foundIndex = exercises.findIndex(
+            exercise => exercise.id === active.id,
+        );
+
+        exercises[foundIndex].exercise_order = foundIndex;
+        setActiveExercise(exercises[foundIndex]);
+    };
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (active.id !== over?.id) {
+            setExercises(exercises => {
+                const oldIndex = exercises.findIndex(
+                    exercise => exercise.id === active.id,
+                );
+                const newIndex = exercises.findIndex(
+                    exercise => exercise.id === over?.id,
+                );
+
+                return arrayMove(exercises, oldIndex, newIndex);
+            });
+        }
+
+        setActiveExercise(null);
+    };
+
     return (
         <>
             <DeleteModal
@@ -108,7 +176,10 @@ export const Workout: React.FC = () => {
                     navigate(-1);
                 }}
             />
-            <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
+            <div
+                className="flex w-full flex-col items-center gap-4 bg-base-200 p-4"
+                style={{ height: 'calc(100vh - 64px)' }}
+            >
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
                         onClick={() => {
@@ -135,24 +206,66 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="mx-auto grid grid-cols-1 items-start justify-center gap-6">
-                    {isLoading && exercises.length > 0 ? (
-                        <span className="loading loading-spinner loading-lg" />
-                    ) : (
-                        <>
-                            {exercises?.map((exercise, index) => (
-                                <Exercise
-                                    key={index}
-                                    options={exerciseInfo || []}
-                                    exercise={exercise}
-                                    setExercise={(exercise: ExerciseType) =>
-                                        updateExercise(index, exercise)
-                                    }
-                                />
-                            ))}
-                            <AddCard onAdd={() => creation.mutate()} />
-                        </>
-                    )}
+                <div className="flex h-full w-full overflow-y-auto">
+                    <div className="mx-auto flex flex-col items-center gap-4 pb-4">
+                        {isLoading && exercises.length > 0 ? (
+                            <span className="loading loading-spinner loading-lg" />
+                        ) : (
+                            <DndContext
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragStart={handleDragStart}
+                                onDragEnd={handleDragEnd}
+                                modifiers={[restrictToFirstScrollableAncestor]}
+                                measuring={measuringConfig}
+                            >
+                                <SortableContext
+                                    items={exercises}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {exercises?.map((exercise, index) => (
+                                        <Exercise
+                                            key={exercise.id}
+                                            index={index}
+                                            options={exerciseInfo || []}
+                                            exercise={exercise}
+                                            setExercise={(
+                                                exercise: ExerciseType,
+                                            ) =>
+                                                updateExercise(index, exercise)
+                                            }
+                                        />
+                                    ))}
+                                    <AddCard onAdd={() => creation.mutate()} />
+                                </SortableContext>
+                                <DragOverlay
+                                    zIndex={2}
+                                    style={{
+                                        cursor: 'grabbing',
+                                        touchAction: 'manipulation',
+                                    }}
+                                    dropAnimation={{
+                                        duration: 500,
+                                        easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+                                    }}
+                                    transition={`transform 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22)`}
+                                >
+                                    {activeExercise ? (
+                                        <DraggableExercise
+                                            exercise={activeExercise}
+                                            name={
+                                                exerciseInfo?.find(
+                                                    exerciseInfo =>
+                                                        exerciseInfo.id ===
+                                                        activeExercise.e_type_id,
+                                                )?.label || 'Label not found'
+                                            }
+                                        />
+                                    ) : null}
+                                </DragOverlay>
+                            </DndContext>
+                        )}
+                    </div>
                 </div>
                 {!isLoading && exercises.length > 0 && (
                     <button
