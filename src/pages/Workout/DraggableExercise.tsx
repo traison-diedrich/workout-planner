@@ -17,11 +17,7 @@ type Ref = HTMLIFrameElement;
 export const DraggableExercise = forwardRef<Ref, DraggableExerciseProps>(
     ({ exercise, name, ...props }, ref) => {
         return (
-            <div
-                {...props}
-                ref={ref}
-                className="h-full w-full touch-manipulation"
-            >
+            <div {...props} ref={ref} className="h-full w-full">
                 <div className="h-full w-full max-w-lg animate-scaleUp rounded-xl bg-base-100 shadow-xl">
                     <div className="no-animation flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
                         <div className="flex flex-col justify-center gap-4">
@@ -57,7 +53,7 @@ export const DraggableExercise = forwardRef<Ref, DraggableExerciseProps>(
                                     <IconDotsVertical />
                                 </label>
                             </div>
-                            <button className="btn btn-ghost cursor-grabbing px-0 pb-2 pt-1">
+                            <button className="btn btn-primary cursor-grabbing px-0 pb-2 pt-1">
                                 <IconArrowsMoveVertical size={40} />
                             </button>
                             <span className="text-3xl">

@@ -1,4 +1,8 @@
-import { useSortable } from '@dnd-kit/sortable';
+import {
+    AnimateLayoutChanges,
+    defaultAnimateLayoutChanges,
+    useSortable,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
     IconArrowsMoveVertical,
@@ -20,6 +24,16 @@ interface ExerciseProps {
     options: ExerciseInfoType[];
     index: number;
     setExercise: (exercise: ExerciseType) => void;
+}
+
+function animateLayoutChanges(args: Parameters<AnimateLayoutChanges>[0]) {
+    const { isSorting, wasDragging } = args;
+
+    if (isSorting || wasDragging) {
+        return defaultAnimateLayoutChanges(args);
+    }
+
+    return true;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
@@ -72,7 +86,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
         transform,
         transition,
         isDragging,
-    } = useSortable({ id: exercise.id });
+    } = useSortable({ animateLayoutChanges, id: exercise.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -81,14 +95,14 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     return (
         <div
-            className={`h-full w-full max-w-lg cursor-default touch-manipulation rounded-xl bg-base-100 shadow-lg ${
+            className={`h-full max-w-md cursor-default rounded-xl bg-base-100 shadow-lg ${
                 isDragging ? 'opacity-30' : ''
             }`}
             ref={setNodeRef}
             style={style}
             {...attributes}
         >
-            <div className="flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
+            <div className="flex h-full w-full items-center justify-center gap-2 py-6 pl-6 pr-2">
                 <div className="flex flex-col justify-center gap-4">
                     <ExerciseHeader
                         e_type_id={exercise.e_type_id}
@@ -144,7 +158,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         </ul>
                     </div>
                     <button
-                        className="btn btn-ghost cursor-grab px-0 pb-2 pt-1"
+                        className="btn btn-primary cursor-grab px-0 pb-2 pt-1"
                         ref={setActivatorNodeRef}
                         {...listeners}
                     >

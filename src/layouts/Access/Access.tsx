@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { Link, Navigate, Outlet } from 'react-router-dom';
+import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import gym from '../../assets/gym.jpg';
 import { AuthConsumer } from '../../context';
 import WP from '/WP.svg';
 
 export const Access: React.FC = () => {
     const { user } = AuthConsumer();
+    const { state } = useLocation();
 
     return user ? (
-        <Navigate to={'/auth/home'} replace />
+        <Navigate to={state?.path || '/auth/home'} replace />
     ) : (
         <div className="relative flex h-screen w-full">
             <Link

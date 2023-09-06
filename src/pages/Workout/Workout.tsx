@@ -3,6 +3,7 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
+    MeasuringStrategy,
     MouseSensor,
     PointerSensor,
     TouchSensor,
@@ -10,6 +11,7 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
+import { restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import {
     SortableContext,
     arrayMove,
@@ -35,6 +37,12 @@ export type ExerciseUpdateType = {
     e_type_id: number;
     sets: number;
     reps: number;
+};
+
+const measuringConfig = {
+    droppable: {
+        strategy: MeasuringStrategy.Always,
+    },
 };
 
 /** TODO: as of right now, the workout changes will only be saved
@@ -168,7 +176,10 @@ export const Workout: React.FC = () => {
                     navigate(-1);
                 }}
             />
-            <div className="flex h-full min-h-screen w-full flex-col items-center gap-6 bg-base-200 p-6">
+            <div
+                className="flex w-full flex-col items-center gap-4 bg-base-200 p-4"
+                style={{ height: 'calc(100vh - 64px)' }}
+            >
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
                         onClick={() => {
@@ -195,16 +206,18 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="mx-auto grid grid-cols-1 items-center justify-center gap-6">
-                    {isLoading && exercises.length > 0 ? (
-                        <span className="loading loading-spinner loading-lg" />
-                    ) : (
-                        <>
+                <div className="flex h-full w-full overflow-y-auto">
+                    <div className="mx-auto flex flex-col items-center gap-4 pb-4">
+                        {isLoading && exercises.length > 0 ? (
+                            <span className="loading loading-spinner loading-lg" />
+                        ) : (
                             <DndContext
                                 sensors={sensors}
                                 collisionDetection={closestCenter}
                                 onDragStart={handleDragStart}
                                 onDragEnd={handleDragEnd}
+                                modifiers={[restrictToFirstScrollableAncestor]}
+                                measuring={measuringConfig}
                             >
                                 <SortableContext
                                     items={exercises}
@@ -223,14 +236,14 @@ export const Workout: React.FC = () => {
                                             }
                                         />
                                     ))}
+                                    <AddCard onAdd={() => creation.mutate()} />
                                 </SortableContext>
-                                {/* TODO: the documentation for dnd-kit is
-                                extremely poor and frustrating... I have no idea how 
-                                to get the drop animation to scale the object back down
-                                so for now it just jumps back to the original size */}
                                 <DragOverlay
                                     zIndex={2}
-                                    style={{ cursor: 'grabbing' }}
+                                    style={{
+                                        cursor: 'grabbing',
+                                        touchAction: 'manipulation',
+                                    }}
                                     dropAnimation={{
                                         duration: 500,
                                         easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
@@ -251,9 +264,8 @@ export const Workout: React.FC = () => {
                                     ) : null}
                                 </DragOverlay>
                             </DndContext>
-                            <AddCard onAdd={() => creation.mutate()} />
-                        </>
-                    )}
+                        )}
+                    </div>
                 </div>
                 {!isLoading && exercises.length > 0 && (
                     <button
