@@ -21,7 +21,7 @@ import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AddCard } from '../../components';
+import { AddCard, SortableItem } from '../../components';
 import {
     createExercise,
     deleteWorkout,
@@ -33,7 +33,7 @@ import {
 import { ExerciseType } from '../../data/supabase';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
-export type ExerciseUpdateType = {
+type ExerciseUpdateType = {
     e_type_id: number;
     sets: number;
     reps: number;
@@ -98,12 +98,11 @@ export const Workout: React.FC = () => {
     });
 
     const creation = useMutation({
-        mutationFn: () => createExercise(wid),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['exercises']);
-        },
+        mutationFn: () => createExercise(wid, exercises.length),
+        onSuccess: exercise => setExercises([...exercises, exercise]),
     });
 
+    // client side update
     const updateExercise = (index: number, exercise: ExerciseUpdateType) => {
         const updatedExercises = [...exercises];
         updatedExercises[index] = {
@@ -176,6 +175,7 @@ export const Workout: React.FC = () => {
                     navigate(-1);
                 }}
             />
+            {/* TODO: create a ref to navbar for its current height */}
             <div
                 className="flex w-full flex-col items-center gap-4 bg-base-200 p-4"
                 style={{ height: 'calc(100vh - 64px)' }}
@@ -206,7 +206,7 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="flex h-full w-full overflow-y-auto">
+                <div className="flex h-full w-full overflow-y-auto pl-3">
                     <div className="mx-auto flex flex-col items-center gap-4 pb-4">
                         {isLoading && exercises.length > 0 ? (
                             <span className="loading loading-spinner loading-lg" />
@@ -224,26 +224,33 @@ export const Workout: React.FC = () => {
                                     strategy={verticalListSortingStrategy}
                                 >
                                     {exercises?.map((exercise, index) => (
-                                        <Exercise
+                                        <SortableItem
                                             key={exercise.id}
-                                            index={index}
-                                            options={exerciseInfo || []}
-                                            exercise={exercise}
-                                            setExercise={(
-                                                exercise: ExerciseType,
-                                            ) =>
-                                                updateExercise(index, exercise)
-                                            }
-                                        />
+                                            id={exercise.id}
+                                        >
+                                            <Exercise
+                                                index={index}
+                                                options={exerciseInfo || []}
+                                                exercise={exercise}
+                                                setExercise={(
+                                                    exercise: ExerciseType,
+                                                ) =>
+                                                    updateExercise(
+                                                        index,
+                                                        exercise,
+                                                    )
+                                                }
+                                            />
+                                        </SortableItem>
                                     ))}
-                                    <AddCard onAdd={() => creation.mutate()} />
+                                    <div className="w-full">
+                                        <AddCard
+                                            onAdd={() => creation.mutate()}
+                                        />
+                                    </div>
                                 </SortableContext>
                                 <DragOverlay
                                     zIndex={2}
-                                    style={{
-                                        cursor: 'grabbing',
-                                        touchAction: 'manipulation',
-                                    }}
                                     dropAnimation={{
                                         duration: 500,
                                         easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
@@ -267,17 +274,15 @@ export const Workout: React.FC = () => {
                         )}
                     </div>
                 </div>
-                {!isLoading && exercises.length > 0 && (
-                    <button
-                        className="btn btn-primary btn-wide"
-                        onClick={() => {
-                            update.mutate();
-                            navigate(-1);
-                        }}
-                    >
-                        Save Workout
-                    </button>
-                )}
+                <button
+                    className="btn btn-primary btn-wide"
+                    onClick={() => {
+                        update.mutate();
+                        navigate(-1);
+                    }}
+                >
+                    Save Workout
+                </button>
             </div>
         </>
     );
