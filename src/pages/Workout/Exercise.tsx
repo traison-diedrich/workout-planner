@@ -9,23 +9,21 @@ import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
 import { deleteExercise } from '../../data/crud';
-import {
-    ExerciseInfoType,
-    ExerciseType,
-} from '../../data/supabase/database.types';
-import { ExerciseHeader } from './ExerciseHeader';
+import { ExerciseType } from '../../data/supabase/database.types';
 interface ExerciseProps {
     exercise: ExerciseType;
-    options: ExerciseInfoType[];
+    name: string;
     index: number;
     setExercise: (exercise: ExerciseType) => void;
+    toggleSelectOpen: () => void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,
-    options,
+    name,
     index,
     setExercise,
+    toggleSelectOpen,
 }) => {
     const queryClient = useQueryClient();
 
@@ -55,25 +53,19 @@ export const Exercise: React.FC<ExerciseProps> = ({
         setExercise(updatedExercise);
     };
 
-    const handleTypeChange = (e_type_id: number) => {
-        const updatedExercise = {
-            ...exercise,
-            e_type_id: e_type_id,
-        };
-        setExercise(updatedExercise);
-    };
-
     const { listeners, setActivatorNodeRef } =
         React.useContext(SortableItemContext);
 
     return (
         <div className="flex h-full max-w-md cursor-default items-center justify-center gap-2 rounded-xl bg-base-100 py-6 pl-6 pr-2 shadow-lg">
             <div className="flex flex-col justify-center gap-4">
-                <ExerciseHeader
-                    e_type_id={exercise.e_type_id}
-                    options={options}
-                    setType={handleTypeChange}
-                />
+                <button
+                    className="select select-primary w-full max-w-xs items-center"
+                    onClick={toggleSelectOpen}
+                >
+                    {name}
+                </button>
+
                 <div className="flex w-full items-center justify-center gap-4">
                     <div className="inline-flex flex-col items-center gap-2">
                         <NumberBox
@@ -112,7 +104,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         theming issue that needs to be fixed */}
                     <ul
                         tabIndex={0}
-                        className="menu dropdown-content rounded-box z-[1] mt-1 bg-base-100 p-2 shadow"
+                        className="menu dropdown-content rounded-box z-[1] mt-1 border border-neutral bg-base-100 p-2 shadow"
                     >
                         <li>
                             <a onClick={() => deletion.mutate()}>

@@ -15,20 +15,21 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
 }) => {
     return (
         <dialog open={open} className="modal">
-            <div className="modal-box">
-                <h2 className="text-center text-lg font-bold">
-                    Are you sure you want to delete {name}?
+            <div className="modal-box border border-neutral p-5">
+                <h2 className="mx-5 text-center text-xl">
+                    Are you sure you want to delete <br />
+                    <strong className="text-2xl">{name}?</strong>
                 </h2>
-                <p className="text-center">This action cannot be undone.</p>
+                <p className="mt-2 text-center">This action cannot be undone</p>
                 <div className="modal-action flex justify-center gap-8">
                     <button
                         type="button"
                         onClick={toggleOpen}
-                        className="btn btn-neutral"
+                        className="btn btn-primary btn-outline"
                     >
                         Cancel
                     </button>
-                    <button onClick={onDelete} className="btn btn-neutral">
+                    <button onClick={onDelete} className="btn btn-error ">
                         Delete
                     </button>
                 </div>
