@@ -1,6 +1,6 @@
 # Workout Planner
 
-Welcome to Workout Planner. This project aims to create the first free and open source workout tracking app. The currently included features are the ones I would most like to see in my ideal workout tracker, but I am always open to suggestions and feedback. Please see [Contributing](#contributing) if you have any ideas!
+Welcome to Workout Planner, the first free and open source workout tracking app. The currently included features are the ones I would most like to see in my ideal workout tracker, but I am always open to suggestions and feedback. Please see [Contributing](#contributing) if you have any ideas!
 
 ## Tech Stack
 
@@ -8,6 +8,7 @@ From front to back:
 
 - Tailwind CSS and DaisyUI for rapid prototyping and styling
 - React.js for dynamic user interfaces
+- Tanstack Query for data fetching and query caching
 - Supabase for user authentication and cloud hosting
 - PostgreSQL for database management
 
@@ -15,16 +16,16 @@ From front to back:
 
 - [x] User authentication
 - [x] Create, edit, and delete workouts
-- [x] Integrate TanstackQuery for better state management and data fetching
+- [x] Reorder exercises with drag-and-drop
 
 ## Todo's
 
-Upcoming features and tasks:
+Upcoming features:
 
-- [ ] Better exercise selector
+- [ ] New exercise selector
+- [ ] Exercises with muscle activation information
 - [ ] Workout tracking
-- [ ] Create and plan workout splits
-- [ ] Custom api for better data processing and access
+- [ ] Workout splits
 
 ## Contributing
 
