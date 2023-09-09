@@ -26,7 +26,7 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
         <div className="card w-full max-w-lg bg-base-100 shadow-xl">
             <div className="card-body p-4 sm:p-6">
                 <Header title={name} wid={wid} />
-                <div className="relative h-80 overflow-x-auto rounded-lg border border-solid border-primary">
+                <div className="relative z-0 h-80 overflow-x-auto rounded-lg border border-solid border-primary">
                     <table className="table table-zebra table-pin-rows">
                         <thead>
                             <tr>
