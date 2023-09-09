@@ -40,7 +40,15 @@ export const AllWorkouts: React.FC = () => {
                                 name={workout.name}
                             />
                         ))}
-                        <AddCard onAdd={() => mutation.mutate(user?.id)} />
+                        <div
+                            className={`flex w-full justify-center ${
+                                workouts!.length % 2 === 0
+                                    ? 'lg:col-span-2'
+                                    : ''
+                            }`}
+                        >
+                            <AddCard onAdd={() => mutation.mutate(user?.id)} />
+                        </div>
                     </>
                 )}
             </div>

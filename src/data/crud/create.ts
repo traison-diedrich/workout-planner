@@ -16,10 +16,10 @@ export async function createWorkout(uid: uid) {
     return res.data[0];
 }
 
-export async function createExercise(wid: number) {
+export async function createExercise(wid: number, index: number) {
     const query = supabase
         .from('exercises')
-        .insert([{ e_type_id: 1, wid: wid, sets: 3, reps: 10 }])
+        .insert([{ e_type_id: 1, wid: wid, sets: 3, reps: 10, exercise_order: index }])
         .select();
     const res: DbResult<typeof query> = await query;
 

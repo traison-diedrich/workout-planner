@@ -9,7 +9,7 @@ interface NumberBoxProps {
 //TODO: There is a better way to implement size here with tailwind
 export const NumberBox: React.FC<NumberBoxProps> = ({ value, title, size }) => {
     return (
-        <div className="rounded border border-primary p-2 text-center">
+        <div className="rounded border border-primary p-1 text-center sm:p-2">
             <p className={size}>{value}</p>
             {title && (
                 <>

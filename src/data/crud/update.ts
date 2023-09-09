@@ -1,3 +1,4 @@
+import { deleteWorkout } from '.';
 import {
     DbResult,
     ExerciseInsertType,
@@ -13,6 +14,11 @@ export async function updateWorkout(
     name: string,
     exercises: ExerciseType[],
 ) {
+    if (exercises.length === 0) {
+        deleteWorkout(wid);
+        return;
+    }
+
     const workoutQuery = supabase
         .from('workouts')
         .update({ name: name })
