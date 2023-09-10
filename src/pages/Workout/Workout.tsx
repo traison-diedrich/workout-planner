@@ -61,8 +61,6 @@ export const Workout: React.FC = () => {
         number | null
     >(null);
     const toggleExerciseSelect = (index: number | null) => {
-        console.log(currentExerciseIndex, index);
-
         if (currentExerciseIndex === index) {
             setCurrentExerciseIndex(null);
         }
@@ -192,7 +190,7 @@ export const Workout: React.FC = () => {
                 open={currentExerciseIndex !== null}
                 handleClose={() => setCurrentExerciseIndex(null)}
                 options={exerciseInfo || []}
-                onSelect={id =>
+                handleSelect={id =>
                     updateExercise(currentExerciseIndex!, { e_type_id: id })
                 }
             />
@@ -227,7 +225,7 @@ export const Workout: React.FC = () => {
                         <IconTrash />
                     </button>
                 </div>
-                <div className="flex h-full w-full overflow-y-auto pl-3">
+                <div className="flex h-full w-full overflow-y-auto">
                     <div className="mx-auto mb-5 flex flex-col items-center gap-4">
                         {isLoading && exercises.length > 0 ? (
                             <span className="loading loading-spinner loading-lg" />
