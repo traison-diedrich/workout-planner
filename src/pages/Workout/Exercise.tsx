@@ -57,7 +57,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
         React.useContext(SortableItemContext);
 
     return (
-        <div className="flex h-full max-w-md cursor-default items-center justify-center gap-2 rounded-xl bg-base-100 py-6 pl-6 pr-2 shadow-lg">
+        <div className="flex h-full max-w-md cursor-default items-center justify-center gap-2 rounded-xl bg-base-100 py-6 pl-6 pr-2 shadow-lg dark:shadow-none">
             <div className="flex flex-col justify-center gap-4">
                 <button
                     className="select select-primary w-full max-w-xs items-center"
