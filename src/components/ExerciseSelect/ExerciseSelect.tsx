@@ -21,12 +21,45 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
 }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [filteredOptions, setFilteredOptions] = React.useState(options);
-    const [selectedExercise, setSelectedExercise] = React.useState(0);
-    const searchRef = React.useRef<HTMLInputElement>(null);
+
+    const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+    const [scrollIndex, setScrollIndex] = React.useState(0);
+
     const lisRef = React.useRef<HTMLLIElement[]>([]);
 
+    React.useEffect(() => {
+        const handleScroll = () => {
+            if (scrollContainerRef.current) {
+                const scrollPosition = scrollContainerRef.current.scrollTop;
+                const itemHeight = lisRef.current[0].clientHeight;
+                const offset = 23;
+
+                const currentIndex = Math.floor(
+                    (scrollPosition - offset) / (itemHeight + 20),
+                );
+                setScrollIndex(currentIndex);
+            }
+        };
+
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.addEventListener(
+                'scrollend',
+                handleScroll,
+            );
+        }
+
+        return () => {
+            if (scrollContainerRef.current) {
+                scrollContainerRef.current.removeEventListener(
+                    'scrollend',
+                    handleScroll,
+                );
+            }
+        };
+    }, []);
+
     const resetScroll = () => {
-        if (lisRef.current[0] !== null) {
+        if (lisRef.current[0] != null) {
             scrollTo(lisRef.current[0]);
         }
     };
@@ -40,37 +73,14 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
         );
 
         setFilteredOptions(filteredExercises);
-        onSelect(0);
         resetScroll();
-    };
-
-    const onSelect = (index: number) => {
-        if (lisRef.current[selectedExercise]) {
-            const prevLi = lisRef.current[selectedExercise];
-            prevLi.className = prevLi.className.replace(
-                'dark:shadow-primary-focus',
-                'dark:shadow-secondary-focus',
-            );
-        }
-        setSelectedExercise(index);
-
-        const selectedLi = lisRef.current[index];
-        if (selectedLi !== null) {
-            scrollTo(selectedLi);
-            selectedLi.className = selectedLi.className.replace(
-                'dark:shadow-secondary-focus',
-                'dark:shadow-primary-focus',
-            );
-        }
     };
 
     React.useEffect(() => {
         if (open) {
             setSearchTerm('');
             setFilteredOptions(options);
-            onSelect(0);
             resetScroll();
-            searchRef.current?.focus();
             lisRef.current = lisRef.current.slice(0, options.length);
         }
     }, [open, options]);
@@ -89,7 +99,6 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
                         </span>
                         <div className="input input-bordered input-primary flex w-full items-center justify-between focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
                             <input
-                                ref={searchRef}
                                 type="text"
                                 placeholder="Search for an exercise..."
                                 className="w-full border-none bg-transparent text-lg outline-none"
@@ -108,22 +117,33 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
                         </div>
                     </label>
                 </div>
-                <div className="min-h-96 relative mt-4 h-[40vh] w-full snap-y overflow-y-auto rounded-lg border border-neutral bg-base-200">
-                    <div className="pointer-events-none sticky top-0 z-10 h-full w-full bg-gradient-to-t from-black via-transparent to-black opacity-0 dark:opacity-50" />
-                    <ul className="absolute top-0 flex w-full flex-col items-center gap-5 px-10 py-[50%]">
+                <div
+                    className="relative mt-4 h-52 w-full snap-y overflow-y-auto rounded-lg border border-neutral bg-base-200"
+                    ref={scrollContainerRef}
+                >
+                    {filteredOptions.length > 0 && (
+                        <div className="pointer-events-none sticky top-0 z-10 flex h-full w-full flex-col">
+                            <div className="flex-grow bg-gray-100 opacity-40 dark:bg-black"></div>
+                            <div className="h-1/4 border-b border-t border-base-content"></div>
+                            <div className="flex-grow bg-gray-100  opacity-40 dark:bg-black"></div>
+                        </div>
+                    )}
+                    <ul className="absolute top-0 flex w-full flex-col items-center gap-5 bg-base-100 px-10 py-28">
                         {filteredOptions.length > 0 ? (
                             filteredOptions.map((option, index) => (
                                 <li
                                     key={index}
                                     ref={el => (lisRef.current[index] = el!)}
-                                    className="w-full cursor-pointer snap-center rounded bg-base-100 p-5 text-xl shadow-md transition-shadow dark:shadow-secondary-focus"
-                                    onClick={() => onSelect(index)}
+                                    className="w-full cursor-pointer snap-center text-center text-xl"
+                                    onClick={() =>
+                                        scrollTo(lisRef.current[index])
+                                    }
                                 >
                                     {option.label}
                                 </li>
                             ))
                         ) : (
-                            <li className="flex flex-col items-center justify-center gap-1 p-3 text-center text-lg text-warning">
+                            <li className="flex snap-center flex-col items-center justify-center gap-1 text-center text-lg">
                                 <span className="flex items-center gap-3">
                                     <IconAlertTriangle />
                                     Your search returned no results
@@ -143,8 +163,8 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
                     <button
                         className="btn btn-primary mt-4 w-1/3 max-w-lg"
                         onClick={() => {
-                            if (!filteredOptions[selectedExercise]) return;
-                            handleSelect(filteredOptions[selectedExercise].id);
+                            if (!filteredOptions[scrollIndex]) return;
+                            handleSelect(filteredOptions[scrollIndex].id);
                             handleClose();
                         }}
                     >
