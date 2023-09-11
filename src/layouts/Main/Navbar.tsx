@@ -17,7 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
     const { toggleTheme } = useTheme();
 
     return (
-        <div className="navbar sticky top-0 z-10 gap-2 bg-base-100 px-4 shadow-lg">
+        <div className="navbar sticky top-0 z-10 gap-2 bg-gradient-to-b from-base-200 from-80% to-transparent px-4">
             <div className="flex-none">
                 <button
                     onClick={toggleOpen}
@@ -43,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({ toggleOpen }) => {
                     </label>
                     <ul
                         tabIndex={0}
-                        className="menu dropdown-content rounded-box z-[1] mt-4 bg-base-100 p-2 shadow"
+                        className="menu dropdown-content rounded-box z-[1] mt-4 bg-base-100 p-2 shadow-lg dark:border dark:border-neutral dark:shadow-none"
                     >
                         <li>
                             <a onClick={() => logout()}>

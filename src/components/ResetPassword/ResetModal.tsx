@@ -50,7 +50,7 @@ export const ResetModal: React.FC<ResetModalProps> = ({
 
     return (
         <dialog open={open} className="modal">
-            <div className="modal-box border border-primary">
+            <div className="modal-box border border-neutral">
                 <button
                     className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
                     onClick={handleClose}

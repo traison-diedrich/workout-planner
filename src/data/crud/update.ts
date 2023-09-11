@@ -6,9 +6,11 @@ import {
 } from '../supabase/database.types';
 import { supabase } from '../supabase/supabaseClient';
 
-// TODO: this update single-handedly made me understand the need for apis
-// create an api to handle the parsing and multiple queries and return
-// the updated workout values
+/**
+ * TODO: this update single-handedly made me understand the need for apis
+ * create an api to handle the parsing and multiple queries and return
+ * the updated workout values
+ */
 export async function updateWorkout(
     wid: number,
     name: string,

@@ -44,7 +44,7 @@ export const ForgotModal: React.FC<ForgotModalProps> = ({
 
     return (
         <dialog open={open} className="modal">
-            <div className="modal-box border border-primary">
+            <div className="modal-box border border-neutral">
                 <form
                     onSubmit={handleReset}
                     className="flex flex-col gap-6 p-4 sm:p-12"
@@ -74,7 +74,7 @@ export const ForgotModal: React.FC<ForgotModalProps> = ({
                     <div className="modal-action flex justify-center gap-8">
                         <button
                             type="button"
-                            className="btn btn-primary btn-outline w-2/5"
+                            className="btn btn-error btn-outline w-2/5"
                             onClick={() => {
                                 setEmailError(null);
                                 toggleOpen();

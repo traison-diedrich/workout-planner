@@ -1,5 +1,6 @@
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+    darkMode: 'class',
     theme: {
         extend: {
             keyframes: {
@@ -20,11 +21,10 @@ export default {
         },
     },
     plugins: [require('daisyui')],
-
     daisyui: {
         themes: [
             {
-                wpdark: {
+                dark: {
                     primary: '#7ca5b8',
                     secondary: '#ec7357',
                     accent: '#c084fc',
@@ -35,7 +35,7 @@ export default {
                     warning: '#fbbd23',
                     error: '#ef4444',
                 },
-                wplight: {
+                light: {
                     primary: '#29a3dd',
                     secondary: '#ec7357',
                     accent: '#c084fc',

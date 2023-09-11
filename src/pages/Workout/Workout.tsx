@@ -21,7 +21,7 @@ import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AddCard, SortableItem } from '../../components';
+import { AddCard, ExerciseSelect, SortableItem } from '../../components';
 import {
     createExercise,
     deleteWorkout,
@@ -33,10 +33,10 @@ import {
 import { ExerciseType } from '../../data/supabase';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
-type ExerciseUpdateType = {
-    e_type_id: number;
-    sets: number;
-    reps: number;
+export type ExerciseUpdateType = {
+    e_type_id?: number;
+    sets?: number;
+    reps?: number;
 };
 
 const measuringConfig = {
@@ -52,9 +52,20 @@ const measuringConfig = {
  *  with unsaved changes or find a different router (most likely option)
  */
 export const Workout: React.FC = () => {
-    const [showModal, setShowModal] = React.useState(false);
-    const toggleModal = () => {
-        setShowModal(!showModal);
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+    const toggleDeleteModal = () => {
+        setShowDeleteModal(!showDeleteModal);
+    };
+
+    const [currentExerciseIndex, setCurrentExerciseIndex] = React.useState<
+        number | null
+    >(null);
+    const toggleExerciseSelect = (index: number | null) => {
+        if (currentExerciseIndex === index) {
+            setCurrentExerciseIndex(null);
+        }
+
+        setCurrentExerciseIndex(index);
     };
 
     const state = useLocation();
@@ -134,6 +145,10 @@ export const Workout: React.FC = () => {
         },
     });
 
+    const deleteExercise = (id: number) => {
+        setExercises(exercises.filter(exercise => exercise.id !== id));
+    };
+
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
 
@@ -167,13 +182,21 @@ export const Workout: React.FC = () => {
     return (
         <>
             <DeleteModal
-                open={showModal}
+                open={showDeleteModal}
                 name={name}
-                toggleOpen={toggleModal}
+                toggleOpen={toggleDeleteModal}
                 onDelete={() => {
                     deletion.mutate();
                     navigate(-1);
                 }}
+            />
+            <ExerciseSelect
+                open={currentExerciseIndex !== null}
+                handleClose={() => setCurrentExerciseIndex(null)}
+                options={exerciseInfo || []}
+                handleSelect={id =>
+                    updateExercise(currentExerciseIndex!, { e_type_id: id })
+                }
             />
             {/* TODO: create a ref to navbar for its current height */}
             <div
@@ -196,18 +219,18 @@ export const Workout: React.FC = () => {
                         placeholder="Workout Name"
                         name="name"
                         defaultValue={name}
-                        className="input input-bordered input-primary w-full text-center text-4xl"
+                        className="input input-bordered input-primary w-full max-w-lg text-center text-3xl"
                         onChange={e => setName(e.target.value)}
                     />
                     <button
-                        onClick={toggleModal}
+                        onClick={toggleDeleteModal}
                         className="btn btn-square btn-ghost"
                     >
                         <IconTrash />
                     </button>
                 </div>
-                <div className="flex h-full w-full overflow-y-auto pl-3">
-                    <div className="mx-auto flex flex-col items-center gap-4 pb-4">
+                <div className="flex h-full w-full overflow-y-auto">
+                    <div className="mx-auto mb-5 flex flex-col items-center gap-4">
                         {isLoading && exercises.length > 0 ? (
                             <span className="loading loading-spinner loading-lg" />
                         ) : (
@@ -230,7 +253,13 @@ export const Workout: React.FC = () => {
                                         >
                                             <Exercise
                                                 index={index}
-                                                options={exerciseInfo || []}
+                                                name={
+                                                    exerciseInfo?.find(
+                                                        info =>
+                                                            info.id ===
+                                                            exercise.e_type_id,
+                                                    )?.label || 'Name not found'
+                                                }
                                                 exercise={exercise}
                                                 setExercise={(
                                                     exercise: ExerciseType,
@@ -240,10 +269,14 @@ export const Workout: React.FC = () => {
                                                         exercise,
                                                     )
                                                 }
+                                                toggleSelectOpen={() =>
+                                                    toggleExerciseSelect(index)
+                                                }
+                                                onDelete={deleteExercise}
                                             />
                                         </SortableItem>
                                     ))}
-                                    <div className="w-full">
+                                    <div className="w-full pb-8">
                                         <AddCard
                                             onAdd={() => creation.mutate()}
                                         />

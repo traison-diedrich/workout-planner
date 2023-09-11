@@ -19,8 +19,10 @@ import {
     Workout,
 } from './pages';
 
-// TODO: i hate react-router-dom and its silly forms and loaders
-// upgrade to next.js as fast as possible
+/**
+ * TODO: i hate react-router-dom and its silly forms and
+ * loaders upgrade to next.js as fast as possible
+ */
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="" errorElement={<Error />} element={<ResetPassword />}>
@@ -45,7 +47,13 @@ const router = createBrowserRouter(
     ),
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+        },
+    },
+});
 
 function App() {
     return (

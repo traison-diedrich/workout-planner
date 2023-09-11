@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTheme } from '../hooks/useTheme';
 
 interface Theme {
-    theme: 'wplight' | 'wpdark';
+    theme: 'light' | 'dark';
     toggleTheme: () => void;
 }
 

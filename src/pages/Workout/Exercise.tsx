@@ -4,38 +4,27 @@ import {
     IconTrash,
     IconX,
 } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
-import { deleteExercise } from '../../data/crud';
-import {
-    ExerciseInfoType,
-    ExerciseType,
-} from '../../data/supabase/database.types';
-import { ExerciseHeader } from './ExerciseHeader';
+import { ExerciseType } from '../../data/supabase/database.types';
 interface ExerciseProps {
     exercise: ExerciseType;
-    options: ExerciseInfoType[];
+    name: string;
     index: number;
     setExercise: (exercise: ExerciseType) => void;
+    toggleSelectOpen: () => void;
+    onDelete: (id: number) => void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,
-    options,
+    name,
     index,
     setExercise,
+    toggleSelectOpen,
+    onDelete,
 }) => {
-    const queryClient = useQueryClient();
-
-    const deletion = useMutation({
-        mutationFn: () => deleteExercise(exercise.id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['exercises'] });
-        },
-    });
-
     type ExerciseAttribute = 'sets' | 'reps';
 
     const handleAdd = (attr: ExerciseAttribute) => {
@@ -55,25 +44,19 @@ export const Exercise: React.FC<ExerciseProps> = ({
         setExercise(updatedExercise);
     };
 
-    const handleTypeChange = (e_type_id: number) => {
-        const updatedExercise = {
-            ...exercise,
-            e_type_id: e_type_id,
-        };
-        setExercise(updatedExercise);
-    };
-
     const { listeners, setActivatorNodeRef } =
         React.useContext(SortableItemContext);
 
     return (
-        <div className="flex h-full max-w-md cursor-default items-center justify-center gap-2 rounded-xl bg-base-100 py-6 pl-6 pr-2 shadow-lg">
+        <div className="flex h-full max-w-md cursor-default items-center justify-center gap-2 rounded-xl bg-base-100 py-6 pl-6 pr-2 shadow-lg dark:shadow-none">
             <div className="flex flex-col justify-center gap-4">
-                <ExerciseHeader
-                    e_type_id={exercise.e_type_id}
-                    options={options}
-                    setType={handleTypeChange}
-                />
+                <button
+                    className="select select-primary w-full max-w-xs items-center"
+                    onClick={toggleSelectOpen}
+                >
+                    {name}
+                </button>
+
                 <div className="flex w-full items-center justify-center gap-4">
                     <div className="inline-flex flex-col items-center gap-2">
                         <NumberBox
@@ -108,14 +91,12 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     >
                         <IconDotsVertical />
                     </label>
-                    {/* TODO: This dropdown has no contrast, more of a
-                        theming issue that needs to be fixed */}
                     <ul
                         tabIndex={0}
-                        className="menu dropdown-content rounded-box z-[1] mt-1 bg-base-100 p-2 shadow"
+                        className="menu dropdown-content rounded-box z-[1] mt-1 border-neutral bg-base-100 p-2 shadow-lg dark:border dark:shadow-none"
                     >
                         <li>
-                            <a onClick={() => deletion.mutate()}>
+                            <a onClick={() => onDelete(exercise.id)}>
                                 <IconTrash />
                                 Delete
                             </a>
