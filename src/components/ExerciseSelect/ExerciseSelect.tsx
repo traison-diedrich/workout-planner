@@ -27,33 +27,34 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
 
     const lisRef = React.useRef<HTMLLIElement[]>([]);
 
+    // this could be more performance friendly by assigning the event
+    // listener to scrollend instead of scroll
+    // lacking support for scrollend event in safari
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollend_event#browser_compatibility
     React.useEffect(() => {
         const handleScroll = () => {
-            if (scrollContainerRef.current) {
-                const scrollPosition = scrollContainerRef.current.scrollTop;
-                const itemHeight = lisRef.current[0].clientHeight;
-                const offset = 23;
+            if (!scrollContainerRef.current) return;
 
-                const currentIndex = Math.floor(
-                    (scrollPosition - offset) / (itemHeight + 20),
-                );
-                setScrollIndex(currentIndex);
-            }
+            const scrollPosition = scrollContainerRef.current.scrollTop;
+            const itemHeight = lisRef.current[0].clientHeight;
+            const offset = 23;
+
+            const currentIndex = Math.floor(
+                (scrollPosition - offset) / (itemHeight + 20),
+            );
+            setScrollIndex(currentIndex);
         };
 
+        let containerRefValue: HTMLDivElement | null = null;
+
         if (scrollContainerRef.current) {
-            scrollContainerRef.current.addEventListener(
-                'scrollend',
-                handleScroll,
-            );
+            scrollContainerRef.current.addEventListener('scroll', handleScroll);
+            containerRefValue = scrollContainerRef.current;
         }
 
         return () => {
-            if (scrollContainerRef.current) {
-                scrollContainerRef.current.removeEventListener(
-                    'scrollend',
-                    handleScroll,
-                );
+            if (containerRefValue) {
+                containerRefValue.removeEventListener('scroll', handleScroll);
             }
         };
     }, []);
