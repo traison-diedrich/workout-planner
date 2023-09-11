@@ -13,7 +13,7 @@ export const Main: React.FC = () => {
 
     return (
         <>
-            <div className="drawer xl:drawer-open">
+            <div className="drawer bg-base-200 xl:drawer-open">
                 <input
                     id="my-drawer"
                     type="checkbox"

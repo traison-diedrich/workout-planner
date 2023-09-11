@@ -145,6 +145,10 @@ export const Workout: React.FC = () => {
         },
     });
 
+    const deleteExercise = (id: number) => {
+        setExercises(exercises.filter(exercise => exercise.id !== id));
+    };
+
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
 
@@ -215,7 +219,7 @@ export const Workout: React.FC = () => {
                         placeholder="Workout Name"
                         name="name"
                         defaultValue={name}
-                        className="input input-bordered input-primary w-full text-center text-4xl"
+                        className="input input-bordered input-primary w-full max-w-lg text-center text-3xl"
                         onChange={e => setName(e.target.value)}
                     />
                     <button
@@ -268,6 +272,7 @@ export const Workout: React.FC = () => {
                                                 toggleSelectOpen={() =>
                                                     toggleExerciseSelect(index)
                                                 }
+                                                onDelete={deleteExercise}
                                             />
                                         </SortableItem>
                                     ))}

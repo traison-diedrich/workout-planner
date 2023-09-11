@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
-import gym from '../../assets/gym.jpg';
+import { gymImage } from '../../assets';
 import { AuthConsumer } from '../../context';
 import WP from '/WP.svg';
 
@@ -21,7 +21,7 @@ export const Access: React.FC = () => {
             </Link>
             <div className="relative hidden h-full w-1/2 lg:block">
                 <img
-                    src={gym}
+                    src={gymImage}
                     alt="Man in gym on phone"
                     className="h-full w-full object-cover"
                 />

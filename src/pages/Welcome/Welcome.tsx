@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import exercise from '../../assets/exercise.svg';
+import { exerciseSVG } from '../../assets';
 
 export const Welcome: React.FC = () => {
     return (
@@ -18,7 +18,7 @@ export const Welcome: React.FC = () => {
                     <span className="text-primary">Workout Planner</span>
                 </h1>
                 <img
-                    src={exercise}
+                    src={exerciseSVG}
                     alt="woman exercising"
                     className="h-auto w-full"
                 />

@@ -4,11 +4,9 @@ import {
     IconTrash,
     IconX,
 } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
-import { deleteExercise } from '../../data/crud';
 import { ExerciseType } from '../../data/supabase/database.types';
 interface ExerciseProps {
     exercise: ExerciseType;
@@ -16,6 +14,7 @@ interface ExerciseProps {
     index: number;
     setExercise: (exercise: ExerciseType) => void;
     toggleSelectOpen: () => void;
+    onDelete: (id: number) => void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
@@ -24,16 +23,8 @@ export const Exercise: React.FC<ExerciseProps> = ({
     index,
     setExercise,
     toggleSelectOpen,
+    onDelete,
 }) => {
-    const queryClient = useQueryClient();
-
-    const deletion = useMutation({
-        mutationFn: () => deleteExercise(exercise.id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['exercises'] });
-        },
-    });
-
     type ExerciseAttribute = 'sets' | 'reps';
 
     const handleAdd = (attr: ExerciseAttribute) => {
@@ -100,14 +91,12 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     >
                         <IconDotsVertical />
                     </label>
-                    {/* TODO: This dropdown has no contrast, more of a
-                        theming issue that needs to be fixed */}
                     <ul
                         tabIndex={0}
-                        className="menu dropdown-content rounded-box z-[1] mt-1 border border-neutral bg-base-100 p-2 shadow"
+                        className="menu dropdown-content rounded-box z-[1] mt-1 border-neutral bg-base-100 p-2 shadow-lg dark:border dark:shadow-none"
                     >
                         <li>
-                            <a onClick={() => deletion.mutate()}>
+                            <a onClick={() => onDelete(exercise.id)}>
                                 <IconTrash />
                                 Delete
                             </a>

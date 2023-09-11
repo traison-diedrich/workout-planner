@@ -26,8 +26,7 @@ export async function login(email: string, password: string) {
 }
 
 export async function loginWith(provider: Provider, route?: string) {
-    const redirect = window.location.origin + route || '/auth/home';
-    console.log(redirect);
+    const redirect = window.location.origin + (route ? route : '/access/login');
 
     const query = supabase.auth.signInWithOAuth({
         provider: provider,
