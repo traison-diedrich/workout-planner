@@ -1,4 +1,6 @@
 export type {
+    ClientExercise,
+    ClientWorkout,
     DbResult,
     DbResultErr,
     DbResultOk,

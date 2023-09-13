@@ -113,9 +113,17 @@ export interface Database {
 export type WorkoutType = Database['public']['Tables']['workouts']['Row'];
 export type ExerciseType = Database['public']['Tables']['exercises']['Row'];
 export type ExerciseInsertType =
-    Database['public']['Tables']['exercises']['Insert'];
+Database['public']['Tables']['exercises']['Insert'];
 export type ExerciseInfoType =
-    Database['public']['Tables']['exercise_types']['Row'];
+Database['public']['Tables']['exercise_types']['Row'];
+
+export type ClientExercise = ExerciseType & {
+    exercise_types: ExerciseInfoType;
+}
+
+export type ClientWorkout = WorkoutType & {
+    exercises: ClientExercise[];
+}
 
 export type DbResultErr = PostgrestError;
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never;

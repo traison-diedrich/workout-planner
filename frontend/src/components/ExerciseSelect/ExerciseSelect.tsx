@@ -1,4 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
+import { readExerciseInfo } from '../../data/crud';
 import { ExerciseInfoType } from '../../data/supabase';
 import { ExercisePicker, SearchBar } from './';
 
@@ -6,7 +8,6 @@ interface ExerciseSelectProps {
     open: boolean;
     handleClose: () => void;
     handleSelect: (id: number) => void;
-    options: ExerciseInfoType[];
 }
 
 const scrollTo = (element: HTMLLIElement) => {
@@ -16,11 +17,18 @@ const scrollTo = (element: HTMLLIElement) => {
 export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
     open,
     handleClose,
-    options,
     handleSelect,
 }) => {
+    const { data: options } = useQuery({
+        queryKey: ['exercise_types'],
+        queryFn: readExerciseInfo,
+        onSuccess: data => setFilteredOptions(data),
+    });
+
     const [searchTerm, setSearchTerm] = React.useState('');
-    const [filteredOptions, setFilteredOptions] = React.useState(options);
+    const [filteredOptions, setFilteredOptions] = React.useState<
+        ExerciseInfoType[]
+    >([]);
     const [scrollIndex, setScrollIndex] = React.useState(0);
 
     const scrollContainerRef = React.useRef<HTMLDivElement>(null);
@@ -37,7 +45,7 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
         const newSearchTerm = e.target.value;
         setSearchTerm(newSearchTerm);
 
-        const filteredExercises = options.filter(option =>
+        const filteredExercises = options!.filter(option =>
             option.label.toLowerCase().includes(newSearchTerm.toLowerCase()),
         );
 
@@ -47,7 +55,7 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
 
     const resetSearch = () => {
         setSearchTerm('');
-        setFilteredOptions(options);
+        setFilteredOptions(options!);
         resetScroll();
     };
 

@@ -7,19 +7,17 @@ import {
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
-import { ExerciseType } from '../../data/supabase/database.types';
+import { ClientExercise } from '../../data/supabase/database.types';
 interface ExerciseProps {
-    exercise: ExerciseType;
-    name: string;
+    exercise: ClientExercise;
     index: number;
-    setExercise: (exercise: ExerciseType) => void;
+    setExercise: (exercise: ClientExercise) => void;
     toggleSelectOpen: () => void;
     onDelete: (id: number) => void;
 }
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,
-    name,
     index,
     setExercise,
     toggleSelectOpen,
@@ -54,7 +52,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     className="select select-primary w-full max-w-xs items-center"
                     onClick={toggleSelectOpen}
                 >
-                    {name}
+                    {exercise.exercise_types.label}
                 </button>
 
                 <div className="flex w-full items-center justify-center gap-4">

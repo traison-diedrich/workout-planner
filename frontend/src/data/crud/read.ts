@@ -1,29 +1,28 @@
 import { DbResult, supabase } from '../supabase';
+import { ClientWorkout } from '../supabase/';
 
 type uid = string | undefined;
 
-export async function readWorkouts(uid: uid) {
-    const query = supabase
-        .from('workouts')
-        .select('*')
-        .eq('uid', uid)
-        .order('id', { ascending: true });
-    const res: DbResult<typeof query> = await query;
+export async function readWorkouts(user_id: uid) {
+    const res = await fetch(`http://127.0.0.1:8000/workouts/${user_id}`);
+    const data = await res.json();
 
-    if (res.error) {
-        throw res.error;
+    if (res.ok) {
+        return data.data as ClientWorkout[];
     }
-    return res.data;
+
+    throw res.statusText;
 }
 
-export async function readWorkout(wid: number) {
-    const query = supabase.from('workouts').select('*').eq('id', wid).single();
-    const res: DbResult<typeof query> = await query;
+export async function readWorkout(workout_id: number) {
+    const res = await fetch(`http://127.0.0.1:8000/workout/${workout_id}`);
+    const data = await res.json();
 
-    if (res.error) {
-        throw res.error;
+    if (res.ok) {
+        return data.data as ClientWorkout;
     }
-    return res.data;
+
+    throw res.statusText;
 }
 
 export async function readExercises(wid: number) {

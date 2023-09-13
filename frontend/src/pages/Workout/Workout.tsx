@@ -25,12 +25,10 @@ import { AddCard, ExerciseSelect, SortableItem } from '../../components';
 import {
     createExercise,
     deleteWorkout,
-    readExerciseInfo,
-    readExercises,
     readWorkout,
     updateWorkout,
 } from '../../data/crud';
-import { ExerciseType } from '../../data/supabase';
+import { ClientExercise } from '../../data/supabase';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
@@ -76,19 +74,18 @@ export const Workout: React.FC = () => {
 
     const [name, setName] = React.useState('');
 
-    useQuery({
+    const { isLoading } = useQuery({
         queryKey: ['workouts', wid],
         queryFn: () => readWorkout(wid),
-        onSuccess: data => setName(data.name),
-    });
-    const { data: exerciseInfo } = useQuery({
-        queryKey: ['exerciseInfo'],
-        queryFn: readExerciseInfo,
+        onSuccess: data => {
+            setName(data.name);
+            setExercises(data.exercises);
+        },
     });
 
-    const [exercises, setExercises] = React.useState<ExerciseType[]>([]);
+    const [exercises, setExercises] = React.useState<ClientExercise[]>([]);
     const [activeExercise, setActiveExercise] =
-        React.useState<ExerciseType | null>(null);
+        React.useState<ClientExercise | null>(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -102,15 +99,16 @@ export const Workout: React.FC = () => {
     );
 
     const queryClient = useQueryClient();
-    const { isLoading } = useQuery({
-        queryKey: ['exercises', wid],
-        queryFn: () => readExercises(wid),
-        onSuccess: data => setExercises(data),
-    });
 
     const creation = useMutation({
         mutationFn: () => createExercise(wid, exercises.length),
-        onSuccess: exercise => setExercises([...exercises, exercise]),
+        onSuccess: exercise => {
+            const newExercise: ClientExercise = {
+                ...exercise,
+                exercise_types: { label: 'Barbell Bench Press', id: 1 },
+            };
+            setExercises([...exercises, newExercise]);
+        },
     });
 
     // client side update
@@ -193,7 +191,6 @@ export const Workout: React.FC = () => {
             <ExerciseSelect
                 open={currentExerciseIndex !== null}
                 handleClose={() => setCurrentExerciseIndex(null)}
-                options={exerciseInfo || []}
                 handleSelect={id =>
                     updateExercise(currentExerciseIndex!, { e_type_id: id })
                 }
@@ -253,16 +250,9 @@ export const Workout: React.FC = () => {
                                         >
                                             <Exercise
                                                 index={index}
-                                                name={
-                                                    exerciseInfo?.find(
-                                                        info =>
-                                                            info.id ===
-                                                            exercise.e_type_id,
-                                                    )?.label || 'Name not found'
-                                                }
                                                 exercise={exercise}
                                                 setExercise={(
-                                                    exercise: ExerciseType,
+                                                    exercise: ClientExercise,
                                                 ) =>
                                                     updateExercise(
                                                         index,
@@ -294,11 +284,8 @@ export const Workout: React.FC = () => {
                                         <DraggableExercise
                                             exercise={activeExercise}
                                             name={
-                                                exerciseInfo?.find(
-                                                    exerciseInfo =>
-                                                        exerciseInfo.id ===
-                                                        activeExercise.e_type_id,
-                                                )?.label || 'Label not found'
+                                                activeExercise.exercise_types
+                                                    .label
                                             }
                                         />
                                     ) : null}
