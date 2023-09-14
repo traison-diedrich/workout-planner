@@ -145,7 +145,7 @@ def create_workout(*, session: Session = Depends(get_session), workout: WorkoutC
     return db_workout
 
 
-@app.get("/workouts/", response_model=List[WorkoutRead])
+@app.get("/workouts/", response_model=List[WorkoutReadWithExercises])
 def read_workouts(*, session: Session = Depends(get_session)):
     heroes = session.exec(select(Workout)).all()
     return heroes

@@ -75,4 +75,4 @@ class ExerciseReadWithInfo(ExerciseRead):
 
 
 class WorkoutReadWithExercises(WorkoutRead):
-    exercises: List[ExerciseRead] = []
+    exercises: List[ExerciseReadWithInfo] = []
