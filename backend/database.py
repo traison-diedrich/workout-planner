@@ -13,8 +13,7 @@ postgres_url = URL(
     port=6543,
     database="postgres"
 )
-# connect_args = {"check_same_thread": False}
-engine = create_engine(postgres_url, echo=True)
+engine = create_engine(postgres_url)
 
 
 def create_db_and_tables():
