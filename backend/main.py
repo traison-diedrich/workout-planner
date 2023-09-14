@@ -160,7 +160,7 @@ def read_workout(*, session: Session = Depends(get_session), workout_id: int):
     return workout
 
 
-@app.patch("/workouts/{workout_id}", response_model=WorkoutRead)
+@app.patch("/workouts/{workout_id}", response_model=WorkoutReadWithExercises)
 def update_workout(*, session: Session = Depends(get_session), workout_id: int, workout: WorkoutUpdate):
     db_workout = session.get(Workout, workout_id)
     if not db_workout:

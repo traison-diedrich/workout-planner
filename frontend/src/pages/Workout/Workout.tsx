@@ -24,11 +24,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AddCard, ExerciseSelect, SortableItem } from '../../components';
 import {
     createExercise,
+    deleteExercise,
     deleteWorkout,
     readWorkout,
-    updateWorkout,
+    updateWorkoutAndExercises,
 } from '../../data/crud';
-import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
+import {
+    ExerciseReadWithInfo,
+    ExerciseUpdate,
+} from '../../data/supabase/database.types';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
@@ -70,13 +74,13 @@ export const Workout: React.FC = () => {
     const navigate = useNavigate();
     // getting workout name through state.pathname until I can
     // figure out how to pass it down properly
-    const wid = parseInt(state.pathname.split('/').pop() || '');
+    const workout_id = parseInt(state.pathname.split('/').pop() || '');
 
     const [name, setName] = React.useState('');
 
     const { isLoading } = useQuery({
-        queryKey: ['workouts', wid],
-        queryFn: () => readWorkout(wid),
+        queryKey: ['workouts', workout_id],
+        queryFn: () => readWorkout(workout_id),
         onSuccess: data => {
             setName(data.name!);
             setExercises(data.exercises);
@@ -86,7 +90,7 @@ export const Workout: React.FC = () => {
     const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
         [],
     );
-    const [activeExercise, setActiveExercise] =
+    const [draggingExercise, setDraggingExercise] =
         React.useState<ExerciseReadWithInfo | null>(null);
 
     const sensors = useSensors(
@@ -103,45 +107,46 @@ export const Workout: React.FC = () => {
     const queryClient = useQueryClient();
 
     const addExercise = useMutation({
-        mutationFn: () => createExercise(wid),
+        mutationFn: () => createExercise(workout_id),
         onSuccess: db_exercise => setExercises([...exercises, db_exercise]),
     });
 
+    const delExercise = useMutation({
+        mutationFn: (exercise_id: number) => deleteExercise(exercise_id),
+        onSuccess: () => {
+            setExercises(
+                exercises.filter(exercise => exercise.id !== workout_id),
+            );
+        },
+    });
+
     // client side update
-    const updateExercise = (index: number, exercise: ExerciseUpdateType) => {
+    const updateExercise = (index: number, exercise: ExerciseUpdate) => {
         const updatedExercises = [...exercises];
         updatedExercises[index] = {
             ...updatedExercises[index],
             ...exercise,
         };
+        console.log(updatedExercises);
         setExercises(updatedExercises);
     };
 
     // there is a better way to do this where the function updateWorkout
     // returns the updated workout, but without a custom api this will do
     // see: https://tanstack.com/query/latest/docs/react/guides/updates-from-mutation-responses
-    // const update = useMutation({
-    //     mutationFn: () => updateWorkout(wid, name, exercises),
-    //     onSuccess: () => {
-    //         queryClient.invalidateQueries({
-    //             queryKey: ['workouts', wid],
-    //         });
-    //         queryClient.invalidateQueries({
-    //             queryKey: ['exercises', wid],
-    //         });
-    //     },
-    // });
+    const update = useMutation({
+        mutationFn: () =>
+            updateWorkoutAndExercises(workout_id, name, exercises),
+        onSuccess: updatedWorkout =>
+            queryClient.setQueryData(['workouts', workout_id], updatedWorkout),
+    });
 
     const deletion = useMutation({
-        mutationFn: () => deleteWorkout(wid),
+        mutationFn: () => deleteWorkout(workout_id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
     });
-
-    const deleteExercise = (id: number) => {
-        setExercises(exercises.filter(exercise => exercise.id !== id));
-    };
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -151,7 +156,7 @@ export const Workout: React.FC = () => {
         );
 
         exercises[foundIndex].exercise_order = foundIndex;
-        setActiveExercise(exercises[foundIndex]);
+        setDraggingExercise(exercises[foundIndex]);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -170,7 +175,7 @@ export const Workout: React.FC = () => {
             });
         }
 
-        setActiveExercise(null);
+        setDraggingExercise(null);
     };
 
     return (
@@ -187,9 +192,12 @@ export const Workout: React.FC = () => {
             <ExerciseSelect
                 open={currentExerciseIndex !== null}
                 handleClose={() => setCurrentExerciseIndex(null)}
-                handleSelect={id =>
-                    updateExercise(currentExerciseIndex!, { e_type_id: id })
-                }
+                handleSelect={new_info_id => {
+                    console.log(new_info_id);
+                    updateExercise(currentExerciseIndex!, {
+                        exercise_info_id: new_info_id,
+                    });
+                }}
             />
             {/* TODO: create a ref to navbar for its current height */}
             <div
@@ -199,7 +207,7 @@ export const Workout: React.FC = () => {
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
                         onClick={() => {
-                            // update.mutate();
+                            update.mutate();
                             navigate(-1);
                         }}
                         type="button"
@@ -258,7 +266,11 @@ export const Workout: React.FC = () => {
                                                 toggleSelectOpen={() =>
                                                     toggleExerciseSelect(index)
                                                 }
-                                                onDelete={deleteExercise}
+                                                onDelete={() =>
+                                                    delExercise.mutate(
+                                                        exercise.id,
+                                                    )
+                                                }
                                             />
                                         </SortableItem>
                                     ))}
@@ -276,9 +288,9 @@ export const Workout: React.FC = () => {
                                     }}
                                     transition={`transform 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22)`}
                                 >
-                                    {activeExercise ? (
+                                    {draggingExercise ? (
                                         <DraggableExercise
-                                            exercise={activeExercise}
+                                            exercise={draggingExercise}
                                         />
                                     ) : null}
                                 </DragOverlay>
@@ -289,7 +301,7 @@ export const Workout: React.FC = () => {
                 <button
                     className="btn btn-primary btn-wide"
                     onClick={() => {
-                        // update.mutate();
+                        update.mutate();
                         navigate(-1);
                     }}
                 >

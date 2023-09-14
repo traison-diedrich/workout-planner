@@ -22,28 +22,6 @@ class ExerciseInfoUpdate(SQLModel):
     name: str
 
 
-class WorkoutBase(SQLModel):
-    name: Optional[str] = Field(default="My New Workout")
-    user_id: str
-
-
-class Workout(WorkoutBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    exercises: List["Exercise"] = Relationship(back_populates="workout")
-
-
-class WorkoutCreate(WorkoutBase):
-    pass
-
-
-class WorkoutRead(WorkoutBase):
-    id: int
-
-
-class WorkoutUpdate(SQLModel):
-    name: Optional[str] = None
-
-
 class ExerciseBase(SQLModel):
     sets: Optional[int] = Field(default=3)
     reps: Optional[int] = Field(default=10)
@@ -55,7 +33,6 @@ class ExerciseBase(SQLModel):
 
 class Exercise(ExerciseBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    workout: Optional[Workout] = Relationship(back_populates="exercises")
     exercise_info: Optional[ExerciseInfo] = Relationship()
 
 
@@ -70,6 +47,30 @@ class ExerciseRead(ExerciseBase):
 class ExerciseUpdate(SQLModel):
     sets: Optional[int] = None
     reps: Optional[int] = None
+    exercise_info_id: Optional[int] = None
+    exercise_order: Optional[int] = None
+
+
+class WorkoutBase(SQLModel):
+    name: Optional[str] = Field(default="My New Workout")
+    user_id: str
+
+
+class Workout(WorkoutBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    exercises: List["Exercise"] = Relationship()
+
+
+class WorkoutCreate(WorkoutBase):
+    pass
+
+
+class WorkoutRead(WorkoutBase):
+    id: int
+
+
+class WorkoutUpdate(SQLModel):
+    name: Optional[str] = None
 
 
 class ExerciseReadWithInfo(ExerciseRead):

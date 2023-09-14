@@ -74,7 +74,12 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
      */
     React.useEffect(() => {
         const handleScroll = () => {
-            if (!scrollContainerRef.current || !listRef.current) return;
+            if (
+                !scrollContainerRef.current ||
+                !listRef.current ||
+                !exercisesRef.current[0].clientHeight
+            )
+                return;
 
             const scrollPosition = scrollContainerRef.current.scrollTop;
             const listStyles = getComputedStyle(listRef.current);
