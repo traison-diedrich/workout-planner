@@ -1,30 +1,29 @@
-import { DbResult } from '../supabase/database.types';
-import { supabase } from '../supabase/supabaseClient';
+export async function createWorkout(user_id: string) {
+    const res = await fetch('http://127.0.0.1:8000/workouts/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user_id }),
+    });
+    const data = await res.json();
 
-type uid = string | undefined;
-
-export async function createWorkout(uid: uid) {
-    const query = supabase
-        .from('workouts')
-        .insert([{ uid: uid, name: 'New Workout' }])
-        .select();
-    const res: DbResult<typeof query> = await query;
-
-    if (res.error) {
-        throw res.error;
+    if (res.ok) {
+        return data;
     }
-    return res.data[0];
+
+    throw res.statusText;
 }
 
-export async function createExercise(wid: number, index: number) {
-    const query = supabase
-        .from('exercises')
-        .insert([{ e_type_id: 1, wid: wid, sets: 3, reps: 10, exercise_order: index }])
-        .select();
-    const res: DbResult<typeof query> = await query;
+export async function createExercise(workout_id: number) {
+    const res = await fetch('http://127.0.0.1:8000/exercises/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workout_id: workout_id }),
+    });
+    const data = await res.json();
 
-    if (res.error) {
-        throw res.error;
+    if (res.ok) {
+        return data;
     }
-    return res.data[0];
+
+    throw res.statusText;
 }

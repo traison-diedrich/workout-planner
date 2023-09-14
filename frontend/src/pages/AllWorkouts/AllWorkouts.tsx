@@ -14,11 +14,11 @@ export const AllWorkouts: React.FC = () => {
 
     const { data: workouts, isLoading } = useQuery({
         queryKey: ['workouts'],
-        queryFn: () => readWorkouts(user?.id),
+        queryFn: readWorkouts,
     });
 
     const mutation = useMutation({
-        mutationFn: createWorkout,
+        mutationFn: () => createWorkout(user!.id),
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: ['workouts'] });
             navigate(`/auth/workouts/${data.id}`);
@@ -33,7 +33,7 @@ export const AllWorkouts: React.FC = () => {
                     <span className="loading loading-spinner loading-lg" />
                 ) : (
                     <>
-                        {workouts?.map(workout => (
+                        {workouts!.map(workout => (
                             <WorkoutPreview
                                 key={workout.id}
                                 workout={workout}
@@ -46,7 +46,7 @@ export const AllWorkouts: React.FC = () => {
                                     : ''
                             }`}
                         >
-                            <AddCard onAdd={() => mutation.mutate(user?.id)} />
+                            <AddCard onAdd={() => mutation.mutate()} />
                         </div>
                     </>
                 )}

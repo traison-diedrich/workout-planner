@@ -32,7 +32,7 @@ def on_startup():
     create_db_and_tables()
 
 
-@app.post("/exercises/", response_model=ExerciseRead)
+@app.post("/exercises/", response_model=ExerciseReadWithInfo)
 def create_exercise(*, session: Session = Depends(get_session), exercise: ExerciseCreate):
     db_exercise = Exercise.from_orm(exercise)
     session.add(db_exercise)

@@ -5,24 +5,23 @@ import {
 } from '@tabler/icons-react';
 import { forwardRef } from 'react';
 import { NumberBox, NumberStepper } from '../../components';
-import { ExerciseType } from '../../data/supabase';
+import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 
 interface DraggableExerciseProps {
-    exercise: ExerciseType;
-    name: string;
+    exercise: ExerciseReadWithInfo;
 }
 
 type Ref = HTMLIFrameElement;
 
 export const DraggableExercise = forwardRef<Ref, DraggableExerciseProps>(
-    ({ exercise, name, ...props }, ref) => {
+    ({ exercise, ...props }, ref) => {
         return (
             <div {...props} ref={ref} className="h-full w-full touch-none">
                 <div className="h-full w-full max-w-lg animate-scaleUp rounded-xl bg-base-100 shadow-xl">
                     <div className="no-animation flex h-full w-full items-center gap-2 py-6 pl-6 pr-2">
                         <div className="flex flex-col justify-center gap-4">
                             <div className="select select-primary w-full items-center">
-                                {name}
+                                {exercise.exercise_info!.name}
                             </div>
                             <div className="flex w-full items-center justify-center gap-4">
                                 <div className="inline-flex flex-col items-center gap-2">

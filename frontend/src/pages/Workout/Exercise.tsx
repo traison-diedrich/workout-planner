@@ -7,11 +7,11 @@ import {
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
-import { ClientExercise } from '../../data/supabase/database.types';
+import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 interface ExerciseProps {
-    exercise: ClientExercise;
+    exercise: ExerciseReadWithInfo;
     index: number;
-    setExercise: (exercise: ClientExercise) => void;
+    setExercise: (exercise: ExerciseReadWithInfo) => void;
     toggleSelectOpen: () => void;
     onDelete: (id: number) => void;
 }
@@ -26,6 +26,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
     type ExerciseAttribute = 'sets' | 'reps';
 
     const handleAdd = (attr: ExerciseAttribute) => {
+        if (exercise[attr] === undefined) return;
         const updatedExercise = {
             ...exercise,
             [attr]: exercise[attr] + 1,
@@ -52,13 +53,13 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     className="select select-primary w-full max-w-xs items-center"
                     onClick={toggleSelectOpen}
                 >
-                    {exercise.exercise_types.label}
+                    {exercise.exercise_info!.name}
                 </button>
 
                 <div className="flex w-full items-center justify-center gap-4">
                     <div className="inline-flex flex-col items-center gap-2">
                         <NumberBox
-                            value={exercise.sets}
+                            value={exercise.sets!}
                             title="SETS"
                             size="text-5xl"
                         />
@@ -70,7 +71,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     <IconX size={32} className="mb-16" />
                     <div className="inline-flex flex-col items-center gap-2">
                         <NumberBox
-                            value={exercise.reps}
+                            value={exercise.reps!}
                             title="REPS"
                             size="text-5xl"
                         />

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { readExerciseInfo } from '../../data/crud';
-import { ExerciseInfoType } from '../../data/supabase';
+import { ExerciseInfoRead } from '../../data/supabase/database.types';
 import { ExercisePicker, SearchBar } from './';
 
 interface ExerciseSelectProps {
@@ -20,14 +20,14 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
     handleSelect,
 }) => {
     const { data: options } = useQuery({
-        queryKey: ['exercise_types'],
+        queryKey: ['exerciseInfo'],
         queryFn: readExerciseInfo,
         onSuccess: data => setFilteredOptions(data),
     });
 
     const [searchTerm, setSearchTerm] = React.useState('');
     const [filteredOptions, setFilteredOptions] = React.useState<
-        ExerciseInfoType[]
+        ExerciseInfoRead[]
     >([]);
     const [scrollIndex, setScrollIndex] = React.useState(0);
 
@@ -46,7 +46,7 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
         setSearchTerm(newSearchTerm);
 
         const filteredExercises = options!.filter(option =>
-            option.label.toLowerCase().includes(newSearchTerm.toLowerCase()),
+            option.name.toLowerCase().includes(newSearchTerm.toLowerCase()),
         );
 
         setFilteredOptions(filteredExercises);

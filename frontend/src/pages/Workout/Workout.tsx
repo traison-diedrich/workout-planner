@@ -28,7 +28,7 @@ import {
     readWorkout,
     updateWorkout,
 } from '../../data/crud';
-import { ClientExercise } from '../../data/supabase';
+import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
@@ -78,14 +78,16 @@ export const Workout: React.FC = () => {
         queryKey: ['workouts', wid],
         queryFn: () => readWorkout(wid),
         onSuccess: data => {
-            setName(data.name);
+            setName(data.name!);
             setExercises(data.exercises);
         },
     });
 
-    const [exercises, setExercises] = React.useState<ClientExercise[]>([]);
+    const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
+        [],
+    );
     const [activeExercise, setActiveExercise] =
-        React.useState<ClientExercise | null>(null);
+        React.useState<ExerciseReadWithInfo | null>(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -100,15 +102,9 @@ export const Workout: React.FC = () => {
 
     const queryClient = useQueryClient();
 
-    const creation = useMutation({
-        mutationFn: () => createExercise(wid, exercises.length),
-        onSuccess: exercise => {
-            const newExercise: ClientExercise = {
-                ...exercise,
-                exercise_types: { label: 'Barbell Bench Press', id: 1 },
-            };
-            setExercises([...exercises, newExercise]);
-        },
+    const addExercise = useMutation({
+        mutationFn: () => createExercise(wid),
+        onSuccess: db_exercise => setExercises([...exercises, db_exercise]),
     });
 
     // client side update
@@ -124,17 +120,17 @@ export const Workout: React.FC = () => {
     // there is a better way to do this where the function updateWorkout
     // returns the updated workout, but without a custom api this will do
     // see: https://tanstack.com/query/latest/docs/react/guides/updates-from-mutation-responses
-    const update = useMutation({
-        mutationFn: () => updateWorkout(wid, name, exercises),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['workouts', wid],
-            });
-            queryClient.invalidateQueries({
-                queryKey: ['exercises', wid],
-            });
-        },
-    });
+    // const update = useMutation({
+    //     mutationFn: () => updateWorkout(wid, name, exercises),
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['workouts', wid],
+    //         });
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['exercises', wid],
+    //         });
+    //     },
+    // });
 
     const deletion = useMutation({
         mutationFn: () => deleteWorkout(wid),
@@ -203,7 +199,7 @@ export const Workout: React.FC = () => {
                 <div className="flex w-full max-w-2xl justify-between gap-2">
                     <button
                         onClick={() => {
-                            update.mutate();
+                            // update.mutate();
                             navigate(-1);
                         }}
                         type="button"
@@ -252,7 +248,7 @@ export const Workout: React.FC = () => {
                                                 index={index}
                                                 exercise={exercise}
                                                 setExercise={(
-                                                    exercise: ClientExercise,
+                                                    exercise: ExerciseReadWithInfo,
                                                 ) =>
                                                     updateExercise(
                                                         index,
@@ -268,7 +264,7 @@ export const Workout: React.FC = () => {
                                     ))}
                                     <div className="w-full pb-8">
                                         <AddCard
-                                            onAdd={() => creation.mutate()}
+                                            onAdd={() => addExercise.mutate()}
                                         />
                                     </div>
                                 </SortableContext>
@@ -283,10 +279,6 @@ export const Workout: React.FC = () => {
                                     {activeExercise ? (
                                         <DraggableExercise
                                             exercise={activeExercise}
-                                            name={
-                                                activeExercise.exercise_types
-                                                    .label
-                                            }
                                         />
                                     ) : null}
                                 </DragOverlay>
@@ -297,7 +289,7 @@ export const Workout: React.FC = () => {
                 <button
                     className="btn btn-primary btn-wide"
                     onClick={() => {
-                        update.mutate();
+                        // update.mutate();
                         navigate(-1);
                     }}
                 >

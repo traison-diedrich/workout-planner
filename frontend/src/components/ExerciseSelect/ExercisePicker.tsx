@@ -1,11 +1,11 @@
 import { IconAlertTriangle } from '@tabler/icons-react';
 import * as React from 'react';
-import { ExerciseInfoType } from '../../data/supabase';
+import { ExerciseInfoRead } from '../../data/supabase/database.types';
 
 interface ExercisePickerProps {
     scrollContainerRef: React.RefObject<HTMLDivElement>;
     listRef: React.RefObject<HTMLUListElement>;
-    filteredOptions: ExerciseInfoType[];
+    filteredOptions: ExerciseInfoRead[];
     exercisesRef: React.MutableRefObject<HTMLLIElement[]>;
     scrollTo: (element: HTMLLIElement) => void;
 }
@@ -43,7 +43,7 @@ export const ExercisePicker: React.FC<ExercisePickerProps> = ({
                                 scrollTo(exercisesRef.current[index])
                             }
                         >
-                            {option.label}
+                            {option.name}
                         </li>
                     ))
                 ) : (

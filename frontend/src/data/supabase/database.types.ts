@@ -113,20 +113,108 @@ export interface Database {
 export type WorkoutType = Database['public']['Tables']['workouts']['Row'];
 export type ExerciseType = Database['public']['Tables']['exercises']['Row'];
 export type ExerciseInsertType =
-Database['public']['Tables']['exercises']['Insert'];
+    Database['public']['Tables']['exercises']['Insert'];
 export type ExerciseInfoType =
-Database['public']['Tables']['exercise_types']['Row'];
+    Database['public']['Tables']['exercise_types']['Row'];
 
 export type ClientExercise = ExerciseType & {
     exercise_types: ExerciseInfoType;
-}
+};
 
 export type ClientWorkout = WorkoutType & {
     exercises: ClientExercise[];
-}
+};
 
 export type DbResultErr = PostgrestError;
 export type DbResult<T> = T extends PromiseLike<infer U> ? U : never;
 export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }>
     ? Exclude<U, null>
     : never;
+
+// ExerciseInfoBase
+export interface ExerciseInfoBase {
+    name: string;
+}
+
+// ExerciseInfo
+export interface ExerciseInfo extends ExerciseInfoBase {
+    id: number | null;
+}
+
+// ExerciseInfoCreate
+export interface ExerciseInfoCreate extends ExerciseInfoBase {}
+
+// ExerciseInfoRead
+export interface ExerciseInfoRead extends ExerciseInfoBase {
+    id: number;
+}
+
+// ExerciseInfoUpdate
+export interface ExerciseInfoUpdate {
+    name: string;
+}
+
+// WorkoutBase
+export interface WorkoutBase {
+    name?: string;
+    user_id: string;
+}
+
+// Workout
+export interface Workout extends WorkoutBase {
+    id: number | null;
+    exercises: Exercise[];
+}
+
+// WorkoutCreate
+export interface WorkoutCreate extends WorkoutBase {}
+
+// WorkoutRead
+export interface WorkoutRead extends WorkoutBase {
+    id: number;
+}
+
+// WorkoutUpdate
+export interface WorkoutUpdate {
+    name?: string | null;
+}
+
+// ExerciseBase
+export interface ExerciseBase {
+    sets: number;
+    reps: number;
+    exercise_order: number;
+    workout_id: number;
+    exercise_info_id: number;
+}
+
+// Exercise
+export interface Exercise extends ExerciseBase {
+    id: number | null;
+    workout?: Workout | null;
+    exercise_info?: ExerciseInfo | null;
+}
+
+// ExerciseCreate
+export interface ExerciseCreate extends ExerciseBase {}
+
+// ExerciseRead
+export interface ExerciseRead extends ExerciseBase {
+    id: number;
+}
+
+// ExerciseUpdate
+export interface ExerciseUpdate {
+    sets?: number | null;
+    reps?: number | null;
+}
+
+// ExerciseReadWithInfo
+export interface ExerciseReadWithInfo extends ExerciseRead {
+    exercise_info?: ExerciseInfoRead | null;
+}
+
+// WorkoutReadWithExercises
+export interface WorkoutReadWithExercises extends WorkoutRead {
+    exercises: ExerciseReadWithInfo[];
+}

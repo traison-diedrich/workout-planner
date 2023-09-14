@@ -1,22 +1,9 @@
-import { DbResult } from '../supabase/database.types';
-import { supabase } from '../supabase/supabaseClient';
-
 export async function deleteWorkout(wid: number) {
-    const query = supabase.from('workouts').delete().eq('id', wid);
-    const res: DbResult<typeof query> = await query;
+    const res = await fetch(`http://127.0.0.1:8000/workouts/${wid}`, {
+        method: 'DELETE',
+    });
 
-    if (res.error) {
-        throw res.error;
-    }
-    return;
-}
+    if (res.ok) return;
 
-export async function deleteExercise(eid: number) {
-    const query = supabase.from('exercises').delete().eq('id', eid);
-    const res: DbResult<typeof query> = await query;
-
-    if (res.error) {
-        throw res.error;
-    }
-    return;
+    throw res.statusText;
 }
