@@ -48,11 +48,13 @@ class ExerciseBase(SQLModel):
     sets: Optional[int] = Field(default=3)
     reps: Optional[int] = Field(default=10)
     workout_id: int = Field(foreign_key="workout.id")
+    exercise_info_id: int = Field(foreign_key="exerciseinfo.id")
 
 
 class Exercise(ExerciseBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     workout: Optional[Workout] = Relationship(back_populates="exercises")
+    exercise_info: Optional[ExerciseInfo] = Relationship()
 
 
 class ExerciseCreate(ExerciseBase):

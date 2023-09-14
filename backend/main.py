@@ -41,13 +41,13 @@ def create_exercise(*, session: Session = Depends(get_session), exercise: Exerci
     return db_exercise
 
 
-@app.get("/exercises/", response_model=List[ExerciseRead])
+@app.get("/exercises/", response_model=List[ExerciseReadWithInfo])
 def read_exercises(*, session: Session = Depends(get_session)):
     exercises = session.exec(select(Exercise)).all()
     return exercises
 
 
-@app.get("/exercises/{exercise_id}", response_model=ExerciseRead)
+@app.get("/exercises/{exercise_id}", response_model=ExerciseReadWithInfo)
 def read_exercise(*, session: Session = Depends(get_session), exercise_id: int):
     exercise = session.get(Exercise, exercise_id)
     if not exercise:
@@ -56,7 +56,7 @@ def read_exercise(*, session: Session = Depends(get_session), exercise_id: int):
     return exercise
 
 
-@app.patch("/exercises/{exercise_id}", response_model=ExerciseRead)
+@app.patch("/exercises/{exercise_id}", response_model=ExerciseReadWithInfo)
 def update_exercise(*, session: Session = Depends(get_session), exercise_id: int, exercise: ExerciseUpdate):
     db_exercise = session.get(Exercise, exercise_id)
     if not db_exercise:
