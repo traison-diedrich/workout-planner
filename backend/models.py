@@ -2,6 +2,26 @@ from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
 
 
+class ExerciseInfoBase(SQLModel):
+    name: str
+
+
+class ExerciseInfo(ExerciseInfoBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class ExerciseInfoCreate(ExerciseInfoBase):
+    pass
+
+
+class ExerciseInfoRead(ExerciseInfoBase):
+    id: int
+
+
+class ExerciseInfoUpdate(SQLModel):
+    name: str
+
+
 class WorkoutBase(SQLModel):
     name: Optional[str] = Field(default="My New Workout")
     user_id: str
@@ -48,8 +68,8 @@ class ExerciseUpdate(SQLModel):
     reps: Optional[int] = None
 
 
-class ExerciseReadWithWorkout(ExerciseRead):
-    workout: Optional[WorkoutRead] = None
+class ExerciseReadWithInfo(ExerciseRead):
+    exercise_info: Optional[ExerciseInfoRead] = None
 
 
 class WorkoutReadWithExercises(WorkoutRead):
