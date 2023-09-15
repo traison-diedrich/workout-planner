@@ -7,7 +7,7 @@ import { ExercisePicker, SearchBar } from './';
 interface ExerciseSelectProps {
     open: boolean;
     handleClose: () => void;
-    handleSelect: (id: number) => void;
+    handleSelect: (new_info_id: number, exercise_name: string) => void;
 }
 
 const scrollTo = (element: HTMLLIElement) => {
@@ -134,7 +134,10 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
                         className="btn btn-primary mt-4 w-1/3 max-w-lg"
                         onClick={() => {
                             if (!filteredOptions[scrollIndex]) return;
-                            handleSelect(filteredOptions[scrollIndex].id);
+                            handleSelect(
+                                filteredOptions[scrollIndex].id,
+                                filteredOptions[scrollIndex].name,
+                            );
                             handleClose();
                         }}
                     >

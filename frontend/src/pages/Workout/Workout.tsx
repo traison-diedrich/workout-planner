@@ -29,10 +29,7 @@ import {
     readWorkout,
     updateWorkoutAndExercises,
 } from '../../data/crud';
-import {
-    ExerciseReadWithInfo,
-    ExerciseUpdate,
-} from '../../data/supabase/database.types';
+import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
@@ -121,7 +118,7 @@ export const Workout: React.FC = () => {
     });
 
     // client side update
-    const updateExercise = (index: number, exercise: ExerciseUpdate) => {
+    const updateExercise = (index: number, exercise: ExerciseReadWithInfo) => {
         const updatedExercises = [...exercises];
         updatedExercises[index] = {
             ...updatedExercises[index],
@@ -192,10 +189,14 @@ export const Workout: React.FC = () => {
             <ExerciseSelect
                 open={currentExerciseIndex !== null}
                 handleClose={() => setCurrentExerciseIndex(null)}
-                handleSelect={new_info_id => {
-                    console.log(new_info_id);
+                handleSelect={(new_info_id, exercise_name) => {
                     updateExercise(currentExerciseIndex!, {
+                        ...exercises[currentExerciseIndex!],
                         exercise_info_id: new_info_id,
+                        exercise_info: {
+                            id: new_info_id,
+                            name: exercise_name,
+                        },
                     });
                 }}
             />
