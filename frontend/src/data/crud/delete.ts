@@ -13,7 +13,7 @@ export async function deleteExercise(exercise_id: number) {
         method: 'DELETE',
     });
 
-    if (res.ok) return;
+    if (res.ok) return exercise_id;
 
     throw res.statusText;
 }

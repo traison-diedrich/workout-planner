@@ -17,6 +17,7 @@ origins = [
     'http://127.0.0.1:3000'
 ]
 
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -43,7 +44,8 @@ def create_exercise(*, session: Session = Depends(get_session), exercise: Exerci
 
 @app.get("/exercises/", response_model=List[ExerciseReadWithInfo])
 def read_exercises(*, session: Session = Depends(get_session)):
-    exercises = session.exec(select(Exercise)).all()
+    exercises = session.exec(
+        select(Exercise).order_by(Exercise.exercise_order)).all()
     return exercises
 
 
@@ -145,19 +147,26 @@ def create_workout(*, session: Session = Depends(get_session), workout: WorkoutC
     return db_workout
 
 
-@app.get("/workouts/", response_model=List[WorkoutReadWithExercises])
+@app.get("/workouts/", response_model=List[WorkoutRead])
 def read_workouts(*, session: Session = Depends(get_session)):
-    heroes = session.exec(select(Workout)).all()
-    return heroes
+    workouts = session.exec(select(Workout)).all()
+    return workouts
 
 
-@app.get("/workouts/{workout_id}", response_model=WorkoutReadWithExercises)
+@app.get("/workouts/{workout_id}", response_model=WorkoutRead)
 def read_workout(*, session: Session = Depends(get_session), workout_id: int):
     workout = session.get(Workout, workout_id)
     if not workout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Workout not found")
     return workout
+
+
+@app.get("/workouts/{workout_id}/exercises", response_model=List[ExerciseReadWithInfo])
+def read_workout_exercises(*, session: Session = Depends(get_session), workout_id: int):
+    exercises = session.exec(select(Exercise).where(
+        Exercise.workout_id == workout_id).order_by(Exercise.exercise_order)).all()
+    return exercises
 
 
 @app.patch("/workouts/{workout_id}", response_model=WorkoutReadWithExercises)

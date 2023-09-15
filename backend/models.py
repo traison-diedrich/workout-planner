@@ -1,5 +1,6 @@
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy.orm import backref, relationship
 
 
 class ExerciseInfoBase(SQLModel):

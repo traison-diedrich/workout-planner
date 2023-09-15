@@ -43,7 +43,8 @@ export async function updateWorkoutAndExercises(
     name: string,
     exercises: Exercise[],
 ) {
-    const exercisePromises = exercises.map(exercise => {
+    const exercisePromises = exercises.map((exercise, index) => {
+        exercise.exercise_order = index;
         updateExercise(exercise.id!, exercise);
     });
 

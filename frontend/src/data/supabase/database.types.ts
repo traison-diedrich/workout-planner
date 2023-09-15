@@ -156,7 +156,7 @@ export interface ExerciseInfoUpdate {
 
 // WorkoutBase
 export interface WorkoutBase {
-    name?: string;
+    name: string;
     user_id: string;
 }
 
@@ -213,7 +213,7 @@ export interface ExerciseUpdate {
 
 // ExerciseReadWithInfo
 export interface ExerciseReadWithInfo extends ExerciseRead {
-    exercise_info?: ExerciseInfoRead | null;
+    exercise_info: ExerciseInfoRead;
 }
 
 // WorkoutReadWithExercises

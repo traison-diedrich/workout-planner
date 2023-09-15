@@ -1,6 +1,7 @@
 import {
     ExerciseInfoRead,
-    WorkoutReadWithExercises,
+    ExerciseReadWithInfo,
+    WorkoutRead,
 } from '../supabase/database.types';
 
 // type uid = string | undefined;
@@ -10,7 +11,7 @@ export async function readWorkouts() {
     const data = await res.json();
 
     if (res.ok) {
-        return data as WorkoutReadWithExercises[];
+        return data as WorkoutRead[];
     }
 
     throw res.statusText;
@@ -21,7 +22,20 @@ export async function readWorkout(workout_id: number) {
     const data = await res.json();
 
     if (res.ok) {
-        return data as WorkoutReadWithExercises;
+        return data as WorkoutRead;
+    }
+
+    throw res.statusText;
+}
+
+export async function readWorkoutExercises(workout_id: number) {
+    const res = await fetch(
+        `http://127.0.0.1:8000/workouts/${workout_id}/exercises`,
+    );
+    const data = await res.json();
+
+    if (res.ok) {
+        return data as ExerciseReadWithInfo[];
     }
 
     throw res.statusText;

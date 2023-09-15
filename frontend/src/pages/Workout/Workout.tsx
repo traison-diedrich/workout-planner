@@ -29,6 +29,7 @@ import {
     readWorkout,
     updateWorkoutAndExercises,
 } from '../../data/crud';
+import { readWorkoutExercises } from '../../data/crud/read';
 import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
@@ -51,14 +52,24 @@ const measuringConfig = {
  *  with unsaved changes or find a different router (most likely option)
  */
 export const Workout: React.FC = () => {
-    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-    const toggleDeleteModal = () => {
-        setShowDeleteModal(!showDeleteModal);
-    };
+    const queryClient = useQueryClient();
+    const state = useLocation();
+    const navigate = useNavigate();
+    // getting workout name through state.pathname until I can
+    // figure out how to pass it down properly
+    const workout_id = parseInt(state.pathname.split('/').pop() || '');
 
+    const [name, setName] = React.useState('');
+    const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
+        [],
+    );
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
     const [currentExerciseIndex, setCurrentExerciseIndex] = React.useState<
         number | null
     >(null);
+    const [draggingExercise, setDraggingExercise] =
+        React.useState<ExerciseReadWithInfo | null>(null);
+
     const toggleExerciseSelect = (index: number | null) => {
         if (currentExerciseIndex === index) {
             setCurrentExerciseIndex(null);
@@ -67,28 +78,17 @@ export const Workout: React.FC = () => {
         setCurrentExerciseIndex(index);
     };
 
-    const state = useLocation();
-    const navigate = useNavigate();
-    // getting workout name through state.pathname until I can
-    // figure out how to pass it down properly
-    const workout_id = parseInt(state.pathname.split('/').pop() || '');
-
-    const [name, setName] = React.useState('');
-
     const { isLoading } = useQuery({
-        queryKey: ['workouts', workout_id],
+        queryKey: ['workout', workout_id],
         queryFn: () => readWorkout(workout_id),
-        onSuccess: data => {
-            setName(data.name!);
-            setExercises(data.exercises);
-        },
+        onSuccess: data => setName(data.name!),
     });
 
-    const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
-        [],
-    );
-    const [draggingExercise, setDraggingExercise] =
-        React.useState<ExerciseReadWithInfo | null>(null);
+    useQuery({
+        queryKey: ['exercises', { workout_id: workout_id }],
+        queryFn: () => readWorkoutExercises(workout_id),
+        onSuccess: data => setExercises(data),
+    });
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -101,32 +101,21 @@ export const Workout: React.FC = () => {
         }),
     );
 
-    const queryClient = useQueryClient();
-
     const addExercise = useMutation({
         mutationFn: () => createExercise(workout_id),
-        onSuccess: db_exercise => setExercises([...exercises, db_exercise]),
+        onSuccess: newExercise => {
+            setExercises([...exercises, newExercise]);
+        },
     });
 
     const delExercise = useMutation({
         mutationFn: (exercise_id: number) => deleteExercise(exercise_id),
-        onSuccess: () => {
+        onSuccess: exercise_id => {
             setExercises(
-                exercises.filter(exercise => exercise.id !== workout_id),
+                exercises.filter(exercise => exercise.id !== exercise_id),
             );
         },
     });
-
-    // client side update
-    const updateExercise = (index: number, exercise: ExerciseReadWithInfo) => {
-        const updatedExercises = [...exercises];
-        updatedExercises[index] = {
-            ...updatedExercises[index],
-            ...exercise,
-        };
-        console.log(updatedExercises);
-        setExercises(updatedExercises);
-    };
 
     // there is a better way to do this where the function updateWorkout
     // returns the updated workout, but without a custom api this will do
@@ -141,9 +130,22 @@ export const Workout: React.FC = () => {
     const deletion = useMutation({
         mutationFn: () => deleteWorkout(workout_id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
+            queryClient.invalidateQueries({
+                queryKey: ['workouts', workout_id],
+            });
         },
     });
+
+    // client side update
+    const updateExercise = (index: number, exercise: ExerciseReadWithInfo) => {
+        const updatedExercises = [...exercises];
+        updatedExercises[index] = {
+            ...updatedExercises[index],
+            ...exercise,
+        };
+        console.log(updatedExercises);
+        setExercises(updatedExercises);
+    };
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
@@ -180,7 +182,7 @@ export const Workout: React.FC = () => {
             <DeleteModal
                 open={showDeleteModal}
                 name={name}
-                toggleOpen={toggleDeleteModal}
+                toggleOpen={() => setShowDeleteModal(!showDeleteModal)}
                 onDelete={() => {
                     deletion.mutate();
                     navigate(-1);
@@ -225,7 +227,7 @@ export const Workout: React.FC = () => {
                         onChange={e => setName(e.target.value)}
                     />
                     <button
-                        onClick={toggleDeleteModal}
+                        onClick={() => setShowDeleteModal(!showDeleteModal)}
                         className="btn btn-square btn-ghost"
                     >
                         <IconTrash />

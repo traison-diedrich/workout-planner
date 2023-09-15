@@ -1,3 +1,5 @@
+import { ExerciseReadWithInfo } from '../supabase/database.types';
+
 export async function createWorkout(user_id: string) {
     const res = await fetch('http://127.0.0.1:8000/workouts/', {
         method: 'POST',
@@ -22,7 +24,7 @@ export async function createExercise(workout_id: number) {
     const data = await res.json();
 
     if (res.ok) {
-        return data;
+        return data as ExerciseReadWithInfo;
     }
 
     throw res.statusText;
