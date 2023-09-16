@@ -3,18 +3,18 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AddCard, WorkoutPreview } from '../../components';
 import { AuthConsumer } from '../../context';
-import { createWorkout, readWorkouts } from '../../data/crud';
+import { createWorkout, readUserWorkouts } from '../../data/crud';
 
 export const AllWorkouts: React.FC = () => {
     const queryClient = useQueryClient();
 
-    const { user } = AuthConsumer();
+    const { user, session } = AuthConsumer();
 
     const navigate = useNavigate();
 
     const { data: workouts, isLoading } = useQuery({
         queryKey: ['workouts'],
-        queryFn: readWorkouts,
+        queryFn: () => readUserWorkouts(session!.access_token),
     });
 
     const mutation = useMutation({

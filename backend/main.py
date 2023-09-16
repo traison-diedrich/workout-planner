@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from typing import List
+from typing import Annotated, List
 from sqlmodel import Session, select
 from jose import JWTError, jwt
 import os
@@ -44,9 +44,7 @@ def on_startup():
     create_db_and_tables()
 
 
-@app.get("/validate-token")
-def verify_token(token: str = Depends(oauth2_scheme)):
-    print(token)
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -54,15 +52,22 @@ def verify_token(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[
-                             ALGORITHM])
-        print(payload)
-        return True
+                             ALGORITHM], audience="authenticated")
+        user_id = payload.get('sub')
     except JWTError:
         raise credentials_exception
+    return user_id
+
+
+@app.get("/users/workouts/", response_model=List[WorkoutRead])
+async def read_user_workouts(*, session: Session = Depends(get_session), user_id: str = Depends(get_current_user)):
+    workouts = session.exec(select(Workout).where(
+        Workout.user_id == user_id)).all()
+    return workouts
 
 
 @app.post("/exercises/", response_model=ExerciseReadWithInfo)
-def create_exercise(*, session: Session = Depends(get_session), exercise: ExerciseCreate):
+async def create_exercise(*, session: Session = Depends(get_session), exercise: ExerciseCreate):
     db_exercise = Exercise.from_orm(exercise)
     session.add(db_exercise)
     session.commit()
@@ -71,14 +76,14 @@ def create_exercise(*, session: Session = Depends(get_session), exercise: Exerci
 
 
 @app.get("/exercises/", response_model=List[ExerciseReadWithInfo])
-def read_exercises(*, session: Session = Depends(get_session)):
+async def read_exercises(*, session: Session = Depends(get_session)):
     exercises = session.exec(
         select(Exercise).order_by(Exercise.exercise_order)).all()
     return exercises
 
 
 @app.get("/exercises/{exercise_id}", response_model=ExerciseReadWithInfo)
-def read_exercise(*, session: Session = Depends(get_session), exercise_id: int):
+async def read_exercise(*, session: Session = Depends(get_session), exercise_id: int):
     exercise = session.get(Exercise, exercise_id)
     if not exercise:
         raise HTTPException(
@@ -87,7 +92,7 @@ def read_exercise(*, session: Session = Depends(get_session), exercise_id: int):
 
 
 @app.patch("/exercises/{exercise_id}", response_model=ExerciseReadWithInfo)
-def update_exercise(*, session: Session = Depends(get_session), exercise_id: int, exercise: ExerciseUpdate):
+async def update_exercise(*, session: Session = Depends(get_session), exercise_id: int, exercise: ExerciseUpdate):
     db_exercise = session.get(Exercise, exercise_id)
     if not db_exercise:
         raise HTTPException(
@@ -102,7 +107,7 @@ def update_exercise(*, session: Session = Depends(get_session), exercise_id: int
 
 
 @app.delete("/exercises/{exercise_id}")
-def delete_exercise(*, session: Session = Depends(get_session), exercise_id: int):
+async def delete_exercise(*, session: Session = Depends(get_session), exercise_id: int):
     exercise = session.get(Exercise, exercise_id)
     if not exercise:
         raise HTTPException(
@@ -113,7 +118,7 @@ def delete_exercise(*, session: Session = Depends(get_session), exercise_id: int
 
 
 @app.post("/exercise-info/", response_model=ExerciseInfoRead)
-def create_exercise_info(
+async def create_exercise_info(
     *,
     session: Session = Depends(get_session),
     exercise_info: ExerciseInfoCreate
@@ -126,13 +131,13 @@ def create_exercise_info(
 
 
 @app.get("/exercise-info/", response_model=List[ExerciseInfoRead])
-def read_exercise_infos(*, session: Session = Depends(get_session)):
+async def read_exercise_infos(*, session: Session = Depends(get_session)):
     exercise_infos = session.exec(select(ExerciseInfo)).all()
     return exercise_infos
 
 
 @app.get("/exercise-info/{exercise_info_id}", response_model=ExerciseInfoRead)
-def read_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int):
+async def read_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int):
     exercise_info = session.get(ExerciseInfo, exercise_info_id)
     if not exercise_info:
         raise HTTPException(
@@ -141,7 +146,7 @@ def read_exercise_info(*, session: Session = Depends(get_session), exercise_info
 
 
 @app.patch("/exercise-info/{exercise_info_id}", response_model=ExerciseInfoRead)
-def update_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int, exercise_info: ExerciseInfoUpdate):
+async def update_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int, exercise_info: ExerciseInfoUpdate):
     db_exercise_info = session.get(ExerciseInfo, exercise_info_id)
     if not db_exercise_info:
         raise HTTPException(
@@ -156,7 +161,7 @@ def update_exercise_info(*, session: Session = Depends(get_session), exercise_in
 
 
 @app.delete("/exercise-info/{exercise_info_id}")
-def delete_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int):
+async def delete_exercise_info(*, session: Session = Depends(get_session), exercise_info_id: int):
     exercise_info = session.get(ExerciseInfo, exercise_info_id)
     if not exercise_info:
         raise HTTPException(
@@ -167,7 +172,7 @@ def delete_exercise_info(*, session: Session = Depends(get_session), exercise_in
 
 
 @app.post("/workouts/", response_model=WorkoutRead)
-def create_workout(*, session: Session = Depends(get_session), workout: WorkoutCreate):
+async def create_workout(*, session: Session = Depends(get_session), workout: WorkoutCreate):
     db_workout = Workout.from_orm(workout)
     session.add(db_workout)
     session.commit()
@@ -176,13 +181,13 @@ def create_workout(*, session: Session = Depends(get_session), workout: WorkoutC
 
 
 @app.get("/workouts/", response_model=List[WorkoutRead])
-def read_workouts(*, session: Session = Depends(get_session)):
+async def read_workouts(*, session: Session = Depends(get_session)):
     workouts = session.exec(select(Workout)).all()
     return workouts
 
 
 @app.get("/workouts/{workout_id}", response_model=WorkoutRead)
-def read_workout(*, session: Session = Depends(get_session), workout_id: int):
+async def read_workout(*, session: Session = Depends(get_session), workout_id: int):
     workout = session.get(Workout, workout_id)
     if not workout:
         raise HTTPException(
@@ -191,14 +196,14 @@ def read_workout(*, session: Session = Depends(get_session), workout_id: int):
 
 
 @app.get("/workouts/{workout_id}/exercises", response_model=List[ExerciseReadWithInfo])
-def read_workout_exercises(*, session: Session = Depends(get_session), workout_id: int):
+async def read_workout_exercises(*, session: Session = Depends(get_session), workout_id: int):
     exercises = session.exec(select(Exercise).where(
         Exercise.workout_id == workout_id).order_by(Exercise.exercise_order)).all()
     return exercises
 
 
 @app.patch("/workouts/{workout_id}", response_model=WorkoutReadWithExercises)
-def update_workout(*, session: Session = Depends(get_session), workout_id: int, workout: WorkoutUpdate):
+async def update_workout(*, session: Session = Depends(get_session), workout_id: int, workout: WorkoutUpdate):
     db_workout = session.get(Workout, workout_id)
     if not db_workout:
         raise HTTPException(
@@ -213,7 +218,7 @@ def update_workout(*, session: Session = Depends(get_session), workout_id: int, 
 
 
 @app.delete("/workouts/{workout_id}")
-def delete_workout(*, session: Session = Depends(get_session), workout_id: int):
+async def delete_workout(*, session: Session = Depends(get_session), workout_id: int):
     workout = session.get(Workout, workout_id)
     if not workout:
         raise HTTPException(
