@@ -190,6 +190,9 @@ def delete_workout(*, session: Session = Depends(get_session), workout_id: int):
     if not workout:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Workout not found")
+    exercises = session.exec(select(Exercise).where(
+        Exercise.workout_id == workout_id)).all()
+    session.delete(exercises)
     session.delete(workout)
     session.commit()
     return {"ok": True}

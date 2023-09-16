@@ -1,6 +1,5 @@
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy.orm import backref, relationship
 
 
 class ExerciseInfoBase(SQLModel):
@@ -28,13 +27,14 @@ class ExerciseBase(SQLModel):
     reps: Optional[int] = Field(default=10)
     exercise_order: Optional[int] = Field(default=1)
     workout_id: int = Field(foreign_key="workout.id")
-    exercise_info_id: Optional[int] = Field(
+    exercise_info_id: int = Field(
         default=1, foreign_key="exerciseinfo.id")
 
 
 class Exercise(ExerciseBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    exercise_info: Optional[ExerciseInfo] = Relationship()
+    workout: Optional["Workout"] = Relationship(back_populates="exercises")
+    exercise_info: Optional["ExerciseInfo"] = Relationship()
 
 
 class ExerciseCreate(ExerciseBase):
@@ -59,7 +59,7 @@ class WorkoutBase(SQLModel):
 
 class Workout(WorkoutBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    exercises: List["Exercise"] = Relationship()
+    exercises: List["Exercise"] = Relationship(back_populates="workout")
 
 
 class WorkoutCreate(WorkoutBase):

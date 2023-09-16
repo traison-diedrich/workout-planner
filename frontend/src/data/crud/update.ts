@@ -48,9 +48,9 @@ export async function updateWorkoutAndExercises(
         updateExercise(exercise.id!, exercise);
     });
 
-    await Promise.all([...exercisePromises]);
-    const data = await updateWorkout(workout_id, name);
+    const workoutPromise = updateWorkout(workout_id, name);
 
-    console.log(data);
-    return data;
+    await Promise.all([...exercisePromises, workoutPromise]);
+
+    return;
 }

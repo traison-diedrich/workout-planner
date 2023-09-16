@@ -123,15 +123,20 @@ export const Workout: React.FC = () => {
     const update = useMutation({
         mutationFn: () =>
             updateWorkoutAndExercises(workout_id, name, exercises),
-        onSuccess: updatedWorkout =>
-            queryClient.setQueryData(['workouts', workout_id], updatedWorkout),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['workout', workout_id]);
+            queryClient.invalidateQueries([
+                'exercises',
+                { workout_id: workout_id },
+            ]);
+        },
     });
 
     const deletion = useMutation({
         mutationFn: () => deleteWorkout(workout_id),
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ['workouts', workout_id],
+                queryKey: ['workouts'],
             });
         },
     });
