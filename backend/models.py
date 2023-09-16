@@ -59,7 +59,8 @@ class WorkoutBase(SQLModel):
 
 class Workout(WorkoutBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    exercises: List["Exercise"] = Relationship(back_populates="workout")
+    exercises: List["Exercise"] = Relationship(
+        back_populates="workout", sa_relationship_kwargs={"cascade": "all, delete"})
 
 
 class WorkoutCreate(WorkoutBase):
