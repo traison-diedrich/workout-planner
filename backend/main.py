@@ -1,7 +1,11 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from typing import List
 from sqlmodel import Session, select
+from jose import JWTError, jwt
+import os
+from dotenv import load_dotenv
 
 from .database import create_db_and_tables, get_session
 from .models import (Workout, WorkoutCreate, WorkoutRead, WorkoutUpdate,
@@ -27,10 +31,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+load_dotenv()
+
+ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+
+@app.get("/validate-token")
+def verify_token(token: str = Depends(oauth2_scheme)):
+    print(token)
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[
+                             ALGORITHM])
+        print(payload)
+        return True
+    except JWTError:
+        raise credentials_exception
 
 
 @app.post("/exercises/", response_model=ExerciseReadWithInfo)
