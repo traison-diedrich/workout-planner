@@ -4,25 +4,6 @@ import {
     WorkoutRead,
 } from '../supabase/database.types';
 
-// type uid = string | undefined;
-
-export async function readValidToken(token: string) {
-    const res = await fetch(`http://127.0.0.1:8000/validate-token/`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-        console.log(data);
-        return;
-    }
-
-    throw res.statusText;
-}
-
 export async function readWorkouts() {
     const res = await fetch(`http://127.0.0.1:8000/workouts/`);
     const data = await res.json();
