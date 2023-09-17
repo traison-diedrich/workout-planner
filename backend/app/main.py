@@ -32,39 +32,12 @@ app.include_router(exercises.router)
 app.include_router(exercise_info.router)
 app.include_router(workouts.router)
 
-load_dotenv()
-ALGORITHM = "HS256"
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[
-                             ALGORITHM], audience="authenticated")
-        user_id = payload.get('sub')
-    except JWTError:
-        raise credentials_exception
-    return user_id
-
-
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Workout Planner API (WPI)"}
-
-
-@app.get("/users/workouts/", response_model=List[WorkoutRead])
-async def read_user_workouts(*, session: Session = Depends(get_session), user_id: str = Depends(get_current_user)):
-    workouts = session.exec(select(Workout).where(
-        Workout.user_id == user_id)).all()
-    return workouts

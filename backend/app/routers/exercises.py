@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from typing import List
 
-from ..dependencies import (
-    get_session, Exercise, ExerciseReadWithInfo, ExerciseCreate, ExerciseUpdate)
+from database.models import (
+    Exercise, ExerciseReadWithInfo, ExerciseCreate, ExerciseUpdate)
+from database.database import get_session
 
 router = APIRouter(
     prefix="/exercises",
