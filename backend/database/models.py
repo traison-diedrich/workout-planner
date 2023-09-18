@@ -54,7 +54,7 @@ class ExerciseUpdate(SQLModel):
 
 class WorkoutBase(SQLModel):
     name: Optional[str] = Field(default="My New Workout")
-    user_id: str
+    user_id: Optional[str] = Field(default=None)
 
 
 class Workout(WorkoutBase, table=True):

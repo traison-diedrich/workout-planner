@@ -5,50 +5,65 @@ import {
     WorkoutRead,
 } from '../supabase/database.types';
 
-export async function updateWorkout(workout_id: number, name: string) {
-    const res = await fetch(`http://127.0.0.1:8000/workouts/${workout_id}`, {
+export async function updateData<T>(
+    token: string,
+    endpoint: string,
+    body: Record<string, string | number>,
+): Promise<T> {
+    const scheme = 'http://localhost:8000/users/';
+
+    const res = await fetch(`${scheme}${endpoint}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name }),
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
     });
+
     const data = await res.json();
 
     if (res.ok) {
-        return data as WorkoutRead;
+        return data as T;
     }
 
     throw res.statusText;
+}
+
+export async function updateWorkout(
+    token: string,
+    workout_id: number,
+    name: string,
+) {
+    return updateData<WorkoutRead>(token, `workouts/${workout_id}`, {
+        name: name,
+    });
 }
 
 export async function updateExercise(
+    token: string,
     exercise_id: number,
     exercise: ExerciseUpdate,
 ) {
-    const res = await fetch(`http://127.0.0.1:8000/exercises/${exercise_id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(exercise),
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-        return data as ExerciseReadWithInfo;
-    }
-
-    throw res.statusText;
+    return updateData<ExerciseReadWithInfo>(
+        token,
+        `exercises/${exercise_id}`,
+        exercise as Record<string, number>,
+    );
 }
 
 export async function updateWorkoutAndExercises(
+    token: string,
     workout_id: number,
     name: string,
     exercises: Exercise[],
 ) {
     const exercisePromises = exercises.map((exercise, index) => {
         exercise.exercise_order = index;
-        updateExercise(exercise.id!, exercise);
+        updateExercise(token, exercise.id!, exercise);
     });
 
-    const workoutPromise = updateWorkout(workout_id, name);
+    const workoutPromise = updateWorkout(token, workout_id, name);
 
     await Promise.all([...exercisePromises, workoutPromise]);
 

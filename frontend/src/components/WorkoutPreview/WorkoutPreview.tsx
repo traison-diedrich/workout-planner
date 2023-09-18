@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
-import { readWorkoutExercises } from '../../data/crud/read';
+import { useApi } from '../../hooks';
 import { ExercisePreview, Header } from './';
 
 interface WorkoutPreviewProps {
@@ -12,6 +12,8 @@ export const WorkoutPreview: React.FC<WorkoutPreviewProps> = ({
     workout_id,
     name,
 }) => {
+    const { readWorkoutExercises } = useApi();
+
     const { data: exercises, isLoading } = useQuery({
         queryKey: ['exercises', { workout_id: workout_id }],
         queryFn: () => readWorkoutExercises(workout_id),

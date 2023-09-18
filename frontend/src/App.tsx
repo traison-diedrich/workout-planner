@@ -5,9 +5,8 @@ import {
     createBrowserRouter,
     createRoutesFromElements,
 } from 'react-router-dom';
-import { ResetPassword } from './components';
-import { RequireAuth } from './components/RequireAuth';
-import { AuthProvider, ThemeProvider } from './context';
+import { RequireAuth, ResetPassword } from './components';
+import { ApiProvider, AuthProvider, ThemeProvider } from './context';
 import { Access, Main } from './layouts';
 import {
     AllWorkouts,
@@ -21,7 +20,7 @@ import {
 
 /**
  * TODO: i hate react-router-dom and its silly forms and
- * loaders upgrade to next.js as fast as possible
+ * loaders... upgrade to next.js as fast as possible
  */
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -59,9 +58,11 @@ function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
-                <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={router} />
-                </QueryClientProvider>
+                <ApiProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={router} />
+                    </QueryClientProvider>
+                </ApiProvider>
             </AuthProvider>
         </ThemeProvider>
     );

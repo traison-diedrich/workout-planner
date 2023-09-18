@@ -1,6 +1,12 @@
-export async function deleteWorkout(workout_id: number) {
-    const res = await fetch(`http://127.0.0.1:8000/workouts/${workout_id}`, {
+async function deleteData(token: string, endpoint: string) {
+    const scheme = 'http://localhost:8000/users/';
+
+    const res = await fetch(`${scheme}${endpoint}`, {
         method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
     });
 
     if (res.ok) return;
@@ -8,12 +14,10 @@ export async function deleteWorkout(workout_id: number) {
     throw res.statusText;
 }
 
-export async function deleteExercise(exercise_id: number) {
-    const res = await fetch(`http://127.0.0.1:8000/exercises/${exercise_id}`, {
-        method: 'DELETE',
-    });
+export async function deleteWorkout(token: string, workout_id: number) {
+    return deleteData(token, `workouts/${workout_id}`);
+}
 
-    if (res.ok) return exercise_id;
-
-    throw res.statusText;
+export async function deleteExercise(token: string, exercise_id: number) {
+    return deleteData(token, `exercises/${exercise_id}`);
 }

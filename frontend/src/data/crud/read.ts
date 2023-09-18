@@ -1,67 +1,52 @@
 import {
-    ExerciseInfoRead,
+    ExerciseInfo,
     ExerciseReadWithInfo,
     WorkoutRead,
 } from '../supabase/database.types';
 
-export async function readWorkouts() {
-    const res = await fetch(`http://127.0.0.1:8000/workouts/`);
+async function readData<T>(endpoint: string, token?: string): Promise<T> {
+    const scheme = 'http://localhost:8000/';
+
+    const res = await fetch(
+        `${scheme}${endpoint}`,
+        token
+            ? {
+                  headers: {
+                      Authorization: `Bearer ${token}`,
+                      'Content-Type': 'application/json',
+                  },
+              }
+            : undefined,
+    );
+
     const data = await res.json();
 
     if (res.ok) {
-        return data as WorkoutRead[];
+        return data as T;
     }
 
     throw res.statusText;
 }
 
-export async function readWorkout(workout_id: number) {
-    const res = await fetch(`http://127.0.0.1:8000/workouts/${workout_id}`);
-    const data = await res.json();
-
-    if (res.ok) {
-        return data as WorkoutRead;
-    }
-
-    throw res.statusText;
+async function readUserData<T>(endpoint: string, token: string): Promise<T> {
+    return readData<T>(endpoint, token);
 }
 
 export async function readUserWorkouts(token: string) {
-    const res = await fetch(`http://127.0.0.1:8000/users/workouts/`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    const data = await res.json();
-
-    if (res.ok) {
-        return data as WorkoutRead[];
-    }
-
-    throw res.statusText;
+    return readUserData<WorkoutRead[]>('workouts/', token);
 }
 
-export async function readWorkoutExercises(workout_id: number) {
-    const res = await fetch(
-        `http://127.0.0.1:8000/workouts/${workout_id}/exercises`,
+export async function readWorkout(token: string, workoutId: number) {
+    return readUserData<WorkoutRead>(`workouts/${workoutId}/`, token);
+}
+
+export async function readWorkoutExercises(token: string, workoutId: number) {
+    return readUserData<ExerciseReadWithInfo[]>(
+        `workouts/${workoutId}/exercises/`,
+        token,
     );
-    const data = await res.json();
-
-    if (res.ok) {
-        return data as ExerciseReadWithInfo[];
-    }
-
-    throw res.statusText;
 }
 
 export async function readExerciseInfo() {
-    const res = await fetch('http://127.0.0.1:8000/exercise-info/');
-    const data = await res.json();
-
-    if (res.ok) {
-        return data as ExerciseInfoRead[];
-    }
-
-    throw res.statusText;
+    return readData<ExerciseInfo[]>('exercise-info/');
 }

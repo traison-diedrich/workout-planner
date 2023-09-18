@@ -22,15 +22,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AddCard, ExerciseSelect, SortableItem } from '../../components';
-import {
-    createExercise,
-    deleteExercise,
-    deleteWorkout,
-    readWorkout,
-    updateWorkoutAndExercises,
-} from '../../data/crud';
-import { readWorkoutExercises } from '../../data/crud/read';
 import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
+import { useApi } from '../../hooks';
 import { DeleteModal, DraggableExercise, Exercise } from './';
 
 export type ExerciseUpdateType = {
@@ -78,6 +71,15 @@ export const Workout: React.FC = () => {
         setCurrentExerciseIndex(index);
     };
 
+    const {
+        readWorkout,
+        readWorkoutExercises,
+        createExercise,
+        deleteWorkout,
+        deleteExercise,
+        updateWorkoutAndExercises,
+    } = useApi();
+
     const { isLoading } = useQuery({
         queryKey: ['workout', workout_id],
         queryFn: () => readWorkout(workout_id),
@@ -110,11 +112,11 @@ export const Workout: React.FC = () => {
 
     const delExercise = useMutation({
         mutationFn: (exercise_id: number) => deleteExercise(exercise_id),
-        onSuccess: exercise_id => {
-            setExercises(
-                exercises.filter(exercise => exercise.id !== exercise_id),
-            );
-        },
+        onSuccess: () =>
+            queryClient.invalidateQueries([
+                'exercises',
+                { workout_id: workout_id },
+            ]),
     });
 
     // there is a better way to do this where the function updateWorkout

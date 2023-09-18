@@ -4,7 +4,7 @@ export {
     readExerciseInfo,
     readUserWorkouts,
     readWorkout,
-    readWorkouts,
+    readWorkoutExercises,
 } from './read';
 export {
     updateExercise,
