@@ -1,14 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
-from typing import List
+from typing import Annotated, List
 
 from database.models import (
     Workout, WorkoutRead, WorkoutCreate, WorkoutUpdate, WorkoutReadWithExercises, Exercise, ExerciseReadWithInfo)
 from database.database import get_session
+from ..dependencies import get_current_user_id, user_authenticated
 
 router = APIRouter(
     prefix="/workouts",
     tags=["workouts"],
+    dependencies=[Depends(user_authenticated)],
     responses={404: {"description": "Not found"}},
 )
 
@@ -23,8 +25,9 @@ async def create_workout(*, session: Session = Depends(get_session), workout: Wo
 
 
 @router.get("/", response_model=List[WorkoutRead])
-async def read_workouts(session: Session = Depends(get_session)):
-    workouts = session.exec(select(Workout)).all()
+async def read_workouts(*, session: Session = Depends(get_session), user_id: str = Depends(get_current_user_id)):
+    workouts = session.exec(select(Workout).where(
+        Workout.user_id == user_id)).all()
     return workouts
 
 
@@ -68,10 +71,3 @@ async def delete_workout(*, session: Session = Depends(get_session), workout_id:
     session.delete(workout)
     session.commit()
     return {"ok": True}
-
-
-# @router.get("/{workout_id}/users/", response_model=List[WorkoutRead])
-# async def read_user_workouts(*, session: Session = Depends(get_session), user_id: str = Depends(get_current_user)):
-#     workouts = session.exec(select(Workout).where(
-#         Workout.user_id == user_id)).all()
-#     return workouts

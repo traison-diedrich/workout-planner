@@ -5,10 +5,12 @@ from typing import List
 from database.models import (
     Exercise, ExerciseReadWithInfo, ExerciseCreate, ExerciseUpdate)
 from database.database import get_session
+from ..dependencies import user_authenticated
 
 router = APIRouter(
     prefix="/exercises",
     tags=["exercises"],
+    dependencies=[Depends(user_authenticated)],
     responses={404: {"description": "Not found"}},
 )
 
