@@ -26,14 +26,14 @@ async def create_workout(
     return db_workout
 
 
-@router.get("/", response_model=List[WorkoutRead])
+@router.get("/", response_model=List[WorkoutReadWithExercises])
 async def read_workouts(*, session: Session = Depends(get_session), user_id: str = Depends(get_current_user_id)):
     workouts = session.exec(select(Workout).where(
         Workout.user_id == user_id)).all()
     return workouts
 
 
-@router.get("/{workout_id}", response_model=WorkoutRead)
+@router.get("/{workout_id}", response_model=WorkoutReadWithExercises)
 async def read_workout(*, session: Session = Depends(get_session), workout_id: int):
     workout = session.get(Workout, workout_id)
     if not workout:

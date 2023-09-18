@@ -73,7 +73,6 @@ export const Workout: React.FC = () => {
 
     const {
         readWorkout,
-        readWorkoutExercises,
         createExercise,
         deleteWorkout,
         deleteExercise,
@@ -83,13 +82,9 @@ export const Workout: React.FC = () => {
     const { isLoading } = useQuery({
         queryKey: ['workout', workout_id],
         queryFn: () => readWorkout(workout_id),
-        onSuccess: data => setName(data.name!),
-    });
-
-    useQuery({
-        queryKey: ['exercises', { workout_id: workout_id }],
-        queryFn: () => readWorkoutExercises(workout_id),
-        onSuccess: data => setExercises(data),
+        onSuccess: data => {
+            setName(data.name), setExercises(data.exercises);
+        },
     });
 
     const sensors = useSensors(
@@ -127,10 +122,6 @@ export const Workout: React.FC = () => {
             updateWorkoutAndExercises(workout_id, name, exercises),
         onSuccess: () => {
             queryClient.invalidateQueries(['workout', workout_id]);
-            queryClient.invalidateQueries([
-                'exercises',
-                { workout_id: workout_id },
-            ]);
         },
     });
 

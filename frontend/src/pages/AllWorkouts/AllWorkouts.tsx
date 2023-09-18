@@ -33,8 +33,7 @@ export const AllWorkouts: React.FC = () => {
                         {workouts!.map(workout => (
                             <WorkoutPreview
                                 key={workout.id}
-                                workout_id={workout.id}
-                                name={workout.name}
+                                workout={workout}
                             />
                         ))}
                         <div

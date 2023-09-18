@@ -60,7 +60,9 @@ class WorkoutBase(SQLModel):
 class Workout(WorkoutBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     exercises: List["Exercise"] = Relationship(
-        back_populates="workout", sa_relationship_kwargs={"cascade": "all, delete"})
+        back_populates="workout",
+        sa_relationship_kwargs={"cascade": "all, delete",
+                                "order_by": "Column('exercise_order')"})
 
 
 class WorkoutCreate(WorkoutBase):
@@ -81,3 +83,15 @@ class ExerciseReadWithInfo(ExerciseRead):
 
 class WorkoutReadWithExercises(WorkoutRead):
     exercises: List[ExerciseReadWithInfo] = []
+
+
+# sqlalchemy.exc.ArgumentError: Column expression expected for argument 'order_by';
+# got Table('exercise', MetaData(),
+# Column('sets', Integer(), table=<exercise>, default=ColumnDefault(3)),
+# Column('reps', Integer(), table=<exercise>, default=ColumnDefault(10)),
+# Column('exercise_order', Integer(), table=<exercise>, default=ColumnDefault(1)),
+# Column('workout_id', Integer(), ForeignKey('workout.id'),
+# table=<exercise>, nullable=False),
+# Column('exercise_info_id', Integer(), ForeignKey('exerciseinfo.id'),
+# table=<exercise>, nullable=False, default=ColumnDefault(1)),
+# Column('id', Integer(), table=<exercise>, primary_key=True, nullable=False), schema=None).

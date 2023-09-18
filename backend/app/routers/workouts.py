@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from typing import List
 
 from database.models import (
-    Workout, WorkoutRead, Exercise, ExerciseReadWithInfo)
+    Workout, WorkoutRead, Exercise, ExerciseReadWithInfo, WorkoutReadWithExercises)
 from database.database import get_session
 
 router = APIRouter(
@@ -19,7 +19,7 @@ async def read_workouts(*, session: Session = Depends(get_session)):
     return workouts
 
 
-@router.get("/{workout_id}", response_model=WorkoutRead)
+@router.get("/{workout_id}", response_model=WorkoutReadWithExercises)
 async def read_workout(*, session: Session = Depends(get_session), workout_id: int):
     workout = session.get(Workout, workout_id)
     if not workout:

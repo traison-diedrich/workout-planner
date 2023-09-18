@@ -18,7 +18,6 @@ async def user_authenticated(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        print("DECODING PAYLOAD")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[
                              ALGORITHM], audience="authenticated")
     except JWTError:

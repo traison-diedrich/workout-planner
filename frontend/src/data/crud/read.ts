@@ -1,7 +1,7 @@
 import {
-    ExerciseInfo,
+    ExerciseInfoRead,
     ExerciseReadWithInfo,
-    WorkoutRead,
+    WorkoutReadWithExercises,
 } from '../supabase/database.types';
 
 async function readData<T>(endpoint: string, token?: string): Promise<T> {
@@ -29,15 +29,18 @@ async function readData<T>(endpoint: string, token?: string): Promise<T> {
 }
 
 async function readUserData<T>(endpoint: string, token: string): Promise<T> {
-    return readData<T>(endpoint, token);
+    return readData<T>(`users/${endpoint}`, token);
 }
 
 export async function readUserWorkouts(token: string) {
-    return readUserData<WorkoutRead[]>('workouts/', token);
+    return readUserData<WorkoutReadWithExercises[]>('workouts/', token);
 }
 
 export async function readWorkout(token: string, workoutId: number) {
-    return readUserData<WorkoutRead>(`workouts/${workoutId}/`, token);
+    return readUserData<WorkoutReadWithExercises>(
+        `workouts/${workoutId}/`,
+        token,
+    );
 }
 
 export async function readWorkoutExercises(token: string, workoutId: number) {
@@ -48,5 +51,5 @@ export async function readWorkoutExercises(token: string, workoutId: number) {
 }
 
 export async function readExerciseInfo() {
-    return readData<ExerciseInfo[]>('exercise-info/');
+    return readData<ExerciseInfoRead[]>('exercise-info/');
 }

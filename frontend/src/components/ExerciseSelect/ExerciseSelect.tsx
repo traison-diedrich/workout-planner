@@ -20,7 +20,7 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
     handleSelect,
 }) => {
     const { data: options } = useQuery({
-        queryKey: ['exerciseInfo'],
+        queryKey: ['exercise-info'],
         queryFn: readExerciseInfo,
         onSuccess: data => setFilteredOptions(data),
     });
