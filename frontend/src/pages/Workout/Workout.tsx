@@ -17,14 +17,13 @@ import {
     arrayMove,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { IconArrowLeft, IconTrash } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AddCard, ExerciseSelect, SortableItem } from '../../components';
 import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 import { useApi } from '../../hooks';
-import { DeleteModal, DraggableExercise, Exercise } from './';
+import { DeleteModal, DraggableExercise, Exercise, WorkoutHeader } from './';
 
 export type ExerciseUpdateType = {
     e_type_id?: number;
@@ -38,7 +37,8 @@ const measuringConfig = {
     },
 };
 
-/** TODO: as of right now, the workout changes will only be saved
+/**
+ *  TODO: as of right now, the workout changes will only be saved
  *  if the user clicks the save or back button. react-router-dom v6
  *  no longer supports the tools to block navigation with dirty data
  *  either create a custom useBlocker() hook to prevent navigation
@@ -204,32 +204,11 @@ export const Workout: React.FC = () => {
                 className="flex w-full flex-col items-center gap-4 bg-base-200 p-4"
                 style={{ height: 'calc(100vh - 64px)' }}
             >
-                <div className="flex w-full max-w-2xl justify-between gap-2">
-                    <button
-                        onClick={() => {
-                            update.mutate();
-                            navigate(-1);
-                        }}
-                        type="button"
-                        className="btn btn-square btn-ghost"
-                    >
-                        <IconArrowLeft />
-                    </button>
-                    <input
-                        type="text"
-                        placeholder="Workout Name"
-                        name="name"
-                        defaultValue={name}
-                        className="input input-bordered input-primary w-full max-w-lg text-center text-3xl"
-                        onChange={e => setName(e.target.value)}
-                    />
-                    <button
-                        onClick={() => setShowDeleteModal(!showDeleteModal)}
-                        className="btn btn-square btn-ghost"
-                    >
-                        <IconTrash />
-                    </button>
-                </div>
+                <WorkoutHeader
+                    name={name}
+                    workout_id={workout_id}
+                    openDeleteModal={() => setShowDeleteModal(true)}
+                />
                 <div className="flex h-full w-full overflow-y-auto">
                     <div className="mx-auto mb-5 flex flex-col items-center gap-4">
                         {isLoading && exercises.length > 0 ? (

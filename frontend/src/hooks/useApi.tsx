@@ -69,6 +69,15 @@ export const useApi = () => {
         deleteExercise: async (exercise_id: number) => {
             return request<void>(`/users/exercises/${exercise_id}/`, 'DELETE');
         },
+        updateWorkout: async (workout_id: number, name: string) => {
+            return request<WorkoutRead>(
+                `/users/workouts/${workout_id}/`,
+                'PATCH',
+                {
+                    name: name,
+                },
+            );
+        },
         updateWorkoutAndExercises: async (
             workout_id: number,
             name: string,
