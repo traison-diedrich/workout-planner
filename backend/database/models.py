@@ -73,6 +73,11 @@ class WorkoutRead(WorkoutBase):
     id: int
 
 
+class PublicWorkoutRead(SQLModel):
+    id: int
+    name: str
+
+
 class WorkoutUpdate(SQLModel):
     name: Optional[str] = None
 
@@ -82,6 +87,10 @@ class ExerciseReadWithInfo(ExerciseRead):
 
 
 class WorkoutReadWithExercises(WorkoutRead):
+    exercises: List[ExerciseReadWithInfo] = []
+
+
+class PublicWorkoutReadWithExercises(PublicWorkoutRead):
     exercises: List[ExerciseReadWithInfo] = []
 
 
