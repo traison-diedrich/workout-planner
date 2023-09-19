@@ -1,35 +1,74 @@
 import { AuthConsumer } from '../context';
+import { updateWorkoutAndExercises } from '../data/crud';
 import {
-    createExercise,
-    createWorkout,
-    deleteExercise,
-    deleteWorkout,
-    readExerciseInfo,
-    readUserWorkouts,
-    readWorkout,
-    readWorkoutExercises,
-    updateWorkoutAndExercises,
-} from '../data/crud';
-import { Exercise } from '../data/supabase/database.types';
+    Exercise,
+    ExerciseInfoRead,
+    ExerciseReadWithInfo,
+    WorkoutRead,
+    WorkoutReadWithExercises,
+} from '../data/supabase/database.types';
+
+type method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export const useApi = () => {
     const { session } = AuthConsumer();
     const token = session?.access_token;
 
+    async function request<T>(
+        endpoint: string,
+        method: method,
+        body?: Record<string, string | number>,
+    ): Promise<T> {
+        const scheme = 'http://localhost:8000';
+
+        const res = await fetch(`${scheme}${endpoint}`, {
+            method: method,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            return data as T;
+        }
+
+        throw res.statusText;
+    }
+
     return {
-        readUserWorkouts: () => readUserWorkouts(token!),
-        readWorkoutExercises: async (workout_id: number) =>
-            readWorkoutExercises(token!, workout_id),
-        readExerciseInfo: async () => readExerciseInfo(),
-        readWorkout: async (workout_id: number) =>
-            readWorkout(token!, workout_id),
-        createWorkout: async () => createWorkout(token!),
-        createExercise: async (workout_id: number) =>
-            createExercise(token!, workout_id),
-        deleteWorkout: async (workout_id: number) =>
-            deleteWorkout(token!, workout_id),
-        deleteExercise: async (exercise_id: number) =>
-            deleteExercise(token!, exercise_id),
+        readUserWorkouts: () => {
+            return request<WorkoutReadWithExercises[]>(
+                '/users/workouts/',
+                'GET',
+            );
+        },
+        readWorkout: async (workout_id: number) => {
+            return request<WorkoutReadWithExercises>(
+                `/workouts/${workout_id}/`,
+                'GET',
+            );
+        },
+        readExerciseInfo: async () => {
+            return request<ExerciseInfoRead[]>('/exercise-info/', 'GET');
+        },
+        createWorkout: async () => {
+            return request<WorkoutRead>('/users/workouts/', 'POST');
+        },
+        createExercise: async (workout_id: number) => {
+            return request<ExerciseReadWithInfo>('/users/exercises/', 'POST', {
+                workout_id: workout_id,
+            });
+        },
+        deleteWorkout: async (workout_id: number) => {
+            return request<void>(`/users/workouts/${workout_id}/`, 'DELETE');
+        },
+        deleteExercise: async (exercise_id: number) => {
+            return request<void>(`/users/exercises/${exercise_id}/`, 'DELETE');
+        },
         updateWorkoutAndExercises: async (
             workout_id: number,
             name: string,

@@ -8,7 +8,8 @@ From front to back:
 
 - Tailwind CSS and DaisyUI for rapid prototyping and styling
 - React.js for dynamic user interfaces
-- Tanstack Query for data fetching and query caching
+- Tanstack Query for data fetching and client-side state management
+- FastAPI and SQLModel for database modeling, query operations, and type safety
 - Supabase for user authentication and cloud hosting
 - PostgreSQL for database management
 
@@ -17,15 +18,16 @@ From front to back:
 - [x] User authentication
 - [x] Create, edit, and delete workouts
 - [x] Reorder exercises with drag-and-drop
+- [x] Custom exercise selector
 
 ## Todo's
 
 Upcoming features:
 
-- [ ] New exercise selector
 - [ ] Exercises with muscle activation information
 - [ ] Workout tracking
 - [ ] Workout splits
+- [ ] Public workout feed
 
 ## Contributing
 
