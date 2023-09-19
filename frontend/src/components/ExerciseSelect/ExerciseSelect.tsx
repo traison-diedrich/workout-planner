@@ -1,13 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { readExerciseInfo } from '../../data/crud';
 import { ExerciseInfoRead } from '../../data/supabase/database.types';
+import { useApi } from '../../hooks';
 import { ExercisePicker, SearchBar } from './';
 
 interface ExerciseSelectProps {
     open: boolean;
+    selectingExerciseId: number | null;
+    workout_id: number;
     handleClose: () => void;
-    handleSelect: (new_info_id: number, exercise_name: string) => void;
 }
 
 const scrollTo = (element: HTMLLIElement) => {
@@ -16,9 +17,12 @@ const scrollTo = (element: HTMLLIElement) => {
 
 export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
     open,
+    selectingExerciseId,
+    workout_id,
     handleClose,
-    handleSelect,
 }) => {
+    const { readExerciseInfo } = useApi();
+
     const { data: options } = useQuery({
         queryKey: ['exercise-info'],
         queryFn: readExerciseInfo,
@@ -108,6 +112,24 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
         };
     }, []);
 
+    const { updateExercise } = useApi();
+    const queryClient = useQueryClient();
+
+    const update = useMutation({
+        mutationFn: () =>
+            updateExercise(selectingExerciseId!, {
+                exercise_info_id: filteredOptions[scrollIndex].id,
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['workouts', workout_id]);
+            handleClose();
+        },
+    });
+
+    React.useEffect(() => {
+        console.log(selectingExerciseId);
+    }, [selectingExerciseId]);
+
     return (
         <dialog open={open} className="modal modal-bottom sm:modal-middle">
             <div className="modal-box flex flex-col items-center p-8 sm:border sm:border-neutral">
@@ -134,14 +156,14 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
                         className="btn btn-primary mt-4 w-1/3 max-w-lg"
                         onClick={() => {
                             if (!filteredOptions[scrollIndex]) return;
-                            handleSelect(
-                                filteredOptions[scrollIndex].id,
-                                filteredOptions[scrollIndex].name,
-                            );
-                            handleClose();
+                            update.mutate();
                         }}
                     >
-                        Save
+                        {update.isLoading ? (
+                            <span className="loading loading-spinner" />
+                        ) : (
+                            <span>Save</span>
+                        )}
                     </button>
                 </div>
             </div>

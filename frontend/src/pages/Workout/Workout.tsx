@@ -45,47 +45,11 @@ const measuringConfig = {
  *  with unsaved changes or find a different router (most likely option)
  */
 export const Workout: React.FC = () => {
-    const queryClient = useQueryClient();
     const state = useLocation();
     const navigate = useNavigate();
     // getting workout name through state.pathname until I can
     // figure out how to pass it down properly
     const workout_id = parseInt(state.pathname.split('/').pop() || '');
-
-    const [name, setName] = React.useState('');
-    const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
-        [],
-    );
-    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-    const [currentExerciseIndex, setCurrentExerciseIndex] = React.useState<
-        number | null
-    >(null);
-    const [draggingExercise, setDraggingExercise] =
-        React.useState<ExerciseReadWithInfo | null>(null);
-
-    const toggleExerciseSelect = (index: number | null) => {
-        if (currentExerciseIndex === index) {
-            setCurrentExerciseIndex(null);
-        }
-
-        setCurrentExerciseIndex(index);
-    };
-
-    const {
-        readWorkout,
-        createExercise,
-        deleteWorkout,
-        deleteExercise,
-        updateWorkoutAndExercises,
-    } = useApi();
-
-    const { isLoading } = useQuery({
-        queryKey: ['workout', workout_id],
-        queryFn: () => readWorkout(workout_id),
-        onSuccess: data => {
-            setName(data.name), setExercises(data.exercises);
-        },
-    });
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -98,29 +62,36 @@ export const Workout: React.FC = () => {
         }),
     );
 
+    const [exercises, setExercises] = React.useState<ExerciseReadWithInfo[]>(
+        [],
+    );
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+    const [selectingExerciseId, setSelectingExerciseId] = React.useState<
+        number | null
+    >(null);
+    const [draggingExercise, setDraggingExercise] =
+        React.useState<ExerciseReadWithInfo | null>(null);
+
+    const {
+        readWorkout,
+        createExercise,
+        deleteWorkout,
+        updateWorkoutExercises,
+    } = useApi();
+
+    const queryClient = useQueryClient();
+    const { data: workout, isSuccess } = useQuery({
+        queryKey: ['workouts', workout_id],
+        queryFn: () => readWorkout(workout_id),
+        onSuccess: data => {
+            setExercises(data.exercises);
+        },
+    });
+
     const addExercise = useMutation({
         mutationFn: () => createExercise(workout_id),
         onSuccess: newExercise => {
             setExercises([...exercises, newExercise]);
-        },
-    });
-
-    const delExercise = useMutation({
-        mutationFn: (exercise_id: number) => deleteExercise(exercise_id),
-        onSuccess: () =>
-            queryClient.invalidateQueries({
-                queryKey: ['workouts', workout_id],
-            }),
-    });
-
-    // there is a better way to do this where the function updateWorkout
-    // returns the updated workout, but without a custom api this will do
-    // see: https://tanstack.com/query/latest/docs/react/guides/updates-from-mutation-responses
-    const update = useMutation({
-        mutationFn: () =>
-            updateWorkoutAndExercises(workout_id, name, exercises),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['workout', workout_id]);
         },
     });
 
@@ -133,15 +104,12 @@ export const Workout: React.FC = () => {
         },
     });
 
-    // client side update
-    const updateExercise = (index: number, exercise: ExerciseReadWithInfo) => {
-        const updatedExercises = [...exercises];
-        updatedExercises[index] = {
-            ...updatedExercises[index],
-            ...exercise,
-        };
-        console.log(updatedExercises);
-        setExercises(updatedExercises);
+    const toggleExerciseSelect = (exercise_id: number) => {
+        if (selectingExerciseId === exercise_id) {
+            setSelectingExerciseId(null);
+        }
+
+        setSelectingExerciseId(exercise_id);
     };
 
     const handleDragStart = (event: DragStartEvent) => {
@@ -155,6 +123,14 @@ export const Workout: React.FC = () => {
         setDraggingExercise(exercises[foundIndex]);
     };
 
+    const update = useMutation({
+        mutationFn: (exercises: ExerciseReadWithInfo[]) =>
+            updateWorkoutExercises(exercises),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['workouts', workout_id]);
+        },
+    });
+
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
@@ -167,7 +143,9 @@ export const Workout: React.FC = () => {
                     exercise => exercise.id === over?.id,
                 );
 
-                return arrayMove(exercises, oldIndex, newIndex);
+                const reorder = arrayMove(exercises, oldIndex, newIndex);
+                update.mutate(reorder);
+                return reorder;
             });
         }
 
@@ -178,7 +156,7 @@ export const Workout: React.FC = () => {
         <>
             <DeleteModal
                 open={showDeleteModal}
-                name={name}
+                name={isSuccess ? workout.name : ''}
                 toggleOpen={() => setShowDeleteModal(!showDeleteModal)}
                 onDelete={() => {
                     deletion.mutate();
@@ -186,18 +164,10 @@ export const Workout: React.FC = () => {
                 }}
             />
             <ExerciseSelect
-                open={currentExerciseIndex !== null}
-                handleClose={() => setCurrentExerciseIndex(null)}
-                handleSelect={(new_info_id, exercise_name) => {
-                    updateExercise(currentExerciseIndex!, {
-                        ...exercises[currentExerciseIndex!],
-                        exercise_info_id: new_info_id,
-                        exercise_info: {
-                            id: new_info_id,
-                            name: exercise_name,
-                        },
-                    });
-                }}
+                open={selectingExerciseId !== null}
+                selectingExerciseId={selectingExerciseId}
+                workout_id={workout_id}
+                handleClose={() => setSelectingExerciseId(null)}
             />
             {/* TODO: create a ref to navbar for its current height */}
             <div
@@ -205,13 +175,13 @@ export const Workout: React.FC = () => {
                 style={{ height: 'calc(100vh - 64px)' }}
             >
                 <WorkoutHeader
-                    name={name}
+                    name={isSuccess ? workout.name : ''}
                     workout_id={workout_id}
                     openDeleteModal={() => setShowDeleteModal(true)}
                 />
                 <div className="flex h-full w-full overflow-y-auto">
                     <div className="mx-auto mb-5 flex flex-col items-center gap-4">
-                        {isLoading && exercises.length > 0 ? (
+                        {!isSuccess ? (
                             <span className="loading loading-spinner loading-lg" />
                         ) : (
                             <DndContext
@@ -226,7 +196,7 @@ export const Workout: React.FC = () => {
                                     items={exercises}
                                     strategy={verticalListSortingStrategy}
                                 >
-                                    {exercises?.map((exercise, index) => (
+                                    {exercises.map((exercise, index) => (
                                         <SortableItem
                                             key={exercise.id}
                                             id={exercise.id}
@@ -234,29 +204,11 @@ export const Workout: React.FC = () => {
                                             <Exercise
                                                 index={index}
                                                 exercise={exercise}
-                                                setExercise={(
-                                                    exercise: ExerciseReadWithInfo,
-                                                ) =>
-                                                    updateExercise(
-                                                        index,
-                                                        exercise,
+                                                toggleSelectOpen={() =>
+                                                    toggleExerciseSelect(
+                                                        exercise.id,
                                                     )
                                                 }
-                                                toggleSelectOpen={() =>
-                                                    toggleExerciseSelect(index)
-                                                }
-                                                onDelete={() => {
-                                                    delExercise.mutate(
-                                                        exercise.id,
-                                                    );
-                                                    setExercises(
-                                                        exercises.filter(
-                                                            e =>
-                                                                e.id !==
-                                                                exercise.id,
-                                                        ),
-                                                    );
-                                                }}
                                             />
                                         </SortableItem>
                                     ))}
@@ -285,15 +237,6 @@ export const Workout: React.FC = () => {
                         )}
                     </div>
                 </div>
-                <button
-                    className="btn btn-primary btn-wide"
-                    onClick={() => {
-                        update.mutate();
-                        navigate(-1);
-                    }}
-                >
-                    Save Workout
-                </button>
             </div>
         </>
     );

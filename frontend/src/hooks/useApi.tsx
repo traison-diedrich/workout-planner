@@ -1,9 +1,8 @@
 import { AuthConsumer } from '../context';
-import { updateWorkoutAndExercises } from '../data/crud';
 import {
-    Exercise,
     ExerciseInfoRead,
     ExerciseReadWithInfo,
+    ExerciseUpdate,
     WorkoutRead,
     WorkoutReadWithExercises,
 } from '../data/supabase/database.types';
@@ -52,6 +51,12 @@ export const useApi = () => {
                 'GET',
             );
         },
+        readExercise: async (exercise_id: number) => {
+            return request<ExerciseReadWithInfo>(
+                `/exercises/${exercise_id}/`,
+                'GET',
+            );
+        },
         readExerciseInfo: async () => {
             return request<ExerciseInfoRead[]>('/exercise-info/', 'GET');
         },
@@ -78,10 +83,33 @@ export const useApi = () => {
                 },
             );
         },
-        updateWorkoutAndExercises: async (
-            workout_id: number,
-            name: string,
-            exercises: Exercise[],
-        ) => updateWorkoutAndExercises(token!, workout_id, name, exercises),
+        updateExercise: async (
+            exercise_id: number,
+            exercise: ExerciseUpdate,
+        ) => {
+            return request<ExerciseReadWithInfo>(
+                `/users/exercises/${exercise_id}/`,
+                'PATCH',
+                exercise as Record<string, string | number>,
+            );
+        },
+        updateWorkoutExercises: async (exercises: ExerciseReadWithInfo[]) => {
+            const updatedExercises = exercises.map((exercise, index) => {
+                return {
+                    id: exercise.id,
+                    exercise_order: index,
+                };
+            });
+
+            const exercisePromises = updatedExercises.map(exercise => {
+                return request<ExerciseReadWithInfo>(
+                    `/users/exercises/${exercise.id}/`,
+                    'PATCH',
+                    exercise as Record<string, number>,
+                );
+            });
+
+            return Promise.all(exercisePromises);
+        },
     };
 };

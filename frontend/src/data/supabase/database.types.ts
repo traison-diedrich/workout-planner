@@ -190,9 +190,8 @@ export interface ExerciseBase {
 
 // Exercise
 export interface Exercise extends ExerciseBase {
-    id: number | null;
-    workout?: Workout | null;
-    exercise_info?: ExerciseInfo | null;
+    id: number;
+    exercise_info: ExerciseInfo;
 }
 
 // ExerciseCreate
@@ -209,6 +208,7 @@ export interface ExerciseUpdate {
     reps?: number;
     exercise_order?: number;
     exercise_info_id?: number;
+    exercise_info?: ExerciseInfo;
 }
 
 // ExerciseReadWithInfo
