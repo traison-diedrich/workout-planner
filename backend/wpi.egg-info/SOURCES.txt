@@ -6,6 +6,12 @@ app/routers/__init__.py
 app/routers/exercise_info.py
 app/routers/exercises.py
 app/routers/workouts.py
+app/routers/admin/__init__.py
+app/routers/admin/admin.py
+app/routers/users/__init__.py
+app/routers/users/exercises.py
+app/routers/users/users.py
+app/routers/users/workouts.py
 database/__init__.py
 database/database.py
 database/models.py
