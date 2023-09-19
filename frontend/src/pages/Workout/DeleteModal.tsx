@@ -1,18 +1,35 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useApi } from '../../hooks';
 
 interface DeleteModalProps {
     name: string;
+    workout_id: number;
     open: boolean;
     toggleOpen: () => void;
-    onDelete: () => void;
 }
 
 export const DeleteModal: React.FC<DeleteModalProps> = ({
     name,
+    workout_id,
     open,
     toggleOpen,
-    onDelete,
 }) => {
+    const { deleteWorkout } = useApi();
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+    const deletion = useMutation({
+        mutationFn: () => deleteWorkout(workout_id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['workouts'],
+            });
+            navigate(-1);
+        },
+    });
+
     return (
         <dialog open={open} className="modal">
             <div className="modal-box border border-neutral p-5">
@@ -29,8 +46,15 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({
                     >
                         Cancel
                     </button>
-                    <button onClick={onDelete} className="btn btn-error ">
-                        Delete
+                    <button
+                        onClick={() => deletion.mutate()}
+                        className="btn btn-error "
+                    >
+                        {deletion.isLoading ? (
+                            <span className="loading loading-spinner mx-3" />
+                        ) : (
+                            <span>Delete</span>
+                        )}
                     </button>
                 </div>
             </div>

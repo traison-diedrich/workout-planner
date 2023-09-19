@@ -55,11 +55,16 @@ export const Exercise: React.FC<ExerciseProps> = ({
                     update.mutate({ sets: sets, reps: reps });
                 }
             }, DEBOUNCE_TIME_MS),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
     );
 
     React.useEffect(() => {
         onChange(sets, reps);
+
+        return () => {
+            onChange.cancel();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sets, reps]);
 
@@ -83,7 +88,9 @@ export const Exercise: React.FC<ExerciseProps> = ({
                             onAdd={() => {
                                 setSets(sets + 1);
                             }}
-                            onSubtract={() => setSets(sets - 1)}
+                            onSubtract={() => {
+                                if (sets > 1) setSets(sets - 1);
+                            }}
                         />
                     </div>
                     <IconX size={32} className="mb-16" />
@@ -91,7 +98,9 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         <NumberBox value={reps} title="REPS" size="text-5xl" />
                         <NumberStepper
                             onAdd={() => setReps(reps + 1)}
-                            onSubtract={() => setReps(reps - 1)}
+                            onSubtract={() => {
+                                if (reps > 1) setSets(reps - 1);
+                            }}
                         />
                     </div>
                 </div>

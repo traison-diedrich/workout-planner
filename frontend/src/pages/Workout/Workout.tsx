@@ -19,7 +19,7 @@ import {
 } from '@dnd-kit/sortable';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AddCard, ExerciseSelect, SortableItem } from '../../components';
 import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
 import { useApi } from '../../hooks';
@@ -46,7 +46,6 @@ const measuringConfig = {
  */
 export const Workout: React.FC = () => {
     const state = useLocation();
-    const navigate = useNavigate();
     // getting workout name through state.pathname until I can
     // figure out how to pass it down properly
     const workout_id = parseInt(state.pathname.split('/').pop() || '');
@@ -72,12 +71,7 @@ export const Workout: React.FC = () => {
     const [draggingExercise, setDraggingExercise] =
         React.useState<ExerciseReadWithInfo | null>(null);
 
-    const {
-        readWorkout,
-        createExercise,
-        deleteWorkout,
-        updateWorkoutExercises,
-    } = useApi();
+    const { readWorkout, createExercise, updateWorkoutExercises } = useApi();
 
     const queryClient = useQueryClient();
     const { data: workout, isSuccess } = useQuery({
@@ -92,15 +86,6 @@ export const Workout: React.FC = () => {
         mutationFn: () => createExercise(workout_id),
         onSuccess: newExercise => {
             setExercises([...exercises, newExercise]);
-        },
-    });
-
-    const deletion = useMutation({
-        mutationFn: () => deleteWorkout(workout_id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['workouts'],
-            });
         },
     });
 
@@ -156,12 +141,9 @@ export const Workout: React.FC = () => {
         <>
             <DeleteModal
                 open={showDeleteModal}
+                workout_id={workout_id}
                 name={isSuccess ? workout.name : ''}
                 toggleOpen={() => setShowDeleteModal(!showDeleteModal)}
-                onDelete={() => {
-                    deletion.mutate();
-                    navigate(-1);
-                }}
             />
             <ExerciseSelect
                 open={selectingExerciseId !== null}
