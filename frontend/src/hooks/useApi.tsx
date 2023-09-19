@@ -8,6 +8,8 @@ import {
     WorkoutReadWithExercises,
 } from '../data/supabase/database.types';
 
+const scheme: string = import.meta.env.VITE_API_URL;
+
 type method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 export const useApi = () => {
@@ -19,8 +21,6 @@ export const useApi = () => {
         method: method,
         body?: Record<string, string | number>,
     ): Promise<T> {
-        const scheme = 'http://localhost:8000';
-
         const res = await fetch(`${scheme}${endpoint}`, {
             method: method,
             headers: {

@@ -20,9 +20,7 @@ From front to back:
 - [x] Reorder exercises with drag-and-drop
 - [x] Custom exercise selector
 
-## Todo's
-
-Upcoming features:
+## Upcoming features
 
 - [ ] Exercises with muscle activation information
 - [ ] Workout tracking
@@ -42,7 +40,7 @@ Please open a new [Issue](https://github.com/traison-diedrich/workout-planner/is
 
 ### Code Contributions
 
-If you're instrested in contributing to the codebase, please follow these steps
+If you're interested in contributing to the codebase, please follow these steps
 
 1. Fork the repository
 2. Create a new branch: `git checkout -b feature/your-feature-name`
