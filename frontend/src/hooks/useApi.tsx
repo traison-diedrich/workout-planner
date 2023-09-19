@@ -89,14 +89,14 @@ export const useApi = () => {
             return request<ExerciseReadWithInfo>(
                 `/users/exercises/${exercise.id}/`,
                 'PATCH',
-                exercise as Record<string, string | number>,
+                exercise as unknown as Record<string, string | number>,
             );
         },
         updateExercises: async (exercises: ExerciseUpdate[]) => {
             return request<ExerciseReadWithInfo[]>(
                 `/users/exercises/`,
                 'PATCH',
-                exercises as Record<string, number>[],
+                exercises as unknown as Record<string, number>[],
             );
         },
     };
