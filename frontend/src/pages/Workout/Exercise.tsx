@@ -5,6 +5,7 @@ import {
     IconX,
 } from '@tabler/icons-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import debounce from 'lodash.debounce';
 import * as React from 'react';
 import { NumberBox, NumberStepper } from '../../components';
 import { SortableItemContext } from '../../components/SortableItem/SortableItem';
@@ -18,6 +19,8 @@ interface ExerciseProps {
     index: number;
     toggleSelectOpen: () => void;
 }
+
+const DEBOUNCE_TIME_MS = 500;
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,
@@ -45,10 +48,18 @@ export const Exercise: React.FC<ExerciseProps> = ({
         },
     });
 
+    const onChange = React.useMemo(
+        () =>
+            debounce((sets: number, reps: number) => {
+                if (exercise.sets !== sets || exercise.reps !== reps) {
+                    update.mutate({ sets: sets, reps: reps });
+                }
+            }, DEBOUNCE_TIME_MS),
+        [],
+    );
+
     React.useEffect(() => {
-        if (exercise.sets !== sets || exercise.reps !== reps) {
-            update.mutate({ sets: sets, reps: reps });
-        }
+        onChange(sets, reps);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sets, reps]);
 
