@@ -17,8 +17,8 @@ export const AllWorkouts: React.FC = () => {
     const mutation = useMutation({
         mutationFn: createWorkout,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: ['workouts'] });
             navigate(`/auth/workouts/${data.id}`);
+            queryClient.invalidateQueries({ queryKey: ['workouts'] });
         },
     });
 
@@ -43,7 +43,10 @@ export const AllWorkouts: React.FC = () => {
                                     : ''
                             }`}
                         >
-                            <AddCard onAdd={() => mutation.mutate()} />
+                            <AddCard
+                                onAdd={() => mutation.mutate()}
+                                loading={mutation.isLoading}
+                            />
                         </div>
                     </>
                 )}

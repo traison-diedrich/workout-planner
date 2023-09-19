@@ -108,10 +108,9 @@ export const Workout: React.FC = () => {
     const delExercise = useMutation({
         mutationFn: (exercise_id: number) => deleteExercise(exercise_id),
         onSuccess: () =>
-            queryClient.invalidateQueries([
-                'exercises',
-                { workout_id: workout_id },
-            ]),
+            queryClient.invalidateQueries({
+                queryKey: ['workouts', workout_id],
+            }),
     });
 
     // there is a better way to do this where the function updateWorkout
@@ -267,17 +266,25 @@ export const Workout: React.FC = () => {
                                                 toggleSelectOpen={() =>
                                                     toggleExerciseSelect(index)
                                                 }
-                                                onDelete={() =>
+                                                onDelete={() => {
                                                     delExercise.mutate(
                                                         exercise.id,
-                                                    )
-                                                }
+                                                    );
+                                                    setExercises(
+                                                        exercises.filter(
+                                                            e =>
+                                                                e.id !==
+                                                                exercise.id,
+                                                        ),
+                                                    );
+                                                }}
                                             />
                                         </SortableItem>
                                     ))}
                                     <div className="w-full pb-8">
                                         <AddCard
                                             onAdd={() => addExercise.mutate()}
+                                            loading={addExercise.isLoading}
                                         />
                                     </div>
                                 </SortableContext>
