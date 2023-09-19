@@ -117,7 +117,8 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
 
     const update = useMutation({
         mutationFn: () =>
-            updateExercise(selectingExerciseId!, {
+            updateExercise({
+                id: selectingExerciseId!,
                 exercise_info_id: filteredOptions[scrollIndex].id,
             }),
         onSuccess: () => {

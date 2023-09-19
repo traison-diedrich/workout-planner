@@ -42,7 +42,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
 
     const update = useMutation({
         mutationFn: (updatedExercise: ExerciseUpdate) =>
-            updateExercise(exercise.id, updatedExercise),
+            updateExercise(updatedExercise),
         onSuccess: () => {
             queryClient.invalidateQueries(['workouts', exercise.workout_id]);
         },
@@ -52,7 +52,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
         () =>
             debounce((sets: number, reps: number) => {
                 if (exercise.sets !== sets || exercise.reps !== reps) {
-                    update.mutate({ sets: sets, reps: reps });
+                    update.mutate({ id: exercise.id, sets: sets, reps: reps });
                 }
             }, DEBOUNCE_TIME_MS),
         // eslint-disable-next-line react-hooks/exhaustive-deps

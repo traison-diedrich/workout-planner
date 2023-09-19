@@ -204,11 +204,11 @@ export interface ExerciseRead extends ExerciseBase {
 
 // ExerciseUpdate
 export interface ExerciseUpdate {
+    id: number;
     sets?: number;
     reps?: number;
     exercise_order?: number;
     exercise_info_id?: number;
-    exercise_info?: ExerciseInfo;
 }
 
 // ExerciseReadWithInfo

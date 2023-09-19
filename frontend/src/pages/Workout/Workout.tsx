@@ -21,7 +21,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { AddCard, ExerciseSelect, SortableItem } from '../../components';
-import { ExerciseReadWithInfo } from '../../data/supabase/database.types';
+import {
+    ExerciseReadWithInfo,
+    ExerciseUpdate,
+} from '../../data/supabase/database.types';
 import { useApi } from '../../hooks';
 import { DeleteModal, DraggableExercise, Exercise, WorkoutHeader } from './';
 
@@ -71,7 +74,7 @@ export const Workout: React.FC = () => {
     const [draggingExercise, setDraggingExercise] =
         React.useState<ExerciseReadWithInfo | null>(null);
 
-    const { readWorkout, createExercise, updateWorkoutExercises } = useApi();
+    const { readWorkout, createExercise, updateExercises } = useApi();
 
     const queryClient = useQueryClient();
     const { data: workout, isSuccess } = useQuery({
@@ -109,8 +112,7 @@ export const Workout: React.FC = () => {
     };
 
     const update = useMutation({
-        mutationFn: (exercises: ExerciseReadWithInfo[]) =>
-            updateWorkoutExercises(exercises),
+        mutationFn: (exercises: ExerciseUpdate[]) => updateExercises(exercises),
         onSuccess: () => {
             queryClient.invalidateQueries(['workouts', workout_id]);
         },
@@ -128,9 +130,19 @@ export const Workout: React.FC = () => {
                     exercise => exercise.id === over?.id,
                 );
 
-                const reorder = arrayMove(exercises, oldIndex, newIndex);
-                update.mutate(reorder);
-                return reorder;
+                const reorderedExercises = arrayMove(
+                    exercises,
+                    oldIndex,
+                    newIndex,
+                );
+                const updatedExercises = reorderedExercises.map(
+                    (exercise, index) => ({
+                        ...exercise,
+                        exercise_order: index,
+                    }),
+                );
+                update.mutate(updatedExercises);
+                return updatedExercises;
             });
         }
 

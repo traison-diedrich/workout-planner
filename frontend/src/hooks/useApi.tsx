@@ -18,7 +18,9 @@ export const useApi = () => {
     async function request<T>(
         endpoint: string,
         method: method,
-        body?: Record<string, string | number>,
+        body?:
+            | Record<string, string | number>
+            | Record<string, string | number>[],
     ): Promise<T> {
         const res = await fetch(`${scheme}${endpoint}`, {
             method: method,
@@ -83,33 +85,19 @@ export const useApi = () => {
                 },
             );
         },
-        updateExercise: async (
-            exercise_id: number,
-            exercise: ExerciseUpdate,
-        ) => {
+        updateExercise: async (exercise: ExerciseUpdate) => {
             return request<ExerciseReadWithInfo>(
-                `/users/exercises/${exercise_id}/`,
+                `/users/exercises/${exercise.id}/`,
                 'PATCH',
                 exercise as Record<string, string | number>,
             );
         },
-        updateWorkoutExercises: async (exercises: ExerciseReadWithInfo[]) => {
-            const updatedExercises = exercises.map((exercise, index) => {
-                return {
-                    id: exercise.id,
-                    exercise_order: index,
-                };
-            });
-
-            const exercisePromises = updatedExercises.map(exercise => {
-                return request<ExerciseReadWithInfo>(
-                    `/users/exercises/${exercise.id}/`,
-                    'PATCH',
-                    exercise as Record<string, number>,
-                );
-            });
-
-            return Promise.all(exercisePromises);
+        updateExercises: async (exercises: ExerciseUpdate[]) => {
+            return request<ExerciseReadWithInfo[]>(
+                `/users/exercises/`,
+                'PATCH',
+                exercises as Record<string, number>[],
+            );
         },
     };
 };
