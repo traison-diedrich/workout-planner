@@ -48,7 +48,7 @@ export async function updateExercise(
     return updateData<ExerciseReadWithInfo>(
         token,
         `exercises/${exercise_id}`,
-        exercise as Record<string, number>,
+        exercise as unknown as Record<string, number>,
     );
 }
 
