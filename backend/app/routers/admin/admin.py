@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
-from database.models import (
+from ...database.models import (
     ExerciseInfo, ExerciseInfoRead, ExerciseInfoCreate, ExerciseInfoUpdate)
-from database.database import get_session
+from ...database.database import get_session
 from app.dependencies import user_authenticated
 
 

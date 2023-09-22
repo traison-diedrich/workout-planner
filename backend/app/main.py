@@ -5,7 +5,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database.database import create_db_and_tables
+from .database.database import create_db_and_tables
 from app.routers import exercises, exercise_info, workouts
 from app.routers.users import users
 from app.routers.admin import admin

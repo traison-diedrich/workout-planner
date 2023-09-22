@@ -1,0 +1,45 @@
+version: '0.0'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: dockerfile.prod
+    expose:
+      - 80
+    environment:
+      - DB_URL=db_secret
+      - JWT_SECRET_KEY=jwt_secret
+      - JWT_ALGORITHM=HS256
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.web.rule=Host(`api.workout-planner.fit`)'
+      - 'traefik.http.routers.fastapi.tls=true'
+      - 'traefik.http.routers.fastapi.tls.certresolver=letsencrypt'
+  traefik:
+    build:
+      context: .
+      dockerfile: dockerfile.traefik
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - './traefik-public-certificates:/certificates'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`dashboard.workout-planner.fit`) && (PathPrefix(`/`)'
+      - 'traefik.http.routers.dashboard.tls=true'
+      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+      - 'traefik.http.routers.dashboard.middlewares=auth'
+      - 'traefik.http.middlewares.auth.basicauth.users=testuser:$$apr1$$jIKW.bdS$$eKXe4Lxjgy/rH65wP1iQe1'
+
+volumes:
+  traefik-public-certificates:
+
+secrets:
+  db_secret:
+    file: ./db_secret.txt
+  jwt_secret:
+    file: ./jwt_secret.txt

@@ -1,0 +1,40 @@
+version: '0.0'
+
+services:
+  web:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0
+
+    volumes:
+      - .:/app
+    expose:
+      - 8000
+    environment:
+      - DB_URL=postgresql://postgres:postgres@db:5432/postgres
+      - JWT_SECRET_KEY=jwt_secret
+      - JWT_ALGORITHM=HS256
+    depends_on:
+      - db
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)'
+
+  db:
+    image: supabase/postgres:14.1.0
+    ports:
+      - '5432:5432'
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    environment:
+      - POSTGRES_PASSWORD=postgres
+  traefik:
+    image: traefik:v2.9.6
+    ports:
+      - 8008:80
+      - 8081:8080
+    volumes:
+      - './traefik.dev.toml:/etc/traefik/traefik.toml'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+
+secrets:
+  jwt_secret:
+    file: ./jwt_secret.txt
