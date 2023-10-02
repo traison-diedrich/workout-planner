@@ -1,15 +1,15 @@
-version: '0.0'
+version: '3.8'
 
 services:
   web:
     build:
       context: .
-      dockerfile: dockerfile.prod
+      dockerfile: Dockerfile.prod
     expose:
       - 80
     environment:
-      - DB_URL=db_secret
-      - JWT_SECRET_KEY=jwt_secret
+      - DB_URL=
+      - JWT_SECRET_KEY=
       - JWT_ALGORITHM=HS256
     labels:
       - 'traefik.enable=true'
@@ -19,7 +19,7 @@ services:
   traefik:
     build:
       context: .
-      dockerfile: dockerfile.traefik
+      dockerfile: Dockerfile.traefik
     ports:
       - 80:80
       - 443:443
@@ -28,7 +28,7 @@ services:
       - './traefik-public-certificates:/certificates'
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.dashboard.rule=Host(`dashboard.workout-planner.fit`) && (PathPrefix(`/`)'
+      - 'traefik.http.routers.dashboard.rule=Host(`traefik-dashboard.workout-planner.fit`) && (PathPrefix(`/`))'
       - 'traefik.http.routers.dashboard.tls=true'
       - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
       - 'traefik.http.routers.dashboard.service=api@internal'
@@ -37,9 +37,3 @@ services:
 
 volumes:
   traefik-public-certificates:
-
-secrets:
-  db_secret:
-    file: ./db_secret.txt
-  jwt_secret:
-    file: ./jwt_secret.txt

@@ -1,4 +1,4 @@
-version: '0.0'
+version: '3.8'
 
 services:
   web:
@@ -11,7 +11,7 @@ services:
       - 8000
     environment:
       - DB_URL=postgresql://postgres:postgres@db:5432/postgres
-      - JWT_SECRET_KEY=jwt_secret
+      - JWT_SECRET_KEY=
       - JWT_ALGORITHM=HS256
     depends_on:
       - db
@@ -20,12 +20,15 @@ services:
       - 'traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)'
 
   db:
-    image: supabase/postgres:14.1.0
-    ports:
-      - '5432:5432'
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    image: postgres:15-alpine
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    expose:
+      - 5432
     environment:
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
   traefik:
     image: traefik:v2.9.6
     ports:
@@ -35,6 +38,5 @@ services:
       - './traefik.dev.toml:/etc/traefik/traefik.toml'
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
 
-secrets:
-  jwt_secret:
-    file: ./jwt_secret.txt
+volumes:
+  postgres_data:
