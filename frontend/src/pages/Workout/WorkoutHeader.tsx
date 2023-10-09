@@ -11,7 +11,7 @@ interface WorkoutHeaderProps {
     openDeleteModal: () => void;
 }
 
-const DEBOUNCE_TIME_MS = 500;
+const DEBOUNCE_TIME_MS = 300;
 
 export const WorkoutHeader: React.FC<WorkoutHeaderProps> = ({
     workout_id,

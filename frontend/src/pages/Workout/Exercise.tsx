@@ -20,7 +20,7 @@ interface ExerciseProps {
     toggleSelectOpen: () => void;
 }
 
-const DEBOUNCE_TIME_MS = 500;
+const DEBOUNCE_TIME_MS = 300;
 
 export const Exercise: React.FC<ExerciseProps> = ({
     exercise,

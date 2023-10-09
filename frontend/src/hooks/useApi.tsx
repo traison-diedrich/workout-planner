@@ -40,6 +40,12 @@ export const useApi = () => {
         throw res.statusText;
     }
 
+    /**
+     * NOTE: Fast api throws redirects to http rather than https
+     * if the slashes in the uri are not matched EXACTLY
+     * Be extremely careful when changing/adding requests to
+     * make sure they outline the syntax defined in the api
+     */
     return {
         readUserWorkouts: () => {
             return request<WorkoutReadWithExercises[]>(
@@ -49,13 +55,13 @@ export const useApi = () => {
         },
         readWorkout: async (workout_id: number) => {
             return request<WorkoutReadWithExercises>(
-                `/workouts/${workout_id}/`,
+                `/workouts/${workout_id}`,
                 'GET',
             );
         },
         readExercise: async (exercise_id: number) => {
             return request<ExerciseReadWithInfo>(
-                `/exercises/${exercise_id}/`,
+                `/exercises/${exercise_id}`,
                 'GET',
             );
         },
@@ -71,14 +77,14 @@ export const useApi = () => {
             });
         },
         deleteWorkout: async (workout_id: number) => {
-            return request<void>(`/users/workouts/${workout_id}/`, 'DELETE');
+            return request<void>(`/users/workouts/${workout_id}`, 'DELETE');
         },
         deleteExercise: async (exercise_id: number) => {
-            return request<void>(`/users/exercises/${exercise_id}/`, 'DELETE');
+            return request<void>(`/users/exercises/${exercise_id}`, 'DELETE');
         },
         updateWorkout: async (workout_id: number, name: string) => {
             return request<WorkoutRead>(
-                `/users/workouts/${workout_id}/`,
+                `/users/workouts/${workout_id}`,
                 'PATCH',
                 {
                     name: name,
@@ -87,7 +93,7 @@ export const useApi = () => {
         },
         updateExercise: async (exercise: ExerciseUpdate) => {
             return request<ExerciseReadWithInfo>(
-                `/users/exercises/${exercise.id}/`,
+                `/users/exercises/${exercise.id}`,
                 'PATCH',
                 exercise as unknown as Record<string, string | number>,
             );
