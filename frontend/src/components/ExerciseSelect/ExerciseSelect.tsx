@@ -127,10 +127,6 @@ export const ExerciseSelect: React.FC<ExerciseSelectProps> = ({
         },
     });
 
-    React.useEffect(() => {
-        console.log(selectingExerciseId);
-    }, [selectingExerciseId]);
-
     return (
         <dialog open={open} className="modal modal-bottom sm:modal-middle">
             <div className="modal-box flex flex-col items-center p-8 sm:border sm:border-neutral">
