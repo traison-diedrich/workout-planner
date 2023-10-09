@@ -16,6 +16,13 @@ services:
       - traefik.http.routers.fastapi.rule=Host(`api.workout-planner.fit`)
       - traefik.http.routers.fastapi.tls=true
       - traefik.http.routers.fastapi.tls.certresolver=letsencrypt
+      - 'traefik.http.routers.fastapi.middlewares=cors'
+      - 'traefik.http.middlewares.cors.headers.accessControlAllowOriginList=*'
+      - 'traefik.http.middlewares.cors.headers.accessControlAllowMethods=GET,POST,DELETE,PATCH,OPTIONS'
+      - 'traefik.http.middlewares.cors.headers.accessControlAllowHeaders=*,Authorization'
+      - 'traefik.http.middlewares.cors.headers.accessControlExposeHeaders=Authorization'
+      - 'traefik.http.middlewares.cors.headers.accessControlMaxAge=1000'
+      - 'traefik.http.middlewares.cors.headers.accessControlAllowCredentials=true'
   traefik:
     build:
       context: .
