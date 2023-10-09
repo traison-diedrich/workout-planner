@@ -8,7 +8,8 @@ From front to back:
 
 - Tailwind CSS and DaisyUI for rapid prototyping and styling
 - React.js for dynamic user interfaces
-- Tanstack Query for data fetching and query caching
+- Tanstack Query for data fetching and client-side state management
+- FastAPI and SQLModel for database modeling, query operations, and type safety
 - Supabase for user authentication and cloud hosting
 - PostgreSQL for database management
 
@@ -17,15 +18,14 @@ From front to back:
 - [x] User authentication
 - [x] Create, edit, and delete workouts
 - [x] Reorder exercises with drag-and-drop
+- [x] Custom exercise selector
 
-## Todo's
+## Upcoming features
 
-Upcoming features:
-
-- [ ] New exercise selector
 - [ ] Exercises with muscle activation information
 - [ ] Workout tracking
 - [ ] Workout splits
+- [ ] Public workout feed
 
 ## Contributing
 
@@ -40,7 +40,7 @@ Please open a new [Issue](https://github.com/traison-diedrich/workout-planner/is
 
 ### Code Contributions
 
-If you're instrested in contributing to the codebase, please follow these steps
+If you're interested in contributing to the codebase, please follow these steps
 
 1. Fork the repository
 2. Create a new branch: `git checkout -b feature/your-feature-name`
