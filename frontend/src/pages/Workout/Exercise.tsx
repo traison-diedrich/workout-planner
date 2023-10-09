@@ -99,7 +99,7 @@ export const Exercise: React.FC<ExerciseProps> = ({
                         <NumberStepper
                             onAdd={() => setReps(reps + 1)}
                             onSubtract={() => {
-                                if (reps > 1) setSets(reps - 1);
+                                if (reps > 1) setReps(reps - 1);
                             }}
                         />
                     </div>

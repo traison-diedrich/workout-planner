@@ -27,3 +27,4 @@ __pycache__/
 
 # API Secrets
 .env
+traefik-public-certificates/
