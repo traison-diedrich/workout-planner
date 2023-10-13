@@ -2,7 +2,6 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-import os
 from .config import settings
 
 ALGORITHM = settings.algorithm

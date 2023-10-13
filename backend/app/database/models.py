@@ -4,6 +4,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class ExerciseInfoBase(SQLModel):
     name: str
+    muscle: Optional[str] = Field(default="Pectoralis Major")
 
 
 class ExerciseInfo(ExerciseInfoBase, table=True):
@@ -92,15 +93,3 @@ class WorkoutReadWithExercises(WorkoutRead):
 
 class PublicWorkoutReadWithExercises(PublicWorkoutRead):
     exercises: List[ExerciseReadWithInfo] = []
-
-
-# sqlalchemy.exc.ArgumentError: Column expression expected for argument 'order_by';
-# got Table('exercise', MetaData(),
-# Column('sets', Integer(), table=<exercise>, default=ColumnDefault(3)),
-# Column('reps', Integer(), table=<exercise>, default=ColumnDefault(10)),
-# Column('exercise_order', Integer(), table=<exercise>, default=ColumnDefault(1)),
-# Column('workout_id', Integer(), ForeignKey('workout.id'),
-# table=<exercise>, nullable=False),
-# Column('exercise_info_id', Integer(), ForeignKey('exerciseinfo.id'),
-# table=<exercise>, nullable=False, default=ColumnDefault(1)),
-# Column('id', Integer(), table=<exercise>, primary_key=True, nullable=False), schema=None).
