@@ -4,7 +4,6 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class ExerciseInfoBase(SQLModel):
     name: str
-    muscle: Optional[str] = Field(default="Pectoralis Major")
 
 
 class ExerciseInfo(ExerciseInfoBase, table=True):
