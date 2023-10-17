@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     container_name: fastapi
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile.prod
@@ -27,6 +28,7 @@ services:
       - 'traefik.http.middlewares.cors.headers.accessControlMaxAge=1000'
       - 'traefik.http.middlewares.cors.headers.accessControlAllowCredentials=true'
   traefik:
+    restart: always
     container_name: traefik
     build:
       context: .
@@ -48,3 +50,4 @@ services:
 
 volumes:
   traefik-public-certificates:
+  migrations:
