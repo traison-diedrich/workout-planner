@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile.prod
     expose:
       - 80
+    volumes:
+      - ./migrations:/migrations
     environment:
       - DB_URL=
       - JWT_SECRET_KEY=
