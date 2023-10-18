@@ -25,7 +25,7 @@ class ExerciseInfoUpdate(SQLModel):
 class ExerciseBase(SQLModel):
     sets: Optional[int] = Field(default=3)
     reps: Optional[int] = Field(default=10)
-    exercise_order: Optional[int] = Field(default=1)
+    exercise_order: Optional[int] = Field(default=None)
     workout_id: int = Field(foreign_key="workout.id")
     exercise_info_id: int = Field(
         default=1, foreign_key="exerciseinfo.id")

@@ -15,6 +15,9 @@ router = APIRouter(
 @router.post("/", response_model=ExerciseReadWithInfo)
 async def create_exercise(*, session: Session = Depends(get_session), exercise: ExerciseCreate):
     db_exercise = Exercise.from_orm(exercise)
+    order = session.query(Exercise).filter(
+        Exercise.workout_id == exercise.workout_id).count()
+    setattr(db_exercise, "exercise_order", order)
     session.add(db_exercise)
     session.commit()
     session.refresh(db_exercise)
