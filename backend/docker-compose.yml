@@ -10,17 +10,15 @@ services:
     expose:
       - 8000
     environment:
-      DB_URL: 'postgresql://postgres:postgres@db:5432/postgres'
-      JWT_SECRET_KEY: /run/secrets/jwt_secret_key
-      JWT_ALGORITHM: 'HS256'
+      DB_URL: postgresql://postgres:postgres@db:5432/postgres
+      JWT_SECRET_KEY: P6xaEbFuCbG/ZplD5wAXIAHalODjH9SznEtOfVVxnJybH3NOoRVDmbJo6xvskiaMQotwBbPhRM+En2RpDWPV/A==
+      JWT_ALGORITHM: HS256
     depends_on:
       - db
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.fastapi.rule=Host(`api.localhost`)'
     restart: on-failure
-    secrets:
-      - jwt_secret_key
 
   db:
     image: postgres:15-alpine
@@ -47,7 +45,3 @@ services:
 
 volumes:
   postgres_data:
-
-secrets:
-  jwt_secret_key:
-    file: ./jwt_secret_key.txt

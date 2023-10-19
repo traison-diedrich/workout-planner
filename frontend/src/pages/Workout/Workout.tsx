@@ -100,6 +100,13 @@ export const Workout: React.FC = () => {
         setSelectingExerciseId(exercise_id);
     };
 
+    const update = useMutation({
+        mutationFn: (exercises: ExerciseUpdate[]) => updateExercises(exercises),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['workouts', workout_id]);
+        },
+    });
+
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
 
@@ -110,13 +117,6 @@ export const Workout: React.FC = () => {
         exercises[foundIndex].exercise_order = foundIndex;
         setDraggingExercise(exercises[foundIndex]);
     };
-
-    const update = useMutation({
-        mutationFn: (exercises: ExerciseUpdate[]) => updateExercises(exercises),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['workouts', workout_id]);
-        },
-    });
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
