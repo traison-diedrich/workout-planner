@@ -10,9 +10,9 @@ services:
     expose:
       - 8000
     environment:
-      - DB_URL=postgresql://postgres:postgres@db:5432/postgres
-      - JWT_SECRET_KEY=
-      - JWT_ALGORITHM=HS256
+      DB_URL: postgresql://postgres:postgres@db:5432/postgres
+      JWT_SECRET_KEY:
+      JWT_ALGORITHM: HS256
     depends_on:
       - db
     labels:
